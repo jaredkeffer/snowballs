@@ -8,6 +8,7 @@ import ConciergeScreen from '../screens/ConciergeScreen';
 import MarketplaceScreen from '../screens/MarketplaceScreen';
 import ExploreLocalScreen from '../screens/ExploreLocalScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import PreferencesScreen from '../screens/PreferencesScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -68,6 +69,7 @@ ExploreLocalStack.navigationOptions = {
 
 const SettingsStack = createStackNavigator({
   Settings: SettingsScreen,
+  Preferences: PreferencesScreen,
 });
 
 SettingsStack.navigationOptions = {

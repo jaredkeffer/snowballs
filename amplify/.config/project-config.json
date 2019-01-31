@@ -1,0 +1,20 @@
+{
+    "projectName": "Odyssey",
+    "projectPath": "/Users/Kyle/Desktop/Odyssey/app-dev/Odyssey",
+    "defaultEditor": "atom",
+    "frontendHandler": {
+        "javascript": "/Users/Kyle/npm-global/lib/node_modules/@aws-amplify/cli/node_modules/amplify-frontend-javascript"
+    },
+    "javascript": {
+        "framework": "react-native",
+        "config": {
+            "SourceDir": "src/",
+            "DistributionDir": "dist/",
+            "BuildCommand": "build/",
+            "StartCommand": "npm start"
+        }
+    },
+    "providers": {
+        "awscloudformation": "/Users/Kyle/npm-global/lib/node_modules/@aws-amplify/cli/node_modules/amplify-provider-awscloudformation"
+    }
+}

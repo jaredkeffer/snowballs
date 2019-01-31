@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { WebBrowser } from 'expo';
 
-import { API, Analytics } from 'aws-amplify';
+import { API, Analytics, Auth } from 'aws-amplify';
 import { MonoText } from '../components/StyledText';
 import { CarouselWrapper } from '../components/CarouselWrapper';
 

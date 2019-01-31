@@ -1,4 +1,5 @@
-amplify/#current-cloud-backend
+amplify/#current-cloud-backend/*
+amplify/backend/function/crudUsersLambda/src/node_modules/**/*
 node_modules/**/*
 .expo/*
 npm-debug.*

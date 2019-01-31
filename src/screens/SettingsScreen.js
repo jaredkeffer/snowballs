@@ -6,7 +6,9 @@ import { Auth, Cache } from 'aws-amplify';
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
     title: 'Settings',
+    headerBackTitle: 'Cancel',
   };
+
   signOut = async () => {
     Auth.signOut()
         .then(() => this.props.screenProps.onStateChange('signedOut', null))
@@ -22,6 +24,12 @@ export default class SettingsScreen extends React.Component {
             <Button style={styles.signOutBtn}
               onPress={this.signOut}
               title="Sign Out"
+              color="#841584"/>
+          </View>
+          <View style={styles.settingsContainer}>
+            <Button style={styles.signOutBtn}
+              onPress={() => this.props.navigation.navigate('Preferences')}
+              title="Edit Preferences"
               color="#841584"/>
           </View>
         </ScrollView>

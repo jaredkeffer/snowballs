@@ -1,0 +1,112 @@
+{
+	"providers": {
+		"awscloudformation": {
+			"AuthRoleName": "dyssey-20190126194629-authRole",
+			"UnauthRoleArn": "arn:aws:iam::846380405817:role/dyssey-20190126194629-unauthRole",
+			"AuthRoleArn": "arn:aws:iam::846380405817:role/dyssey-20190126194629-authRole",
+			"Region": "us-east-1",
+			"DeploymentBucketName": "dyssey-20190126194629-deployment",
+			"UnauthRoleName": "dyssey-20190126194629-unauthRole",
+			"StackName": "dyssey-20190126194629",
+			"StackId": "arn:aws:cloudformation:us-east-1:846380405817:stack/dyssey-20190126194629/bfe44d10-21dd-11e9-afd5-127b0ce5d1d0"
+		}
+	},
+	"auth": {
+		"odysseyUsers": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190126194629-deployment/amplify-cfn-templates/auth/odysseyUsers-cloudformation-template.yml",
+				"logicalId": "authodysseyUsers"
+			},
+			"lastPushTimeStamp": "2019-01-27T09:06:30.001Z",
+			"output": {
+				"CreatedSNSRole": "arn:aws:iam::846380405817:role/odysseyUsers_sns-role",
+				"AppClientSecret": "spgp2d0mlqp31rcibbjitgkj3arjma3tdbs64ajgql7nnknm193",
+				"UserPoolId": "us-east-1_6Mm0yBhdj",
+				"AppClientIDWeb": "3d70g0llf47lcjoev77c2iblci",
+				"AppClientID": "3v0f36dgcimltcv1bcds0k4pen",
+				"IdentityPoolId": "us-east-1:25939791-bf7e-4e6b-9530-d7cb779c9c5c",
+				"IdentityPoolName": "odysseyUsers",
+				"UserPoolName": "odysseyRegisteredUsers"
+			},
+			"lastPushDirHash": "yRfBXmbS26M1vjL7biJBlRydcO8="
+		}
+	},
+	"storage": {
+		"usersDynamoDB": {
+			"service": "DynamoDB",
+			"providerPlugin": "awscloudformation",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190126194629-deployment/amplify-cfn-templates/storage/usersDynamoDB-cloudformation-template.json",
+				"logicalId": "storageusersDynamoDB"
+			},
+			"lastPushTimeStamp": "2019-01-27T09:06:30.003Z",
+			"output": {
+				"PartitionKeyName": "user_id",
+				"Region": "us-east-1",
+				"Arn": "arn:aws:dynamodb:us-east-1:846380405817:table/users",
+				"PartitionKeyType": "S",
+				"Name": "users"
+			},
+			"lastPushDirHash": "XeD9R3ru5IOeidMCUmvALo6w/W8="
+		}
+	},
+	"function": {
+		"crudUsersLambda": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "usersDynamoDB",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			],
+			"lastBuildTimeStamp": "2019-01-27T04:59:01.749Z",
+			"lastPackageTimeStamp": "2019-01-27T09:05:11.255Z",
+			"distZipFilename": "crudUsersLambda-1548579904-latest-build.zip",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190126194629-deployment/amplify-cfn-templates/function/crudUsersLambda-cloudformation-template.json",
+				"logicalId": "functioncrudUsersLambda"
+			},
+			"lastPushTimeStamp": "2019-01-27T09:06:30.010Z",
+			"output": {
+				"Region": "us-east-1",
+				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:crudUsersLambda",
+				"Name": "crudUsersLambda"
+			},
+			"lastPushDirHash": "TBIC67F/zOaeqJg74NEc6vzVoP4="
+		}
+	},
+	"api": {
+		"crudUsersAPI": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "crudUsersLambda",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			],
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190126194629-deployment/amplify-cfn-templates/api/crudUsersAPI-cloudformation-template.json",
+				"logicalId": "apicrudUsersAPI"
+			},
+			"lastPushTimeStamp": "2019-01-27T09:06:30.008Z",
+			"output": {
+				"ApiName": "crudUsersAPI",
+				"RootUrl": "https://i5fq9e6naj.execute-api.us-east-1.amazonaws.com/Prod"
+			},
+			"lastPushDirHash": "25NhCOoDqlj4RlBgibS3E57xa0Y="
+		}
+	}
+}

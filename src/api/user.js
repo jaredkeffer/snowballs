@@ -40,7 +40,7 @@ async function getUserInfo(refreshCache) {
   if (cachedUser) return cachedUser;
 
   // Get user_id from Cognito (primary key for dynamo table)
-  console.debug('getUser()');
+  console.debug('getUser for getUserInfo()');
   let authUser = await getUser();
   let sub = authUser.sub;
   console.debug('user sub: ', authUser.sub);
@@ -49,6 +49,7 @@ async function getUserInfo(refreshCache) {
   let userPath = `/users/${sub}`;
 
   // get user from dynamo
+  console.debug('fetching user info from dynamo');
   let response = await API.get(apiName, userPath)
     .catch((error) => {
       console.error('Error getting Dynamo User', error);

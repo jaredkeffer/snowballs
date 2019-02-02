@@ -4,8 +4,11 @@ in the end, our experiences will be our ultimate possession
 # Architecture
 ## Backend
 ### API
-1. users API - CRUD for user information including preferences, demographics, etc. in DynamoDB
-1. experiences API - (a) CRUD for experiences in DynamoDB with geo-hashing
+1. `/users` - CRUD for user information including preferences, demographics, etc. in DynamoDB
+1. `/experiences` - (a) CRUD for experiences in DynamoDB
+1. `/experiences/geo` - (a) experiences search using geo-hashing (later ordering by preferences)
+1. `/itinerary` - (a) CRUD for itineraries in DynamoDB with geo-hashing
+1. `/itinerary/new` - create a new itinerary based on parameters
 
 ### Auth
 1. Cognito User things

@@ -2,10 +2,10 @@
 
 const awsmobile = {
     "aws_project_region": "us-east-1",
-    "aws_cognito_identity_pool_id": "us-east-1:25939791-bf7e-4e6b-9530-d7cb779c9c5c",
+    "aws_cognito_identity_pool_id": "us-east-1:2a079281-7c0d-41e9-a6d0-67121243d5e5",
     "aws_cognito_region": "us-east-1",
-    "aws_user_pools_id": "us-east-1_6Mm0yBhdj",
-    "aws_user_pools_web_client_id": "3d70g0llf47lcjoev77c2iblci",
+    "aws_user_pools_id": "us-east-1_iI3HJL7Nh",
+    "aws_user_pools_web_client_id": "2ik3gcqiuqbpr1o6n0c5li3d35",
     "aws_dynamodb_all_tables_region": "us-east-1",
     "aws_dynamodb_table_schemas": [
         {
@@ -17,24 +17,24 @@ const awsmobile = {
             "region": "us-east-1"
         },
         {
-            "tableName": "itinerary",
+            "tableName": "itineraries",
             "region": "us-east-1"
         }
     ],
     "aws_cloud_logic_custom": [
         {
-            "name": "crudUsersAPI",
-            "endpoint": "https://i5fq9e6naj.execute-api.us-east-1.amazonaws.com/Prod",
+            "name": "users",
+            "endpoint": "https://0hkhmt69m7.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
         },
         {
-            "name": "experiencesAPI",
-            "endpoint": "https://ebpmes4x36.execute-api.us-east-1.amazonaws.com/Prod",
+            "name": "experiences",
+            "endpoint": "https://6qud7l5rr8.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
         },
         {
-            "name": "itineraryAPI",
-            "endpoint": "https://ulfe18uzo0.execute-api.us-east-1.amazonaws.com/Prod",
+            "name": "itineraries",
+            "endpoint": "https://4brj7niq38.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
         }
     ]

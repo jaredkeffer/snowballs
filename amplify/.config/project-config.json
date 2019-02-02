@@ -8,9 +8,9 @@
     "javascript": {
         "framework": "react-native",
         "config": {
-            "SourceDir": "src/",
-            "DistributionDir": "dist/",
-            "BuildCommand": "build/",
+            "SourceDir": "src",
+            "DistributionDir": "dist",
+            "BuildCommand": "expo build:ios",
             "StartCommand": "npm start"
         }
     },

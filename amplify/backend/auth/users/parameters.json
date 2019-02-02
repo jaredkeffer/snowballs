@@ -1,0 +1,60 @@
+{
+    "identityPoolName": "odysseyIdentityPool",
+    "allowUnauthenticatedIdentities": true,
+    "thirdPartyAuth": false,
+    "lambdaLogPolicy": "users_lambda_log_policy",
+    "openIdLambdaRoleName": "users_openid_lambda_role",
+    "openIdRolePolicy": "users_openid_pass_role_policy",
+    "openIdLambdaIAMPolicy": "users_openid_lambda_iam_policy",
+    "openIdLogPolicy": "users_openid_lambda_log_policy",
+    "userPoolName": "odysseyUserPool",
+    "autoVerifiedAttributes": [
+        "email"
+    ],
+    "mfaConfiguration": "OPTIONAL",
+    "mfaTypes": [
+        "SMS Text Message"
+    ],
+    "roleName": "users_sns-role",
+    "roleExternalId": "users_role_external_id",
+    "policyName": "users-sns-policy",
+    "smsAuthenticationMessage": "Your authentication code is {####}",
+    "smsVerificationMessage": "Your verification code is {####}",
+    "emailVerificationSubject": "Your verification code",
+    "emailVerificationMessage": "Your Odyssey login verification code is {####}",
+    "defaultPasswordPolicy": false,
+    "passwordPolicyMinLength": 8,
+    "passwordPolicyCharacters": [
+        "Requires Lowercase",
+        "Requires Uppercase",
+        "Requires Numbers",
+        "Requires Symbols"
+    ],
+    "requiredAttributes": [
+        "email"
+    ],
+    "userpoolClientName": "users_app_client",
+    "userpoolClientGenerateSecret": true,
+    "userpoolClientRefreshTokenValidity": 30,
+    "userpoolClientReadAttributes": [
+        "email"
+    ],
+    "mfaLambdaRole": "users_totp_lambda_role",
+    "mfaLambdaLogPolicy": "users_totp_lambda_log_policy",
+    "mfaPassRolePolicy": "users_totp_pass_role_policy",
+    "mfaLambdaIAMPolicy": "users_totp_lambda_iam_policy",
+    "userpoolClientLambdaRole": "users_userpoolclient_lambda_role",
+    "userpoolClientLogPolicy": "users_userpoolclient_lambda_log_policy",
+    "userpoolClientLambdaPolicy": "users_userpoolclient_lambda_iam_policy",
+    "userpoolClientSetAttributes": true,
+    "useDefault": "manual",
+    "authSelections": "identityPoolAndUserPool",
+    "resourceName": "users",
+    "userpoolClientWriteAttributes": [
+        "email"
+    ],
+    "unAuthRoleName": "dyssey-20190202111147-unauthRole",
+    "authRoleName": "dyssey-20190202111147-authRole",
+    "unAuthRoleArn": "arn:aws:iam::846380405817:role/dyssey-20190202111147-unauthRole",
+    "authRoleArn": "arn:aws:iam::846380405817:role/dyssey-20190202111147-authRole"
+}

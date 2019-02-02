@@ -1,0 +1,5 @@
+{
+    "tableName": "experiences",
+    "partitionKeyName": "experience_id",
+    "partitionKeyType": "S"
+}

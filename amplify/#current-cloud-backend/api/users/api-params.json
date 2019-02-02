@@ -1,0 +1,36 @@
+{
+    "paths": [
+        {
+            "name": "/users",
+            "lambdaFunction": "users",
+            "privacy": {
+                "protected": true,
+                "auth": "rw",
+                "unauth": "rw"
+            }
+        }
+    ],
+    "resourceName": "users",
+    "apiName": "odysseyf2124d94",
+    "functionArns": [
+        {
+            "lambdaFunction": "users"
+        }
+    ],
+    "privacy": {
+        "auth": 1,
+        "unauth": 1,
+        "authRoleName": "dyssey-20190202111147-authRole",
+        "unAuthRoleName": "dyssey-20190202111147-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "users",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}

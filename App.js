@@ -38,7 +38,7 @@ class App extends React.Component {
   _loadResourcesAsync = async () => {
     return Promise.all([
       UserAPI.getUser(),
-      UserAPI.getUserInfo(),
+      UserAPI.getUserInfo(true),
       // Asset.loadAsync([
       //   require('./src/assets/images/robot-dev.png'),
       // ]),

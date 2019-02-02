@@ -1,6 +1,6 @@
 import { API, Analytics, Auth, Cache } from 'aws-amplify';
 
-let apiName = 'crudUsersAPI';
+let apiName = 'users';
 let path = '/users';
 
 /*

@@ -2,28 +2,10 @@ AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
     
-  identityPoolName:
-    Type: String
-              
-  allowUnauthenticatedIdentities:
+  resourceName:
     Type: String
             
-  thirdPartyAuth:
-    Type: String
-          
-  lambdaLogPolicy:
-    Type: String
-            
-  openIdLambdaRoleName:
-    Type: String
-            
-  openIdRolePolicy:
-    Type: String
-            
-  openIdLambdaIAMPolicy:
-    Type: String
-            
-  openIdLogPolicy:
+  authSelections:
     Type: String
             
   userPoolName:
@@ -107,18 +89,36 @@ Parameters:
   userpoolClientSetAttributes:
     Type: String
           
-  useDefault:
+  identityPoolName:
+    Type: String
+              
+  allowUnauthenticatedIdentities:
     Type: String
             
-  authSelections:
+  thirdPartyAuth:
+    Type: String
+          
+  lambdaLogPolicy:
     Type: String
             
-  resourceName:
+  openIdLambdaRoleName:
+    Type: String
+            
+  openIdRolePolicy:
+    Type: String
+            
+  openIdLambdaIAMPolicy:
+    Type: String
+            
+  openIdLogPolicy:
     Type: String
                   
   userpoolClientWriteAttributes:
     Type: CommaDelimitedList
       
+  useDefault:
+    Type: String
+            
   unAuthRoleName:
     Type: String
             
@@ -205,9 +205,6 @@ Resources:
     Properties:
       ClientName: users_app_clientWeb
       
-      ReadAttributes: !Ref userpoolClientReadAttributes
-      WriteAttributes: !Ref userpoolClientWriteAttributes
-      
       RefreshTokenValidity: !Ref userpoolClientRefreshTokenValidity
       UserPoolId: !Ref UserPool
     DependsOn: UserPool
@@ -217,9 +214,6 @@ Resources:
     Type: "AWS::Cognito::UserPoolClient"
     Properties:
       ClientName: !Ref userpoolClientName
-      
-      ReadAttributes: !Ref userpoolClientReadAttributes
-      WriteAttributes: !Ref userpoolClientWriteAttributes
       
       GenerateSecret: !Ref userpoolClientGenerateSecret
       RefreshTokenValidity: !Ref userpoolClientRefreshTokenValidity

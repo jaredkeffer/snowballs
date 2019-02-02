@@ -37,13 +37,11 @@ export default class PreferencesScreen extends React.PureComponent {
       ? userInfo[0].preferences
       : false;
     if (preferences) {
-      console.log(preferences);
       let preferencesMap = new Map();
       for (let key in preferences){
         if (preferences[key]) preferencesMap.set(key, preferences[key]);
       }
       let selected = new Map([...preferencesMap, ...this.state.selected]);
-      console.log(selected);
       this.setState({selected});
     }
   }

@@ -11,12 +11,30 @@ const awsmobile = {
         {
             "tableName": "users",
             "region": "us-east-1"
+        },
+        {
+            "tableName": "experiences",
+            "region": "us-east-1"
+        },
+        {
+            "tableName": "itinerary",
+            "region": "us-east-1"
         }
     ],
     "aws_cloud_logic_custom": [
         {
             "name": "crudUsersAPI",
             "endpoint": "https://i5fq9e6naj.execute-api.us-east-1.amazonaws.com/Prod",
+            "region": "us-east-1"
+        },
+        {
+            "name": "experiencesAPI",
+            "endpoint": "https://ebpmes4x36.execute-api.us-east-1.amazonaws.com/Prod",
+            "region": "us-east-1"
+        },
+        {
+            "name": "itineraryAPI",
+            "endpoint": "https://ulfe18uzo0.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
         }
     ]

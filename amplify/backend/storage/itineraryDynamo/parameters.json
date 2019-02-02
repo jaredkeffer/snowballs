@@ -1,0 +1,5 @@
+{
+    "tableName": "itinerary",
+    "partitionKeyName": "itinerary_id",
+    "partitionKeyType": "S"
+}

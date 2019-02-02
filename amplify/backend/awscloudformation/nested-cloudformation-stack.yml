@@ -140,6 +140,28 @@
 				}
 			}
 		},
+		"storageexperiencesDynamo": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190126194629-deployment/amplify-cfn-templates/storage/experiencesDynamo-cloudformation-template.json",
+				"Parameters": {
+					"tableName": "experiences",
+					"partitionKeyName": "experience_id",
+					"partitionKeyType": "S"
+				}
+			}
+		},
+		"storageitineraryDynamo": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190126194629-deployment/amplify-cfn-templates/storage/itineraryDynamo-cloudformation-template.json",
+				"Parameters": {
+					"tableName": "itinerary",
+					"partitionKeyName": "itinerary_id",
+					"partitionKeyType": "S"
+				}
+			}
+		},
 		"functioncrudUsersLambda": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -160,6 +182,60 @@
 				}
 			}
 		},
+		"functionexperiencesLambda": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190126194629-deployment/amplify-cfn-templates/function/experiencesLambda-cloudformation-template.json",
+				"Parameters": {
+					"storageexperiencesDynamoName": {
+						"Fn::GetAtt": [
+							"storageexperiencesDynamo",
+							"Outputs.Name"
+						]
+					},
+					"storageexperiencesDynamoArn": {
+						"Fn::GetAtt": [
+							"storageexperiencesDynamo",
+							"Outputs.Arn"
+						]
+					}
+				}
+			}
+		},
+		"functionexperiencesGeoLambda": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190126194629-deployment/amplify-cfn-templates/function/experiencesGeoLambda-cloudformation-template.json",
+				"Parameters": {}
+			}
+		},
+		"functionitineraryLambda": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190126194629-deployment/amplify-cfn-templates/function/itineraryLambda-cloudformation-template.json",
+				"Parameters": {
+					"storageitineraryDynamoName": {
+						"Fn::GetAtt": [
+							"storageitineraryDynamo",
+							"Outputs.Name"
+						]
+					},
+					"storageitineraryDynamoArn": {
+						"Fn::GetAtt": [
+							"storageitineraryDynamo",
+							"Outputs.Arn"
+						]
+					}
+				}
+			}
+		},
+		"functionnewItineraryLambda": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190126194629-deployment/amplify-cfn-templates/function/newItineraryLambda-cloudformation-template.json",
+				"Parameters": {}
+			}
+		},
 		"apicrudUsersAPI": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -174,6 +250,70 @@
 					"functioncrudUsersLambdaArn": {
 						"Fn::GetAtt": [
 							"functioncrudUsersLambda",
+							"Outputs.Arn"
+						]
+					}
+				}
+			}
+		},
+		"apiexperiencesAPI": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190126194629-deployment/amplify-cfn-templates/api/experiencesAPI-cloudformation-template.json",
+				"Parameters": {
+					"functionexperiencesLambdaName": {
+						"Fn::GetAtt": [
+							"functionexperiencesLambda",
+							"Outputs.Name"
+						]
+					},
+					"functionexperiencesLambdaArn": {
+						"Fn::GetAtt": [
+							"functionexperiencesLambda",
+							"Outputs.Arn"
+						]
+					},
+					"functionexperiencesGeoLambdaName": {
+						"Fn::GetAtt": [
+							"functionexperiencesGeoLambda",
+							"Outputs.Name"
+						]
+					},
+					"functionexperiencesGeoLambdaArn": {
+						"Fn::GetAtt": [
+							"functionexperiencesGeoLambda",
+							"Outputs.Arn"
+						]
+					}
+				}
+			}
+		},
+		"apiitineraryAPI": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190126194629-deployment/amplify-cfn-templates/api/itineraryAPI-cloudformation-template.json",
+				"Parameters": {
+					"functionitineraryLambdaName": {
+						"Fn::GetAtt": [
+							"functionitineraryLambda",
+							"Outputs.Name"
+						]
+					},
+					"functionitineraryLambdaArn": {
+						"Fn::GetAtt": [
+							"functionitineraryLambda",
+							"Outputs.Arn"
+						]
+					},
+					"functionnewItineraryLambdaName": {
+						"Fn::GetAtt": [
+							"functionnewItineraryLambda",
+							"Outputs.Name"
+						]
+					},
+					"functionnewItineraryLambdaArn": {
+						"Fn::GetAtt": [
+							"functionnewItineraryLambda",
 							"Outputs.Arn"
 						]
 					}

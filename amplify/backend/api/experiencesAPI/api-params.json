@@ -1,0 +1,57 @@
+{
+    "paths": [
+        {
+            "name": "/experiences",
+            "lambdaFunction": "experiencesLambda",
+            "privacy": {
+                "protected": true,
+                "auth": "rw",
+                "unauth": "r"
+            }
+        },
+        {
+            "name": "/experiences/geo",
+            "lambdaFunction": "experiencesGeoLambda",
+            "privacy": {
+                "protected": true,
+                "auth": "rw",
+                "unauth": "r"
+            }
+        }
+    ],
+    "resourceName": "experiencesAPI",
+    "apiName": "odyssey3dd659a9",
+    "functionArns": [
+        {
+            "lambdaFunction": "experiencesLambda"
+        },
+        {
+            "lambdaFunction": "experiencesGeoLambda"
+        }
+    ],
+    "privacy": {
+        "auth": 3,
+        "unauth": 3,
+        "authRoleName": "dyssey-20190126194629-authRole",
+        "unAuthRoleName": "dyssey-20190126194629-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "experiencesLambda",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        },
+        {
+            "category": "function",
+            "resourceName": "experiencesGeoLambda",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ],
+    "uuid": "eeabe2bb"
+}

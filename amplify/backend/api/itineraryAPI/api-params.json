@@ -1,0 +1,56 @@
+{
+    "paths": [
+        {
+            "name": "/itinerary",
+            "lambdaFunction": "itineraryLambda",
+            "privacy": {
+                "protected": true,
+                "auth": "rw",
+                "unauth": "rw"
+            }
+        },
+        {
+            "name": "/itinerary/new",
+            "lambdaFunction": "newItineraryLambda",
+            "privacy": {
+                "protected": true,
+                "auth": "rw",
+                "unauth": "rw"
+            }
+        }
+    ],
+    "resourceName": "itineraryAPI",
+    "apiName": "odyssey1f9fa55a",
+    "functionArns": [
+        {
+            "lambdaFunction": "itineraryLambda"
+        },
+        {
+            "lambdaFunction": "newItineraryLambda"
+        }
+    ],
+    "privacy": {
+        "auth": 2,
+        "unauth": 2,
+        "authRoleName": "dyssey-20190126194629-authRole",
+        "unAuthRoleName": "dyssey-20190126194629-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "itineraryLambda",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        },
+        {
+            "category": "function",
+            "resourceName": "newItineraryLambda",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}

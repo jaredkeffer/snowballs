@@ -1,4 +1,6 @@
 /*
+* IMPORTANT add Content-Type:application/json as headers to request
+
 Copyright 2017 - 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
     http://aws.amazon.com/apache2.0/
@@ -22,65 +24,86 @@ app.use(function(req, res, next) {
   next()
 });
 
+const uuidv4 = require('uuid/v4');
+const AWS = require('aws-sdk');
+AWS.config.update({ region: 'us-east-1' });
 
-/**********************
- * Example get method *
- **********************/
+let dynamodb = new AWS.DynamoDB();
+let dynamodbClient = new AWS.DynamoDB.DocumentClient();
 
-app.get('/itineraries/new', function(req, res) {
+let filterResults = (data, numberOfDays) => {
+  //get user preferences
+
+
+  // filter results by what they like
+
+  //return those results here
+  return {idsOnly:[data[0].experience_id, data[1].experience_id, data[2].experience_id],
+          allInfo:[data[0], data[1], data[2]]};
+}
+
+app.post('/itineraries/new', async function(req, res) {
+
+  let { city, activitySlots, numberOfDays} = req.body;
+
+  activitySlots = Array.from(activitySlots);
+
+  // this will need to get pulled out into its own function when this gets more complex
+  // when we do multi location trips or road trips we need to make this more robust
+  // for now this is sufficient because we know that we will only be in NYC
+  let itinerary = {};
+  filteredMasterItinerary = {};
   // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
-});
+  for (let slot of activitySlots) {
 
-app.get('/itineraries/new/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
-});
+    if (!slot) continue;
+    var params = {
+      TableName: 'experiences',
+      IndexName: 'city',
+      KeyConditionExpression: 'city = :city and activity_slot = :act_slt',
+      ExpressionAttributeValues: {
+        ':city': {S: city},
+        ':act_slt': {S: slot},
+      }
+    }
 
-/****************************
-* Example post method *
-****************************/
+    let query = await dynamodb.query(params).promise().catch(error => {
+      console.error(error);
+      res.json({ failure: 'post call returned with an error', url: req.url, error: error });
+    });
+    console.debug('query returned: ', query.Count);
+    let filteredResults = filterResults(query.Items, numberOfDays);
+    filteredMasterItinerary[slot] = (filteredResults.allInfo);
+    itinerary[slot] = filteredResults.idsOnly;
+  }
 
-app.post('/itineraries/new', function(req, res) {
-  // Add your code here
-  res.json({success: 'post call succeed!', url: req.url, body: req.body})
+  itinerary.itinerary_id = uuidv4();
+
+  var params = {
+    TableName: 'itineraries',
+    Item: itinerary,
+  }
+
+  let response = await dynamodbClient.put(params).promise().catch(error => {
+    console.error(error);
+    res.json({ failure: 'post call returned with an error', url: req.url, error: error });
+  });
+
+  res.json({ success: 'post call returned', url: req.url, itinerary: filteredMasterItinerary });
+
 });
 
 app.post('/itineraries/new/*', function(req, res) {
   // Add your code here
-  res.json({success: 'post call succeed!', url: req.url, body: req.body})
-});
-
-/****************************
-* Example post method *
-****************************/
-
-app.put('/itineraries/new', function(req, res) {
-  // Add your code here
-  res.json({success: 'put call succeed!', url: req.url, body: req.body})
-});
-
-app.put('/itineraries/new/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'put call succeed!', url: req.url, body: req.body})
-});
-
-/****************************
-* Example delete method *
-****************************/
-
-app.delete('/itineraries/new', function(req, res) {
-  // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
-});
-
-app.delete('/itineraries/new/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
+  res.json({
+    success: 'post call succeed!',
+    url: req.url,
+    body: req.body
+  })
 });
 
 app.listen(3000, function() {
-    console.log("App started")
+  console.log("App started")
 });
 
 // Export the app object. When executing the application local this does nothing. However,

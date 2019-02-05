@@ -22,6 +22,16 @@
                   {
                       "AttributeName": "experience_id",
                       "AttributeType": "S"
+                  }  , 
+                  
+                  {
+                      "AttributeName": "city",
+                      "AttributeType": "S"
+                  }  , 
+                  
+                  {
+                      "AttributeName": "activity_slot",
+                      "AttributeType": "S"
                   } 
                   
                 ],
@@ -40,6 +50,34 @@
                 "TableName": {
                    "Ref": "tableName"
                 },
+                
+                "GlobalSecondaryIndexes": [
+                  
+                    {
+                        "IndexName": "city",
+                        "KeySchema": [
+                            
+                            {
+                                "AttributeName": "city",
+                                "KeyType": "HASH"
+                            }  , 
+                            
+                            {
+                                "AttributeName": "activity_slot",
+                                "KeyType": "RANGE"
+                            } 
+                            
+                        ],
+                        "Projection": {
+                            "ProjectionType": "ALL"
+                        },
+                        "ProvisionedThroughput": {
+                            "ReadCapacityUnits": "5",
+                            "WriteCapacityUnits": "5"
+                        }
+                    } 
+                  
+                ]
                 
             }
         }

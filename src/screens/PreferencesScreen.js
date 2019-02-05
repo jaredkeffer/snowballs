@@ -4,7 +4,7 @@ import { Cache } from 'aws-amplify';
 import { ActivityIndicator, View, SafeAreaView, ScrollView, StyleSheet, Text, FlatList } from 'react-native';
 import layout from '../constants/Layout';
 import Preference from '../components/Preference';
-import UserAPI from '../api/user';
+import UsersAPI from '../api/user';
 
 export default class PreferencesScreen extends React.PureComponent {
   constructor(props) {
@@ -32,9 +32,9 @@ export default class PreferencesScreen extends React.PureComponent {
   ];
 
   _setSelected = async () => {
-    let userInfo = await UserAPI.getUserInfo();
-    let preferences = (userInfo && userInfo[0] && userInfo[0].preferences && userInfo[0].preferences)
-      ? userInfo[0].preferences
+    let userDetails = await UsersAPI.getUserDetails();
+    let preferences = (userDetails && userDetails[0] && userDetails[0].preferences && userDetails[0].preferences)
+      ? userDetails[0].preferences
       : false;
     if (preferences) {
       let preferencesMap = new Map();
@@ -79,7 +79,7 @@ export default class PreferencesScreen extends React.PureComponent {
     this.setState({saving: true});
 
     // get the current user preferences
-    let userId = await UserAPI.getUser();
+    let userId = await UsersAPI.getUser();
     let preferences = {};
 
     // add the state preferences if changed
@@ -88,7 +88,7 @@ export default class PreferencesScreen extends React.PureComponent {
       // else delete preferences[key];
     });
 
-    UserAPI.putUserInfo(userId.sub, preferences).then((response) => {
+    UsersAPI.putUserDetails(userId.sub, preferences).then((response) => {
       this.setState({saved: true}, () => {
         const {goBack} = this.props.navigation;
         setTimeout(() => goBack(), 1300);

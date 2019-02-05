@@ -11,7 +11,7 @@ async function getUser() {
   let user = await Cache.getItem('authUser');
   if (user) return user;
 
-  console.log('fetching user from Cognito');
+  console.debug('fetching user from Cognito');
 
   // Call cognito to get user
   let authUser = await Auth.currentAuthenticatedUser().catch((error) => {
@@ -31,7 +31,7 @@ async function getUser() {
  * @param userId {string}
  * @returns {*} response from Lambda (aka Dynamo)
  */
-async function getUserInfo(refreshCache) {
+async function getUserDetails(refreshCache) {
   let cachedUser;
 
   if (refreshCache) Cache.removeItem('user');
@@ -40,13 +40,13 @@ async function getUserInfo(refreshCache) {
   if (cachedUser) return cachedUser;
 
   // Get user_id from Cognito (primary key for dynamo table)
-  console.debug('getUser for getUserInfo()');
+  console.debug('getUser for getUserDetails()');
   let authUser = await getUser();
   let sub = authUser.sub;
   console.debug('user sub: ', authUser.sub);
 
   // Create API path to call API GW
-  let userPath = `/users/${sub}`;
+  let userPath = `${path}/${sub}`;
 
   // get user from dynamo
   console.debug('fetching user info from dynamo');
@@ -56,9 +56,9 @@ async function getUserInfo(refreshCache) {
     });
 
   // Cache the response
-  let cachingUser = await Cache.setItem('user', response, {priority: 4});
+  let cachingUser = await Cache.setItem('user', response, {priority: 2});
 
-  console.debug(`getUserInfo(${sub}):`, response);
+  console.debug(`getUserDetails(${sub}):`, response);
   return response;
 }
 
@@ -67,7 +67,7 @@ async function getUserInfo(refreshCache) {
  * @param preferences {Map}
  * @returns {*} response from Lambda (aka Dynamo)
  */
-async function putUserInfo(userId, preferences) {
+async function putUserDetails(userId, preferences) {
   let myInit = {
     body: {
       user_id: userId,
@@ -76,16 +76,16 @@ async function putUserInfo(userId, preferences) {
     headers: {}
   };
 
-  console.log('myinit: ', myInit);
+  console.debug('myinit: ', myInit);
 
   let response = await API.put(apiName, path, myInit);
   return Cache.removeItem('user');
 }
 
-const UserAPI = {
+const UsersAPI = {
   getUser: getUser,
-  getUserInfo: getUserInfo,
-  putUserInfo: putUserInfo,
+  getUserDetails: getUserDetails,
+  putUserDetails: putUserDetails,
 }
 
-export default UserAPI;
+export default UsersAPI;

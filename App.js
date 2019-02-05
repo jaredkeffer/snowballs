@@ -2,7 +2,7 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './src/navigation/AppNavigator';
-import UserAPI from './src/api/user';
+import UsersAPI from './src/api/user';
 
 import Amplify, { Cache } from 'aws-amplify';
 import { withAuthenticator } from 'aws-amplify-react-native';
@@ -37,8 +37,9 @@ class App extends React.Component {
   // TODO: look into preloading images/user/dynamo items before page load.
   _loadResourcesAsync = async () => {
     return Promise.all([
-      UserAPI.getUser(),
-      UserAPI.getUserInfo(true),
+      UsersAPI.getUser(),
+      // add true to refresh Cache here on app load
+      UsersAPI.getUserDetails(),
       // Asset.loadAsync([
       //   require('./src/assets/images/robot-dev.png'),
       // ]),

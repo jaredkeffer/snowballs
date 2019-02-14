@@ -1,11 +1,5 @@
 /*
 * IMPORTANT add Content-Type:application/json as headers to request
-
-Copyright 2017 - 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
-    http://aws.amazon.com/apache2.0/
-or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and limitations under the License.
 */
 
 var express = require('express')
@@ -30,11 +24,82 @@ AWS.config.update({ region: 'us-east-1' });
 
 let dynamodb = new AWS.DynamoDB();
 let dynamodbClient = new AWS.DynamoDB.DocumentClient();
+let cognitoClient = new AWS.CognitoIdentityServiceProvider();
 
+app.post('/itineraries/new', async (req, res) => {
+
+  let { city, activitySlots, numberOfDays, dates: {startDate, endDate}} = req.body;
+  itinerary.itinerary_id = uuidv4();
+  itinerary.created_date = new Date().getTime();
+
+  let writeItinerary = await writeDynamo('itineraries', itinerary);
+  if (writeItinerary.isError) res.json(writeItinerary.response);
+
+  // getUserFromCognito(userpoolId, clientId);
+
+  let info = {};
+  info.city = city;
+  info.start = startDate;
+  info.end = endDate;
+  info.username =
+  info.details = {
+    // req.requestContext.identity.
+  }
+
+  let emailResponse = await sendEmail(info);
+  let userResponse = await getUserOfAuthenticatedUser(request);
+  console.log(userResponse);
+
+  res.json({ success: 'post call returned', url: req.url, itinerary: filteredMasterItinerary });
+
+}
+
+async function writeDynamo(tableName, items){
+  var params = {
+    TableName: tableName,
+    Item: item,
+  }
+
+  let response = await dynamodbClient.put(params).promise().catch(error => {
+    console.error('writeDynamo() ',error);
+    return {isError: true, response: { failure: 'writeDynamo() returned with an error', error: error }};
+  });
+}
+
+
+async function sendEmail(info) => {
+  let { city, start, end, username, details } = info;
+  var params = {
+    Destination: { ToAddresses: ["recipient1@example.com", "recipient2@example.com"] },
+    Message: {
+      Body: {
+        Text: {
+          Charset: "UTF-8",
+          Data: `User: ${}
+                 City: ${city}\nDates: ${start} - ${end}\nDetails: ${details}`
+        }
+      },
+      Subject: { Charset: "UTF-8", Data: "Test email" }
+    },
+    Source: "odysseytech.llc@gmail.com",
+  };
+
+  return await ses.sendEmail(params).promise().catch((error) => console.log(error));
+}
+
+async function getUserFromCognitoToken(token, userPoolId) {
+  var params = { AccessToken: token };
+  await cognitoidentityserviceprovider.getUser(params).promise().catch((error) => {
+    console.log(error);
+  });
+}
+
+
+/*
 let filterResults = (data, numberOfDays) => {
   //get user preferences
 
-
+  // this needs to adapt to multi day trips.
   // filter results by what they like
 
   //return those results here
@@ -42,9 +107,14 @@ let filterResults = (data, numberOfDays) => {
           allInfo:[data[0], data[1], data[2]]};
 }
 
+potential post handler
 app.post('/itineraries/new', async function(req, res) {
 
-  let { city, activitySlots, numberOfDays} = req.body;
+  let { city, activitySlots, numberOfDays, dates: {startDate, endDate}} = req.body;
+  let itinerary = {};
+
+  let userId = req.requestContext.identity.cognitoIdentityId;
+  console.log(req.requestContext);
 
   activitySlots = Array.from(activitySlots);
 
@@ -52,10 +122,9 @@ app.post('/itineraries/new', async function(req, res) {
   // when we do multi location trips or road trips we need to make this more robust
   // for now this is sufficient because we know that we will only be in NYC
   let itinerary = {};
-  filteredMasterItinerary = {};
-  // Add your code here
-  for (let slot of activitySlots) {
+  let filteredMasterItinerary = {};
 
+  for (let slot of activitySlots) {
     if (!slot) continue;
     var params = {
       TableName: 'experiences',
@@ -64,44 +133,63 @@ app.post('/itineraries/new', async function(req, res) {
       ExpressionAttributeValues: {
         ':city': {S: city},
         ':act_slt': {S: slot},
-      }
+      },
     }
 
     let query = await dynamodb.query(params).promise().catch(error => {
       console.error(error);
-      res.json({ failure: 'post call returned with an error', url: req.url, error: error });
+      res.json({ failure: 'dynamodb call returned with an error', url: req.url, error: error });
     });
+
     console.debug('query returned: ', query.Count);
+
     let filteredResults = filterResults(query.Items, numberOfDays);
-    filteredMasterItinerary[slot] = (filteredResults.allInfo);
-    itinerary[slot] = filteredResults.idsOnly;
+
+    filteredMasterItinerary[slot.toLowerCase()] = filteredResults.allInfo;
+    itinerary[slot.toLowerCase()] = filteredResults.idsOnly;
   }
 
   itinerary.itinerary_id = uuidv4();
+  itinerary.created_date = new Date().getTime();
 
+  let writeItinerary = writeDynamo('itineraries', itinerary);
+  if (writeItinerary.isError) res.json(writeItinerary.response);
+
+  // send email to team
+
+
+  // TODO: Make this only add the itinerary to the user. not rewrite it
+  // let userWrite = writeItineraryToUser('users', itinerary.itinerary_id, userId, req, res);
+  // if (userWrite.isError) res.json(userWrite.response);
+
+  res.json({ success: 'post call returned', url: req.url, itinerary: filteredMasterItinerary });
+});
+
+
+async function writeItineraryToUser(tableName, itineraryId, userId, req, res){
   var params = {
-    TableName: 'itineraries',
-    Item: itinerary,
+    TableName: tableName,
+    Key: {
+      user_id: userId,
+    },
+    UpdateExpression: "SET #c = list_append(#c, :itd)",
+    ExpressionAttributeNames: {
+       "#c": "itineraries"
+    },
+    ExpressionAttributeValues: {
+      ":itd": itineraryId,
+    },
+    Item: itineraryId,
   }
 
   let response = await dynamodbClient.put(params).promise().catch(error => {
-    console.error(error);
-    res.json({ failure: 'post call returned with an error', url: req.url, error: error });
+    console.error('writeItineraryToUser()',error);
+    return {isError: true, response: { failure: 'writeItineraryToUser() call returned with an error', url: req.url, error: error }};
   });
-
-  res.json({ success: 'post call returned', url: req.url, itinerary: filteredMasterItinerary });
-
-});
-
-app.post('/itineraries/new/*', function(req, res) {
-  // Add your code here
-  res.json({
-    success: 'post call succeed!',
-    url: req.url,
-    body: req.body
-  })
-});
-
+  console.log(response);
+  return response;
+}
+*/
 app.listen(3000, function() {
   console.log("App started")
 });

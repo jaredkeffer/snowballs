@@ -1,19 +1,18 @@
 /*
 * IMPORTANT add Content-Type:application/json as headers to request
-
-Copyright 2017 - 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
-    http://aws.amazon.com/apache2.0/
-or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and limitations under the License.
 */
 
-var express = require('express')
-var bodyParser = require('body-parser')
-var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
+let express = require('express')
+let bodyParser = require('body-parser')
+let awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
+
+const uuidv4 = require('uuid/v4');
+const AWS = require('aws-sdk');
+AWS.config.update({ region: 'us-east-1' });
+
 
 // declare a new express app
-var app = express()
+let app = express()
 app.use(bodyParser.json())
 app.use(awsServerlessExpressMiddleware.eventContext())
 
@@ -24,83 +23,72 @@ app.use(function(req, res, next) {
   next()
 });
 
-const uuidv4 = require('uuid/v4');
-const AWS = require('aws-sdk');
-AWS.config.update({ region: 'us-east-1' });
 
 let dynamodb = new AWS.DynamoDB();
 let dynamodbClient = new AWS.DynamoDB.DocumentClient();
+let cognitoClient = new AWS.CognitoIdentityServiceProvider();
+let ses = new AWS.SES();
 
-let filterResults = (data, numberOfDays) => {
-  //get user preferences
+app.post('/itineraries/new', async (req, res) => {
+  let { sub, email, city, activitySlots, start, end} = req.body;
+  console.log('req.body: ',req.body);
+  console.log('email: ',req.body);
+  let itinerary = {};
+  itinerary.itinerary_id = uuidv4();
+  itinerary.created_date = new Date().getTime();
+  itinerary.created_by = sub;
 
+  let writeItinerary = await writeDynamo('itineraries', itinerary);
+  if (writeItinerary.isError) res.json(writeItinerary.response);
 
-  // filter results by what they like
+  let info = {
+    email, city, activitySlots,
+    start, end,
+    details: {
+      // add more stuff here...
+      preferences: 'na',
+    },
+  };
+  let emailResponse = sendEmail(info);
+  console.log(emailResponse);
 
-  //return those results here
-  return {idsOnly:[data[0].experience_id, data[1].experience_id, data[2].experience_id],
-          allInfo:[data[0], data[1], data[2]]};
+  res.json({ success: 'post call returned', url: req.url, itinerary: itinerary, email: emailResponse });
+
+});
+
+async function writeDynamo(tableName, item){
+  let params = {
+    TableName: tableName,
+    Item: item,
+  }
+
+  let response = await dynamodbClient.put(params).promise().catch((error) => {
+    console.error('writeDynamo() ',error);
+    return {isError: true, response: { failure: 'writeDynamo() returned with an error', error: error }};
+  });
+  return {isError: false, response: { success: 'writeDynamo() succeeded' }};
+
 }
 
-app.post('/itineraries/new', async function(req, res) {
+async function sendEmail(info) {
+  let { city, start, end, email, details } = info;
+  let params = {
+    Destination: { ToAddresses: [email] },
+    Message: {
+      Body: {
+        Text: {
+          Charset: "UTF-8",
+          Data: `User: ${details}
+                 City: ${city}\nDates: ${start} - ${end}\nDetails: ${details}`
+        }
+      },
+      Subject: { Charset: "UTF-8", Data: "Test email" }
+    },
+    Source: "odysseytech.llc@gmail.com",
+  };
 
-  let { city, activitySlots, numberOfDays} = req.body;
-
-  activitySlots = Array.from(activitySlots);
-
-  // this will need to get pulled out into its own function when this gets more complex
-  // when we do multi location trips or road trips we need to make this more robust
-  // for now this is sufficient because we know that we will only be in NYC
-  let itinerary = {};
-  filteredMasterItinerary = {};
-  // Add your code here
-  for (let slot of activitySlots) {
-
-    if (!slot) continue;
-    var params = {
-      TableName: 'experiences',
-      IndexName: 'city',
-      KeyConditionExpression: 'city = :city and activity_slot = :act_slt',
-      ExpressionAttributeValues: {
-        ':city': {S: city},
-        ':act_slt': {S: slot},
-      }
-    }
-
-    let query = await dynamodb.query(params).promise().catch(error => {
-      console.error(error);
-      res.json({ failure: 'post call returned with an error', url: req.url, error: error });
-    });
-    console.debug('query returned: ', query.Count);
-    let filteredResults = filterResults(query.Items, numberOfDays);
-    filteredMasterItinerary[slot] = (filteredResults.allInfo);
-    itinerary[slot] = filteredResults.idsOnly;
-  }
-
-  itinerary.itinerary_id = uuidv4();
-
-  var params = {
-    TableName: 'itineraries',
-    Item: itinerary,
-  }
-
-  let response = await dynamodbClient.put(params).promise().catch(error => {
-    console.error(error);
-    res.json({ failure: 'post call returned with an error', url: req.url, error: error });
-  });
-
-  res.json({ success: 'post call returned', url: req.url, itinerary: filteredMasterItinerary });
-
-});
-
-app.post('/itineraries/new/*', function(req, res) {
-  // Add your code here
-  res.json({
-    success: 'post call succeed!',
-    url: req.url,
-    body: req.body
-  })
-});
+  return await ses.sendEmail(params).promise().catch((error) => console.log(error));
+}
 
 app.listen(3000, function() {
   console.log("App started")

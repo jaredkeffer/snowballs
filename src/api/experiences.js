@@ -1,4 +1,4 @@
-import { API, Analytics, Auth, Cache } from 'aws-amplify';
+import { API, Analytics, Cache } from 'aws-amplify';
 
 let apiName = 'experiences';
 let path = '/experiences';

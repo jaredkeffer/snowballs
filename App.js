@@ -2,7 +2,7 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './src/navigation/AppNavigator';
-import UsersAPI from './src/api/user';
+import UsersAPI from './src/api/users';
 
 import Amplify, { Cache } from 'aws-amplify';
 import { withAuthenticator } from 'aws-amplify-react-native';

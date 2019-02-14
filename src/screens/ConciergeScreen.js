@@ -5,6 +5,7 @@ import { Button } from 'react-native-elements';
 import { CarouselWrapper } from '../components/CarouselWrapper';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { SearchBar } from 'react-native-elements';
+import NewItineraryAPI from '../api/itineraries';
 
 import layout from '../constants/Layout';
 
@@ -76,8 +77,10 @@ export default class ConciergeScreen extends React.Component {
     this.setState({ search });
   };
 
-  go = () => {
-    console.log('go!');
+  go = async () => {
+    this.setState({going: true});
+    console.log('going!');
+    console.log(await NewItineraryAPI.getNewItinerary(new Date('3/1/2019'), new Date('3/3/2019'), 'New York'));
   }
 
   render() {

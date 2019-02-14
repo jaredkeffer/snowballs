@@ -4,7 +4,7 @@ import { Cache } from 'aws-amplify';
 import { ActivityIndicator, View, SafeAreaView, ScrollView, StyleSheet, Text, FlatList } from 'react-native';
 import layout from '../constants/Layout';
 import Preference from '../components/Preference';
-import UsersAPI from '../api/user';
+import UsersAPI from '../api/users';
 
 export default class PreferencesScreen extends React.PureComponent {
   constructor(props) {

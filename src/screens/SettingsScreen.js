@@ -11,8 +11,11 @@ export default class SettingsScreen extends React.Component {
 
   signOut = async () => {
     Auth.signOut()
-        .then(() => this.props.screenProps.onStateChange('signedOut', null))
-        .catch(err => console.log(err));
+      .then( async () => {
+        await Cache.clear();
+        this.props.screenProps.onStateChange('signedOut', null)
+      })
+      .catch(err => console.log(err));
   }
 
   render() {

@@ -26,7 +26,6 @@ app.use(function(req, res, next) {
 
 let dynamodb = new AWS.DynamoDB();
 let dynamodbClient = new AWS.DynamoDB.DocumentClient();
-let cognitoClient = new AWS.CognitoIdentityServiceProvider();
 let ses = new AWS.SES();
 
 app.post('/itineraries/new', async (req, res) => {
@@ -49,7 +48,7 @@ app.post('/itineraries/new', async (req, res) => {
       preferences: 'na',
     },
   };
-  let emailResponse = sendEmail(info);
+  let emailResponse = await sendEmail(info);
   console.log(emailResponse);
 
   res.json({ success: 'post call returned', url: req.url, itinerary: itinerary, email: emailResponse });
@@ -72,22 +71,46 @@ async function writeDynamo(tableName, item){
 
 async function sendEmail(info) {
   let { city, start, end, email, details } = info;
+  let formattedMessage = craftMessage(info)
+  let dez = 'dez@odyssey-experiences.com';
   let params = {
-    Destination: { ToAddresses: [email] },
+    Destination: { ToAddresses: [email], BccAddresses: [dez], },
     Message: {
       Body: {
-        Text: {
+        Html: {
           Charset: "UTF-8",
-          Data: `User: ${details}
-                 City: ${city}\nDates: ${start} - ${end}\nDetails: ${details}`
-        }
+          Data: formattedMessage
+        },
       },
-      Subject: { Charset: "UTF-8", Data: "Test email" }
+      Subject: { Charset: "UTF-8", Data: "Itinerary Request Confirmation" }
     },
-    Source: "odysseytech.llc@gmail.com",
-  };
+    Source: "Odyssey Experiences Team <odysseytech.llc@gmail.com>",
+  }
 
   return await ses.sendEmail(params).promise().catch((error) => console.log(error));
+}
+
+function craftMessage(info) {
+  let { city, start, end, email, details } = info;
+
+  return `<h3>Thanks for requesting an itinerary to ${city}!</h3>
+  <p>The itinerary was requested by ${email}.</p>
+  <div class="main">
+    <table>
+      <tr>
+        <td>City</td>
+        <td>${city}</td>
+      </tr>
+      <tr>
+        <td>Dates</td>
+        <td>${new Date(start).toDateString() } - ${new Date(end).toDateString()}</td>
+      </tr>
+      <tr>
+        <td>Details</td>
+        <td><pre>${JSON.stringify(details, undefined, 2)} </pre></td>
+      </tr>
+    </table>
+  </div>`;
 }
 
 app.listen(3000, function() {

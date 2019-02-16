@@ -80,7 +80,9 @@ export default class ConciergeScreen extends React.Component {
   go = async () => {
     this.setState({going: true});
     console.log('going!');
-    console.log(await NewItineraryAPI.getNewItinerary(new Date('3/1/2019'), new Date('3/3/2019'), 'New York'));
+    let response = await NewItineraryAPI.getNewItinerary(new Date('3/1/2019'), new Date('3/3/2019'), 'New York')
+    console.log(response);
+    this.setState({going: false});
   }
 
   render() {

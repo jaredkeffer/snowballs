@@ -39,8 +39,8 @@ async function getNewItinerary(start, end, city) {
   console.log('post response', response);
 }
 
-const NewItineraryAPI = {
+const ItineraryAPI = {
   getNewItinerary
 }
 
-export default NewItineraryAPI;
+export default ItineraryAPI;

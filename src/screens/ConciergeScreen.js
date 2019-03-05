@@ -17,7 +17,8 @@ export default class ConciergeScreen extends React.Component {
   }
 
   static navigationOptions = {
-    title: "Concierge"
+    title: "Concierge",
+    headerBackTitle: 'Cancel',
   };
 
   _onPressItem = (itemId) => {

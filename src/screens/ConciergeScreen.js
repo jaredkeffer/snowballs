@@ -3,7 +3,6 @@ import { SafeAreaView, TouchableOpacity, Platform, ScrollView, StyleSheet, Text,
 
 import ActionButton from 'react-native-action-button';
 import { CarouselWrapper } from '../components/CarouselWrapper';
-// import Icon from 'react-native-vector-icons/Ionicons';
 import ItinerariesList from '../components/ItinerariesList';
 import ItineraryAPI from '../api/itineraries';
 
@@ -26,7 +25,7 @@ export default class ConciergeScreen extends React.Component {
   };
 
   _newItineraryBtnPressed = () => {
-    console.log(this.props.navigation.navigate('NewItinerary'));
+    this.props.navigation.navigate('NewItinerary');
   }
 
   data = [
@@ -53,10 +52,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  actionButtonIcon: {
-    fontSize: 20,
-    height: 22,
-    color: 'white',
   },
 });

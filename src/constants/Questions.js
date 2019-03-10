@@ -1,7 +1,7 @@
 import React from 'react';
 import WhenAndWhere from '../components/WhenAndWhere';
 
-export const steps = () => {
+export const formattedSteps = () => {
   let formattedQuestions = [];
   for (var index = 0; index < Questions.length; index++) {
     let question = Questions[index],
@@ -12,12 +12,23 @@ export const steps = () => {
         trigger = String(index * 2 + 2);
         userTrigger = String(index * 2 + 3);
 
-    if (index === Questions.length -1) {
-      console.log('the end is near');
-      end = true;
+    if (index === Questions.length -1) end = true;
+
+    let formatMessage = (values) => {
+      if (values) {
+        const { previousValue, steps } = values;
+        console.log(steps);
+        return (steps && steps['2'])
+        ? question.question.replace('<city>', steps['2'].message.trim())
+        : question.question
+      }
+      return question.question
     }
 
-    formattedQuestions.push({id, trigger, message: question.question});
+    formattedQuestions.push({
+      id, trigger,
+      message: formatMessage,
+    });
 
     if (!question.open) {
       if (question.options){
@@ -36,11 +47,9 @@ export const steps = () => {
     else {
       if (end) formattedQuestions.push({id: trigger, end, user});
       else {
-        console.log('open question, wait user response', question.question);
         formattedQuestions.push({id: trigger, trigger: userTrigger, user});}
     }
   }
-  // console.log(formattedQuestions);
   return formattedQuestions;
 }
 
@@ -90,11 +99,11 @@ export default Questions = [
     ],
   },
   {
-    question:'Do you already have a specific experience planned for this trip?',
+    question:'Do you already have anything specific planned for this trip?',
     open: true,
   },
   {
-    question:'Is there anything that you cannot miss during this trip?',
+    question:'Is there anything that you cannot miss in <city>? \n(For example: in NYC the Statue of Liberty)',
     open: true,
   },
   {

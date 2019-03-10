@@ -3,7 +3,7 @@ import { Alert, Platform, SafeAreaView, StatusBar, StyleSheet, TextInput, Text, 
 import { Cache } from 'aws-amplify';
 import ChatBot from 'react-native-chatbot';
 import DateRangePicker from '../components/DateRangePicker';
-import { steps } from '../constants/Questions';
+import { formattedSteps } from '../constants/Questions';
 
 import layout from '../constants/Layout';
 
@@ -21,24 +21,34 @@ export default class CreateItineraryScreen extends Component {
     title: "Create Itinerary",
   };
 
+  handleEnd = (result) => {
+    const {renderedSteps, steps, values} = result;
+    // console.log(renderedSteps);
+    // console.log(steps);
+    console.log(values);
+    this.props.navigation.navigate('ReviewItinerary', {steps, values});
+  }
+
   render() {
     const { botName, showChatBot, welcomeMessage } = this.state;
-    let s = steps();
-    console.log(s);
+    let steps = formattedSteps();
 
     return (
       <SafeAreaView style={styles.container}>
         <ChatBot
-          steps={s}
+          steps={steps}
           avatarStyle={{display: 'none'}}
           botDelay={300}
-          userDelay={50}
+          userDelay={20}
           hideUserAvatar={true}
           keyboardVerticalOffset={(Platform.OS === 'ios') ? 62 : 0}
-          userBubbleColor="#363d7f"
+          userBubbleColor="#0099ff"
           userFontColor='#fff'
-          botBubbleColor="#ffeaa0"
+          botBubbleColor="#eee"
           botFontColor='#000'
+          scrollViewProps={{style: {backgroundColor: '#fff', paddingTop: 4,}}}
+          handleEnd={this.handleEnd}
+          submitButtonStyle={{backgroundColor: '#0099ff'}}
         />
       </SafeAreaView>
     );

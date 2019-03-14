@@ -17,7 +17,6 @@ export const formattedSteps = () => {
     let formatMessage = (values) => {
       if (values) {
         const { previousValue, steps } = values;
-        console.log(steps);
         return (steps && steps['2'])
         ? question.question.replace('<city>', steps['2'].message.trim())
         : question.question

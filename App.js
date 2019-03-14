@@ -1,8 +1,12 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Authenticator, SignUp, ConfirmSignUp, Greetings } from 'aws-amplify-react-native';
+import NativeBase from "native-base";
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './src/navigation/AppNavigator';
 import UsersAPI from './src/api/users';
+
+import {SignIn, Loading} from './src/components/Auth/components';
 
 import Amplify, { Cache } from 'aws-amplify';
 import { withAuthenticator } from 'aws-amplify-react-native';
@@ -68,4 +72,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withAuthenticator(App);
+// export default App;
+export default withAuthenticator(App, false, [
+  <SignIn />,
+  <Loading />,
+]);

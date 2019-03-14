@@ -95,7 +95,7 @@ export default class PreferencesScreen extends React.PureComponent {
       });
     }).catch((error) => {
       console.log(preferences);
-      console.log(error);
+      console.error(error);
       alert('There was an error saving your preferences. You can update them anytime in the Settings tab.')
       const {goBack} = this.props.navigation;
       goBack();

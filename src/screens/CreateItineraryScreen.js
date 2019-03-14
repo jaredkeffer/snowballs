@@ -23,9 +23,6 @@ export default class CreateItineraryScreen extends Component {
 
   handleEnd = (result) => {
     const {renderedSteps, steps, values} = result;
-    // console.log(renderedSteps);
-    // console.log(steps);
-    console.log(values);
     this.props.navigation.navigate('ReviewItinerary', {steps, values});
   }
 

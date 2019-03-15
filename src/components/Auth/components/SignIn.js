@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback, Keyboard, Image } from 'react-native';
 import { Auth, I18n, Logger, JS } from 'aws-amplify';
-import AuthPiece from './AuthPiece';
-import { AmplifyButton, FormField, LinkCell, Header } from '../AmplifyUI';
 import { Button, Container, Content, Form, Item, Input, Label, Text, Toast, Root } from 'native-base';
+
+import AuthPiece from './AuthPiece';
+import { LinkCell } from '../AmplifyUI';
 
 const logger = new Logger('SignIn');
 
@@ -13,24 +14,28 @@ export default class SignIn extends AuthPiece {
 
       this._validAuthStates = ['signIn', 'signedOut', 'signedUp'];
       this.state = {
-        username: null,
+        emailOrPhone: null,
         password: null,
-        showToast: false,
       };
 
       this.checkContact = this.checkContact.bind(this);
       this.signIn = this.signIn.bind(this);
+      this.password = {};
+    }
+
+    componentWillReceiveProps({ emailOrPhone, password }) {
+      this.setState({ emailOrPhone, password });
     }
 
     signIn() {
-      const { username, password } = this.state;
+      const { emailOrPhone, password } = this.state;
 
       this.setState({loading: true});
-      logger.debug('Sign In for ' + username);
+      logger.debug('Sign In for ' + emailOrPhone);
 
       Keyboard.dismiss();
 
-      Auth.signIn(username, password).then(user => {
+      Auth.signIn(emailOrPhone, password).then(user => {
         logger.debug(user);
         const requireMFA = user.Session !== null;
         if (user.challengeName === 'SMS_MFA') {
@@ -43,18 +48,21 @@ export default class SignIn extends AuthPiece {
         }
       }).catch(err => {
         this.setState({loading: false});
-        console.log(Toast.toastInstance)
-        Toast.show({
-          text: err.message,
-          buttonText: 'Close',
-          duration: 8000,
-          type: 'danger',
-        });
+        if (err.name === 'UserNotConfirmedException') {
+          this.changeState('confirmSignUp', emailOrPhone);
+        }
+        else {
+          this.error(err);
+        }
       });
     }
 
+    nextInput = () => {
+      this.password._root.focus();
+    }
+
     showComponent(theme) {
-      const { username, password, loading } = this.state;
+      const { emailOrPhone, password, loading } = this.state;
       return (
         <Root>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -71,37 +79,45 @@ export default class SignIn extends AuthPiece {
                 <Content>
                   <Form>
                     <Item floatingLabel last>
-                      <Label>Username</Label>
+                      <Label>Email or Phone Number</Label>
                       <Input
+                        keyboardAppearance="dark"
                         autoCorrect={false}
                         autoCapitalize="none"
-                        onChangeText={text => this.setState({username: text})}
+                        onChangeText={text => this.setState({emailOrPhone: text.toLowerCase()})}
                         required={true}
+                        returnKeyType="next"
+                        onSubmitEditing={this.nextInput}
+                        keyboardType="email-address"
                       />
                     </Item>
-                    <Item floatingLabel last style={{marginBottom: 20}}>
+                    <Item floatingLabel last>
                       <Label>Password</Label>
                       <Input
+                        keyboardAppearance="dark"
                         autoCorrect={false}
                         autoCapitalize="none"
                         onChangeText={text => this.setState({password: text})}
                         required={true}
                         secureTextEntry={true}
+                        returnKeyType="done"
+                        getRef={input => {this.password = input;}}
+                        onSubmitEditing={(!emailOrPhone || !password || loading) ? Keyboard.dismiss : this.signIn}
                       />
                     </Item>
                   </Form>
-                  <View style={{paddingTop:0}}>
+                  <View style={{paddingTop:20}}>
                     <Button block success bordered
                       onPress={this.signIn}
-                      disabled={!username || !password || loading}>
+                      disabled={!emailOrPhone || !password || loading}>
                       <Text>{I18n.get('Sign In').toUpperCase()}</Text>
                     </Button>
                   </View>
                   <View style={theme.sectionFooter}>
-                    <LinkCell theme={theme} onPress={() => this.changeState('forgotPassword')}>
+                    <LinkCell theme={linkCellTheme} onPress={() => this.changeState('forgotPassword')}>
                       {I18n.get('Forgot Password')}
                     </LinkCell>
-                    <LinkCell theme={theme} onPress={() => this.changeState('signUp')}>
+                    <LinkCell theme={linkCellTheme} onPress={() => this.changeState('signUp')}>
                       {I18n.get('Sign Up')}
                     </LinkCell>
                   </View>
@@ -112,4 +128,17 @@ export default class SignIn extends AuthPiece {
         </Root>
       )
     }
+}
+
+let linkCellTheme = {
+  sectionFooterLink: {
+    fontSize: 14,
+    color: '#202020',
+    alignItems: 'baseline',
+    textAlign: 'center'
+  },
+  cell: {
+      flex: 1,
+      width: '50%'
+  },
 }

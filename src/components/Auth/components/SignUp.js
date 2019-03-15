@@ -1,231 +1,197 @@
-/*
- * Copyright 2017-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with
- * the License. A copy of the License is located at
- *
- *     http://aws.amazon.com/apache2.0/
- *
- * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
- * and limitations under the License.
- */
-
 import React from 'react';
-import { View, Text, TextInput, Button, TouchableWithoutFeedback, Keyboard, Picker, ScrollView } from 'react-native';
-import { Auth, I18n, Logger } from 'aws-amplify';
-import { FormField, PhoneField, LinkCell, Header, ErrorRow, AmplifyButton } from '../AmplifyUI';
+import { View, TouchableWithoutFeedback, Keyboard, Image } from 'react-native';
+import { Auth, I18n, JS } from 'aws-amplify';
+import { Button, Container, Content, Form, Item, Input, Label, Text, Toast, Root } from 'native-base';
+import {v4 as uuid4} from 'uuid';
 import AuthPiece from './AuthPiece';
-import defaultSignUpFields from './common/default-sign-in-fields';
+import { LinkCell } from '../AmplifyUI';
 
-const logger = new Logger('SignUp');
+
 export default class SignUp extends AuthPiece {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this._validAuthStates = ['signUp'];
-        this.state = {};
-        this.signUp = this.signUp.bind(this);
-        this.sortFields = this.sortFields.bind(this);
-        this.getDefaultDialCode = this.getDefaultDialCode.bind(this);
-        this.checkCustomSignUpFields = this.checkCustomSignUpFields.bind(this);
-        this.defaultSignUpFields = defaultSignUpFields;
-        this.needPrefix = this.needPrefix.bind(this);
-        this.header = this.props && this.props.signUpConfig && this.props.signUpConfig.header ? this.props.signUpConfig.header : 'Create a new account';
+    this._validAuthStates = ['signUp'];
+
+    this.state = {
+      email: null,
+      confirmEmail: null,
+      password: null,
+      confirmPassword: null,
+      phoneNumber: null,
+    };
+    this.signUp = this.signUp.bind(this);
+  }
+
+  signUpFields = [
+    {name: 'email', required: true, label: 'Email', keyboardType: 'email-address'},
+    {name: 'confirmEmail', required: true, label: 'Confirm Email', keyboardType: 'email-address'},
+    {name: 'password', required: true, label: 'Password', password: true},
+    {name: 'confirmPassword', required: true, label: 'Confirm Password', password: true},
+    {name: 'phoneNumber', required: true, label: 'Phone Number', keyboardType: 'phone-pad'},
+  ];
+
+  inputs = [];
+
+  validateEmail = (email) => {
+    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+
+  isValid() {
+    const invalids = [];
+    this.signUpFields.map(el => {
+      if (el.required && !this.state[el.name]) {
+        el.invalid = true;
+        invalids.push(el.label);
+      } else {
+        el.invalid = false;
+      }
+    });
+
+    let numErrors = 0;
+
+    if (invalids.length === 0) {
+      const { email, confirmEmail, password, confirmPassword, phoneNumber } = this.state;
+
+      if (email !== confirmEmail) {
+        this.error('Emails do not match');
+        numErrors += 1;
+        if (numErrors > 2) return false;
+      }
+
+      if (!this.validateEmail(email)) {
+        this.error('Please enter a valid email');
+        numErrors += 1;
+        if (numErrors > 2) return false;
+      }
+
+      if (password !== confirmPassword) {
+        this.error('Passwords do not match');
+        numErrors += 1;
+        if (numErrors > 2) return false;
+      }
+
+      if (phoneNumber.match(/\d/g).length !== 10){
+        this.error('Please enter a valid Phone Number');
+        numErrors += 1;
+        if (numErrors > 2) return false;
+      }
+
     }
-
-    validate() {
-        const invalids = [];
-        this.signUpFields.map(el => {
-            if (el.required && !this.state[el.key]) {
-                el.invalid = true;
-                invalids.push(el.label);
-            } else {
-                el.invalid = false;
-            }
-        });
-        return invalids;
+    else {
+      this.error(`Please fill out: ${invalids.join(', ')}`);
+      return false;
     }
+    if (numErrors) return false;
+    return true;
+  }
 
-    sortFields() {
+  signUp() {
+    Keyboard.dismiss();
+    this.setState({loading: true});
+    if (!this.isValid()) return;
+    console.log('passed validation');
+    let { email, confirmEmail, password, confirmPassword, phoneNumber, } = this.state;
 
-        if (this.props.signUpConfig && this.props.signUpConfig.hiddenDefaults && this.props.signUpConfig.hiddenDefaults.length > 0) {
-            this.defaultSignUpFields = this.defaultSignUpFields.filter(d => {
-                return !this.props.signUpConfig.hiddenDefaults.includes(d.key);
-            });
-        }
+    let signup_info = {
+      username: email,
+      email, confirmEmail, password, confirmPassword, phoneNumber,
+      attributes: {}
+    };
 
-        if (this.checkCustomSignUpFields()) {
+    Auth.signUp(signup_info).then(data => {
+      this.changeState('confirmSignUp', data.user.email);
+    }).catch(err => {
+      this.error(err)
+      this.setState({loading: false});
+    });
+  }
 
-            if (!this.props.signUpConfig || !this.props.signUpConfig.hideAllDefaults) {
-                // see if fields passed to component should override defaults
-                this.defaultSignUpFields.forEach((f, i) => {
-                    const matchKey = this.signUpFields.findIndex(d => {
-                        return d.key === f.key;
-                    });
-                    if (matchKey === -1) {
-                        this.signUpFields.push(f);
-                    }
-                });
-            }
-
-            /* 
-              sort fields based on following rules:
-              1. Fields with displayOrder are sorted before those without displayOrder
-              2. Fields with conflicting displayOrder are sorted alphabetically by key
-              3. Fields without displayOrder are sorted alphabetically by key
-            */
-            this.signUpFields.sort((a, b) => {
-                if (a.displayOrder && b.displayOrder) {
-                    if (a.displayOrder < b.displayOrder) {
-                        return -1;
-                    } else if (a.displayOrder > b.displayOrder) {
-                        return 1;
-                    } else {
-                        if (a.key < b.key) {
-                            return -1;
-                        } else {
-                            return 1;
-                        }
-                    }
-                } else if (!a.displayOrder && b.displayOrder) {
-                    return 1;
-                } else if (a.displayOrder && !b.displayOrder) {
-                    return -1;
-                } else if (!a.displayOrder && !b.displayOrder) {
-                    if (a.key < b.key) {
-                        return -1;
-                    } else {
-                        return 1;
-                    }
-                }
-            });
-        } else {
-            this.signUpFields = this.defaultSignUpFields;
-        }
+  nextInput = (inputIndex) => {
+    if (inputIndex < this.signUpFields.length) {
+      this.inputs[inputIndex]._root.focus();
+      return
     }
+    Keyboard.dismiss();
+  }
 
-    needPrefix(key) {
-        const field = this.signUpFields.find(e => e.key === key);
-        if (key.indexOf('custom:') !== 0) {
-            return field.custom;
-        } else if (key.indexOf('custom:') === 0 && field.custom === false) {
-            logger.warn('Custom prefix prepended to key but custom field flag is set to false');
-        }
-        return null;
-    }
+  showComponent(theme) {
+    const { email, confirmEmail, password, confirmPassword, phoneNumber, loading } = this.state;
 
-    getDefaultDialCode() {
-        return this.props.signUpConfig && this.props.signUpConfig.defaultCountryCode && countryDialCodes.indexOf(`+${this.props.signUpConfig.defaultCountryCode}`) !== '-1' ? `+${this.props.signUpConfig.defaultCountryCode}` : "+1";
-    }
-
-    checkCustomSignUpFields() {
-        return this.props.signUpConfig && this.props.signUpConfig.signUpFields && this.props.signUpConfig.signUpFields.length > 0;
-    }
-
-    signUp() {
-        const validation = this.validate();
-        if (validation && validation.length > 0) {
-            return this.error(`The following fields need to be filled out: ${validation.join(', ')}`);
-        }
-        if (!Auth || typeof Auth.signUp !== 'function') {
-            throw new Error('No Auth module found, please ensure @aws-amplify/auth is imported');
-        }
-
-        let signup_info = {
-            username: this.state.username,
-            password: this.state.password,
-            attributes: {}
-        };
-
-        const inputKeys = Object.keys(this.state);
-        const inputVals = Object.values(this.state);
-
-        inputKeys.forEach((key, index) => {
-            if (!['username', 'password', 'checkedValue'].includes(key)) {
-                if (key !== 'phone_line_number' && key !== 'dial_code' && key !== 'error') {
-                    const newKey = `${this.needPrefix(key) ? 'custom:' : ''}${key}`;
-                    signup_info.attributes[newKey] = inputVals[index];
-                }
-            }
-        });
-
-        Auth.signUp(signup_info).then(data => {
-            this.changeState('confirmSignUp', data.user.username);
-        }).catch(err => this.error(err));
-    }
-
-    showComponent(theme) {
-        if (this.checkCustomSignUpFields()) {
-            this.signUpFields = this.props.signUpConfig.signUpFields;
-        }
-        this.sortFields();
-        return React.createElement(
-            TouchableWithoutFeedback,
-            { onPress: Keyboard.dismiss, accessible: false },
-            React.createElement(
-                ScrollView,
-                { style: theme.section },
-                React.createElement(
-                    Header,
-                    { theme: theme },
-                    I18n.get(this.header)
-                ),
-                React.createElement(
-                    View,
-                    { style: theme.sectionBody },
-                    this.signUpFields.map(field => {
-                        return field.key !== 'phone_number' ? React.createElement(FormField, {
-                            key: field.key,
-                            theme: theme,
-                            type: field.type,
-                            secureTextEntry: field.type === 'password' ? true : false,
-                            onChangeText: text => {
-                                const stateObj = this.state;
-                                stateObj[field.key] = text;
-                                this.setState(stateObj);
-                            },
-                            label: I18n.get(field.label),
-                            placeholder: I18n.get(field.placeholder),
-                            required: field.required
-                        }) : React.createElement(PhoneField, {
-                            theme: theme,
-                            key: field.key,
-                            onChangeText: text => this.setState({ phone_number: text }),
-                            label: I18n.get(field.label),
-                            placeholder: I18n.get(field.placeholder),
-                            keyboardType: 'phone-pad',
-                            required: field.required
-                        });
-                    }),
-                    React.createElement(AmplifyButton, {
-                        text: I18n.get('Sign Up').toUpperCase(),
-                        theme: theme,
-                        onPress: this.signUp,
-                        disabled: !this.state.username || !this.state.password
-                    })
-                ),
-                React.createElement(
-                    View,
-                    { style: theme.sectionFooter },
-                    React.createElement(
-                        LinkCell,
-                        { theme: theme, onPress: () => this.changeState('confirmSignUp') },
-                        I18n.get('Confirm a Code')
-                    ),
-                    React.createElement(
-                        LinkCell,
-                        { theme: theme, onPress: () => this.changeState('signIn') },
-                        I18n.get('Sign In')
+    return (
+      <Root>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={{flex: 1, width: '100%', paddingHorizontal: 20}}>
+            <View style={{flex:1, flexDirection: 'row',}}>
+              <View style={{flex:1}}>
+                <Image style={{width: 75, height: 75}} source={require('../../../assets/images/icon.png')}/>
+              </View>
+              <View style={{flex:4, justifyContent:'center'}}>
+                <Text style={{textAlign:'center', fontSize: 24}}>Welcome to Odyssey!</Text>
+              </View>
+            </View>
+            <Container style={{flex:8}}>
+              <Content>
+                <Form>
+                  {this.signUpFields.map((field, index) => {
+                    return (
+                      <Item floatingLabel last key={field.name}>
+                        <Label>{field.label}</Label>
+                        <Input
+                          keyboardAppearance="dark"
+                          autoCorrect={false}
+                          autoCapitalize="none"
+                          onChangeText={text => {
+                            if (field.password) this.setState({[field.name]: text})
+                            else this.setState({[field.name]: text.toLowerCase()})
+                          }}
+                          required={true}
+                          secureTextEntry={field.password}
+                          keyboardType={field.keyboardType ? field.keyboardType : 'default'}
+                          returnKeyType={(index + 1 == this.signUpFields.length) ? 'done': 'next'}
+                          blurOnSubmit={false}
+                          getRef={input => {this.inputs[index] = input;}}
+                          onSubmitEditing={() => this.nextInput(index + 1)}
+                        />
+                      </Item>
                     )
-                ),
-                React.createElement(
-                    ErrorRow,
-                    { theme: theme },
-                    this.state.error
-                )
-            )
-        );
-    }
+                  })}
+                </Form>
+                <View style={{paddingTop:10}}>
+                  <Button block success bordered
+                    onPress={this.signUp}
+                    disabled={!email || !confirmEmail || !password || !confirmPassword || !phoneNumber || loading}>
+                    <Text>{I18n.get('Sign Up').toUpperCase()}</Text>
+                  </Button>
+                </View>
+                <View style={theme.sectionFooter}>
+                  <LinkCell theme={linkCellTheme} onPress={() => this.changeState('forgotPassword')}>
+                    {I18n.get('Forgot Password')}
+                  </LinkCell>
+                  <LinkCell theme={linkCellTheme} onPress={() => this.changeState('signIn')}>
+                    {I18n.get('Return to Sign In')}
+                  </LinkCell>
+                </View>
+              </Content>
+            </Container>
+          </View>
+        </TouchableWithoutFeedback>
+      </Root>
+    );
+  }
+}
 
+
+let linkCellTheme = {
+  sectionFooterLink: {
+    fontSize: 14,
+    color: '#202020',
+    alignItems: 'baseline',
+    textAlign: 'center'
+  },
+  cell: {
+      flex: 1,
+      width: '50%'
+  },
 }

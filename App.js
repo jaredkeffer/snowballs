@@ -6,7 +6,7 @@ import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './src/navigation/AppNavigator';
 import UsersAPI from './src/api/users';
 
-import {ConfirmSignUp, Loading, SignIn, SignUp} from './src/components/Auth/components';
+import {ConfirmSignUp, ForgotPassword, Loading, SignIn, SignUp} from './src/components/Auth/components';
 
 import Amplify, { Cache } from 'aws-amplify';
 import { withAuthenticator } from 'aws-amplify-react-native';
@@ -78,5 +78,6 @@ export default withAuthenticator(App, false, [
   <SignIn />,
   <SignUp />,
   <ConfirmSignUp />,
+  <ForgotPassword />,
   <Loading />,
 ]);

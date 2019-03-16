@@ -1,136 +1,200 @@
-/*
- * Copyright 2017-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with
- * the License. A copy of the License is located at
- *
- *     http://aws.amazon.com/apache2.0/
- *
- * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
- * and limitations under the License.
- */
-
 import React from 'react';
-import { View, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, TouchableWithoutFeedback, Keyboard, Image} from 'react-native';
 import { Auth, I18n, Logger } from 'aws-amplify';
-import { FormField, AmplifyButton, LinkCell, Header, ErrorRow } from '../AmplifyUI';
+import { H3, Button, Container, Content, Form, Item, Input, Label, Text, Toast, Root } from 'native-base';
+
 import AuthPiece from './AuthPiece';
+import { LinkCell } from '../AmplifyUI';
 
 const logger = new Logger('ForgotPassword');
 
 export default class ForgotPassword extends AuthPiece {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this._validAuthStates = ['forgotPassword'];
-        this.state = { delivery: null };
+    this._validAuthStates = ['forgotPassword'];
+    this.state = { delivery: null };
 
-        this.send = this.send.bind(this);
-        this.submit = this.submit.bind(this);
+    this.send = this.send.bind(this);
+    this.submit = this.submit.bind(this);
+
+  }
+  componentWillReceiveProps({authData}) {
+    this.setState({ emailOrPhone: authData });
+  }
+
+  send() {
+    const { emailOrPhone } = this.state;
+    if (!emailOrPhone) {
+      this.error('Plesae enter email or phone number');
+      return;
     }
+    Auth.forgotPassword(emailOrPhone)
+      .then(data => {
+        logger.debug(data)
+        this.setState({ delivery: data.CodeDeliveryDetails });
+      })
+      .catch(err => this.error(err));
+  }
 
-    send() {
-        const { username } = this.state;
-        if (!username) {
-            this.error('Username cannot be empty');
-            return;
-        }
-        Auth.forgotPassword(username).then(data => {
-            logger.debug(data);
-            this.setState({ delivery: data.CodeDeliveryDetails });
-        }).catch(err => this.error(err));
-    }
+  verify = () => {
+    const { password, confirmPassword } = this.state;
 
-    submit() {
-        const { username, code, password } = this.state;
-        Auth.forgotPasswordSubmit(username, code, password).then(data => {
-            logger.debug(data);
-            this.changeState('signIn');
-        }).catch(err => this.error(err));
+    if ( password !== confirmPassword ){
+      return false;
     }
+    return true;
+  }
 
-    forgotBody(theme) {
-        return React.createElement(
-            View,
-            { style: theme.sectionBody },
-            React.createElement(FormField, {
-                theme: theme,
-                onChangeText: text => this.setState({ username: text }),
-                label: I18n.get('Username'),
-                placeholder: I18n.get('Enter your username'),
-                required: true
-            }),
-            React.createElement(AmplifyButton, {
-                text: I18n.get('Send').toUpperCase(),
-                theme: theme,
-                onPress: this.send,
-                disabled: !this.state.username
-            })
-        );
+  submit() {
+    const { emailOrPhone, code, password, confirmPassword } = this.state;
+    if (!this.verify()) {
+      this.error('Passwords do not match');
+      return;
     }
+    Auth.forgotPasswordSubmit(emailOrPhone, code, password)
+      .then(data => {
+        logger.debug(data);
+        this.changeState('signIn');
+      })
+      .catch(err => this.error(err));
+  }
 
-    submitBody(theme) {
-        return React.createElement(
-            View,
-            { style: theme.sectionBody },
-            React.createElement(FormField, {
-                theme: theme,
-                onChangeText: text => this.setState({ code: text }),
-                label: I18n.get('Confirmation Code'),
-                placeholder: I18n.get('Enter your confirmation code'),
-                required: true
-            }),
-            React.createElement(FormField, {
-                theme: theme,
-                onChangeText: text => this.setState({ password: text }),
-                label: I18n.get('Password'),
-                placeholder: I18n.get('Enter your new password'),
-                secureTextEntry: true,
-                required: true
-            }),
-            React.createElement(AmplifyButton, {
-                text: I18n.get('Submit'),
-                theme: theme,
-                onPress: this.submit,
-                disabled: !this.state.username
-            })
-        );
-    }
+  forgotBody() {
+    return (
+      <View style={{flex:1}}>
+        <Item floatingLabel last>
+          <Label>Email</Label>
+          <Input
+            keyboardAppearance="dark"
+            autoCorrect={false}
+            autoCapitalize="none"
+            onChangeText={text => this.setState({emailOrPhone: text.toLowerCase()})}
+            required={true}
+            returnKeyType="done"
+            onSubmitEditing={this.send}
+            keyboardType="email-address"
+            value={this.state.emailOrPhone}
+          />
+        </Item>
+        <View style={{paddingTop:20}}>
+          <Button block success bordered
+            onPress={this.send}
+            disabled={!this.state.emailOrPhone}>
+            <Text>{I18n.get('Send').toUpperCase()}</Text>
+          </Button>
+        </View>
+      </View>
+    )
+  }
 
-    showComponent(theme) {
-        return React.createElement(
-            TouchableWithoutFeedback,
-            { onPress: Keyboard.dismiss, accessible: false },
-            React.createElement(
-                View,
-                { style: theme.section },
-                React.createElement(
-                    Header,
-                    { theme: theme },
-                    I18n.get('Forgot Password')
-                ),
-                React.createElement(
-                    View,
-                    { style: theme.sectionBody },
-                    !this.state.delivery && this.forgotBody(theme),
-                    this.state.delivery && this.submitBody(theme)
-                ),
-                React.createElement(
-                    View,
-                    { style: theme.sectionFooter },
-                    React.createElement(
-                        LinkCell,
-                        { theme: theme, onPress: () => this.changeState('signIn') },
-                        I18n.get('Back to Sign In')
-                    )
-                ),
-                React.createElement(
-                    ErrorRow,
-                    { theme: theme },
-                    this.state.error
-                )
-            )
-        );
+  submitBody() {
+    let next = () => {
+      this.password._root.focus();
     }
+    let next2 = () => {
+      this.confirmPassword._root.focus();
+    }
+    return (
+      <View style={{flex:1}}>
+        <H3 style={{color: 'grey'}}>Check your email for a code to help you reset your password</H3>
+        <Item floatingLabel last>
+          <Label>Enter confirmation code</Label>
+          <Input
+            keyboardAppearance="dark"
+            autoCorrect={false}
+            autoCapitalize="none"
+            onChangeText={(text) => this.setState({ code: text })}
+            required={true}
+            returnKeyType="done"
+            keyboardType="number-pad"
+            onSubmitEditing={next}
+          />
+        </Item>
+        <Item floatingLabel last>
+          <Label>Password</Label>
+          <Input
+            keyboardAppearance="dark"
+            autoCorrect={false}
+            autoCapitalize="none"
+            onChangeText={text => this.setState({password: text})}
+            required={true}
+            secureTextEntry={true}
+            returnKeyType="next"
+            getRef={input => {this.password = input;}}
+            onSubmitEditing={next2}
+          />
+        </Item>
+        <Item floatingLabel last>
+          <Label>Confirm Password</Label>
+          <Input
+            keyboardAppearance="dark"
+            autoCorrect={false}
+            autoCapitalize="none"
+            onChangeText={text => this.setState({confirmPassword: text})}
+            required={true}
+            secureTextEntry={true}
+            returnKeyType="done"
+            getRef={input => {this.confirmPassword = input;}}
+            onSubmitEditing={(!this.state.emailOrPhone || !!this.state.password || !this.state.confirmPassword || loading) ? Keyboard.dismiss : this.signIn}
+          />
+        </Item>
+        <View style={{paddingTop:20}}>
+          <Button block success bordered
+            onPress={this.submit}
+            disabled={!this.state.emailOrPhone}>
+            <Text>{I18n.get('Submit').toUpperCase()}</Text>
+          </Button>
+        </View>
+      </View>
+    )
+  }
+
+  showComponent(theme) {
+    const { emailOrPhone, password, loading } = this.state;
+    return (
+      <Root>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={{flex: 1, width: '100%', paddingHorizontal: 20}}>
+            <View style={{flex:1, flexDirection: 'row',}}>
+              <View style={{flex:1}}>
+                <Image style={{width: 75, height: 75}} source={require('../../../assets/images/icon.png')}/>
+              </View>
+              <View style={{flex:4, justifyContent:'center'}}>
+                <Text style={{textAlign:'center', fontSize: 24}}>Forgot Password</Text>
+              </View>
+            </View>
+            <Container style={{flex:8}}>
+              <Content>
+                <Form>
+                  { !this.state.delivery && this.forgotBody() }
+                  { this.state.delivery && this.submitBody() }
+                </Form>
+                <View style={theme.sectionFooter}>
+                  <LinkCell theme={linkCellTheme} onPress={() => this.changeState('signIn')}>
+                    {I18n.get('Back to Sign In')}
+                  </LinkCell>
+                  <LinkCell theme={linkCellTheme} onPress={() => this.changeState('signUp')}>
+                    {I18n.get('Sign Up')}
+                  </LinkCell>
+                </View>
+              </Content>
+            </Container>
+          </View>
+        </TouchableWithoutFeedback>
+      </Root>
+    )
+  }
+}
+let linkCellTheme = {
+  sectionFooterLink: {
+    fontSize: 14,
+    color: '#202020',
+    alignItems: 'baseline',
+    textAlign: 'center'
+  },
+  cell: {
+      flex: 1,
+      width: '50%'
+  },
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback, Keyboard, Image } from 'react-native';
 import { Auth, I18n, Logger, JS } from 'aws-amplify';
-import { Button, Container, Content, Form, Item, Input, Label, Text, Toast, Root } from 'native-base';
+import { H3, Button, Container, Content, Form, Item, Input, Label, Text, Toast, Root } from 'native-base';
 
 import AuthPiece from './AuthPiece';
 import { LinkCell } from '../AmplifyUI';
@@ -79,7 +79,7 @@ export default class SignIn extends AuthPiece {
                 <Content>
                   <Form>
                     <Item floatingLabel last>
-                      <Label>Email or Phone Number</Label>
+                      <Label>Email</Label>
                       <Input
                         keyboardAppearance="dark"
                         autoCorrect={false}
@@ -114,7 +114,7 @@ export default class SignIn extends AuthPiece {
                     </Button>
                   </View>
                   <View style={theme.sectionFooter}>
-                    <LinkCell theme={linkCellTheme} onPress={() => this.changeState('forgotPassword')}>
+                    <LinkCell theme={linkCellTheme} onPress={() => this.changeState('forgotPassword', emailOrPhone)}>
                       {I18n.get('Forgot Password')}
                     </LinkCell>
                     <LinkCell theme={linkCellTheme} onPress={() => this.changeState('signUp')}>

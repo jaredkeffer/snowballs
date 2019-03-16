@@ -52,7 +52,6 @@ export function withAuthenticator(Comp, includeGreetings = false, authenticatorC
                     signUpConfig
                 };
             }
-            // console.log('this.authConfig', this.authConfig);
         }
 
         handleAuthStateChange(state, data) {

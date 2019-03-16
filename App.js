@@ -2,7 +2,7 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import NativeBase from "native-base";
 import { AppLoading, Asset, Font, Icon } from 'expo';
-import AppNavigator from './src/navigation/AppNavigator';
+import AppNavigator, { FirstAppLogin } from './src/navigation/AppNavigator';
 import UsersAPI from './src/api/users';
 
 import {ConfirmSignUp, ForgotPassword, Loading, SignIn, SignUp} from './src/components/Auth/components';
@@ -17,6 +17,20 @@ class App extends React.Component {
   state = {
     isLoadingComplete: false,
   };
+  componentDidMount() {
+    this.firstLogin();
+  }
+
+  async firstLogin() {
+    let userDetails = await UsersAPI.getUserDetails(true);
+    if ( userDetails.length > 0 ){
+      const { preferences } = userDetails[0];
+      if ( preferences ) this.setState({first: false});
+    }
+    else {
+      this.setState({first: true});
+    }
+  }
 
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
@@ -30,9 +44,13 @@ class App extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          {/* {Platform.OS === 'ios' && <StatusBar barStyle="default" />} */}
-          <StatusBar hidden />
-          <AppNavigator screenProps={{...this.props}}/>
+          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+          {this.state.first && (
+            <FirstAppLogin screenProps={{...this.props}}/>
+          )}
+          {!this.state.first && (
+            <AppNavigator screenProps={{...this.props}}/>
+          )}
         </View>
       );
     }
@@ -44,13 +62,13 @@ class App extends React.Component {
       UsersAPI.getUser(),
       // add true to refresh Cache here on app load
       UsersAPI.getUserDetails(),
-      // Asset.loadAsync([
-      //   require('./src/assets/images/robot-dev.png'),
-      // ]),
-      Font.loadAsync({
-        ...Icon.Ionicons.font,
-        'space-mono': require('./src/assets/fonts/SpaceMono-Regular.ttf'),
-      }),
+      Asset.loadAsync([
+        require('./src/assets/images/icon.png'),
+      ]),
+      // Font.loadAsync({
+      //   ...Icon.Ionicons.font,
+      //   'space-mono': require('./src/assets/fonts/SpaceMono-Regular.ttf'),
+      // }),
     ]);
   };
 

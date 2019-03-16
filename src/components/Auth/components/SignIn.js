@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, Keyboard, Image } from 'react-native';
+import { View, TouchableWithoutFeedback, Keyboard, Image, BackgroundImage } from 'react-native';
 import { Auth, I18n, Logger, JS } from 'aws-amplify';
 import { H3, Button, Container, Content, Form, Item, Input, Label, Text, Toast, Root } from 'native-base';
 

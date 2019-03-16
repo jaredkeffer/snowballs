@@ -15,7 +15,8 @@ async function getUser() {
 
   // Call cognito to get user
   let authUser = await Auth.currentAuthenticatedUser().catch((error) => {
-    console.error('Error getting Cognito User', error);
+    console.warn('Error getting Cognito User', error);
+    return;
   });
 
   user = {...authUser.attributes, username:authUser.username};
@@ -34,7 +35,7 @@ async function getUser() {
 async function getUserDetails(refreshCache) {
   let cachedUser;
 
-  if (refreshCache) Cache.removeItem('user');
+  if (refreshCache) await Cache.removeItem('user');
   else cachedUser = await Cache.getItem('user');
 
   if (cachedUser) return cachedUser;
@@ -52,7 +53,8 @@ async function getUserDetails(refreshCache) {
   console.debug('fetching user info from dynamo');
   let response = await API.get(apiName, userPath)
     .catch((error) => {
-      console.error('Error getting Dynamo User', error);
+      console.warn('Error getting Dynamo User', error);
+      return;
     });
 
   // Cache the response

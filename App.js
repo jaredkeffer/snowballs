@@ -1,6 +1,5 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { Authenticator, Greetings } from 'aws-amplify-react-native';
 import NativeBase from "native-base";
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './src/navigation/AppNavigator';

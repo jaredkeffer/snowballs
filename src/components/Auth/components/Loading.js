@@ -1,25 +1,22 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Image, Text } from 'react-native';
 import { I18n } from 'aws-amplify';
 import AuthPiece from './AuthPiece';
 import { Header } from '../AmplifyUI';
 
 export default class Loading extends AuthPiece {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this._validAuthStates = ['loading'];
-    }
+    this._validAuthStates = ['loading'];
+  }
 
-    showComponent(theme) {
-        return React.createElement(
-            View,
-            { style: theme.section },
-            React.createElement(
-                Header,
-                { theme: theme },
-                'Hello world'
-            )
-        );
-    }
+  showComponent(theme) {
+    return (
+      <View style={{flex: 1}}>
+        <Image style={{width: '100%'}} source={require('../../../assets/images/icon.png')}/>
+        <Text>Loading Odyssey...</Text>
+      </View>
+    )
+  }
 }

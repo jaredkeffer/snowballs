@@ -9,7 +9,10 @@ let path = '/users';
 async function getUser() {
 
   let user = await Cache.getItem('authUser');
-  if (user) return user;
+  if (user) {
+    console.debug('cached getUser():', user);
+    return user;
+  }
 
   console.debug('fetching user from Cognito');
 

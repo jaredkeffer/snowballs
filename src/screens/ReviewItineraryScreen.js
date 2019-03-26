@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Alert, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, TextInput, Text, TouchableOpacity, View } from 'react-native';
+import { Button, Container, Content, H1, H2, H3, View, Text } from 'native-base';
+import { Alert, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { I18n } from 'aws-amplify';
 import DateRangePicker from '../components/DateRangePicker';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -20,22 +22,45 @@ export default class CreateItineraryScreen extends Component {
     console.log(e);
     console.log('edit');
   }
+  submit = () => {
+    this.setState({loading: true});
+    const { navigation } = this.props;
+    const { steps } = navigation.state.params;
+    let thankyouObj = {
+      subtitle: 'We’re hard at work building your itinerary. We’ll send you a notification once we’re done.  In the meantime, check out our home screen.',
+      title: 'Itinerary Requested',
+      nextScreen: 'Home',
+    }
+    console.log('submitting new itinerary');
+    navigation.navigate('ThankYou', thankyouObj);
+  }
 
   render() {
     const { steps, values } = this.props.navigation.state.params;
     return (
       <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.container}>
-          <Text style={styles.title}>Summary</Text>
-          {steps.map((step, index) =>
-            (index % 2 == 0)
-            ? <View><View key={'itin'+index} style={{flex:1, flexDirection:'row'}}>
-                <Text style={styles.answer}>{step.message}</Text>
-                <TouchableOpacity onPress={this.edit}><Text style={{color:'#0099ff'}}>Edit</Text></TouchableOpacity>
-                <View style={styles.hrView}/></View>
-              </View>
-            : <Text key={'itin'+index} style={styles.question}>{step.message}</Text>)}
-        </ScrollView>
+        <Container>
+          <View style={{flex:1}}>
+            <View style={{flex:10}}>
+              <Content style={[styles.container]}>
+                <Text style={styles.title}>Itinerary Summary</Text>
+                {steps.map((step, index) =>
+                  (index % 2 == 0)
+                  ? <View key={'itin'+index} style={[styles.hrView, {flex:1, flexDirection:'row'}]}>
+                      <Text style={styles.answer}>{step.message}</Text>
+                      <TouchableOpacity onPress={this.edit}><Text style={{color:'#0099ff'}}>Edit</Text></TouchableOpacity>
+                    </View>
+                  : <Text key={'itin'+index} style={styles.question}>{step.message}</Text>)}
+              </Content>
+            </View>
+            <View style={{flex: 0, padding: 4}}>
+              <Button bordered success block onPress={this.submit}
+                disabled={this.state.loading}>
+                <Text>{I18n.get('Submit Itinerary')}</Text>
+              </Button>
+            </View>
+          </View>
+        </Container>
       </SafeAreaView>
     );
   }

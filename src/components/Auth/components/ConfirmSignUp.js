@@ -75,7 +75,7 @@ export default class ConfirmSignUp extends AuthPiece {
               <Content>
                 <Form>
                   <Item floatingLabel last>
-                    <Label>Email or Phone Number</Label>
+                    <Label>Email</Label>
                     <Input
                       keyboardAppearance="dark"
                       autoCorrect={false}

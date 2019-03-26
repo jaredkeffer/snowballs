@@ -10,8 +10,8 @@ export default class Preference extends React.PureComponent {
   };
 
   render() {
-    const textColor = this.props.selected ? 'white' : 'black';
-    const bgColor = this.props.selected ? 'green' : '#ccc';
+    const textColor = this.props.selected ? 'white' : '#383838';
+    const bgColor = this.props.selected ? '#383838' : '#ddd';
     return (
       <TouchableOpacity onPress={this._onPress}>
         <View style={[styles.preferenceContainer, {backgroundColor:bgColor }]}>
@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 10,
     marginHorizontal: 4,
-    borderColor: '#ccc',
-    borderWidth: 2,
+    borderColor: '#383838',
+    borderWidth: 1,
     borderRadius: 10,
   },
   preferenceText: {

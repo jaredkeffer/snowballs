@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, Keyboard, Image, BackgroundImage } from 'react-native';
+import { ImageBackground, View, TouchableWithoutFeedback, Keyboard, Image, BackgroundImage } from 'react-native';
 import { Auth, I18n, Logger, JS } from 'aws-amplify';
 import { H3, Button, Container, Content, Form, Item, Input, Label, Text, Toast, Root } from 'native-base';
 
@@ -65,6 +65,11 @@ export default class SignIn extends AuthPiece {
       const { emailOrPhone, password, loading } = this.state;
       return (
         <Root>
+          {/* <ImageBackground
+            source={require('../../../assets/images/canal-venice-gondola.jpg')}
+            style={{width: '100%', height: '100%'}}
+            imageStyle={{opacity: 0.35}}
+          > */}
           <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View style={{flex: 1, width: '100%', paddingHorizontal: 20}}>
               <View style={{flex:1, flexDirection: 'row',}}>
@@ -125,6 +130,7 @@ export default class SignIn extends AuthPiece {
               </Container>
             </View>
           </TouchableWithoutFeedback>
+        {/* </ImageBackground> */}
         </Root>
       )
     }

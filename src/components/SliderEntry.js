@@ -36,7 +36,8 @@ export default class SliderEntry extends Component {
       </Text>)
       : false;
 
-    return (<TouchableOpacity activeOpacity={1} style={styles.slideInnerContainer} onPress={() => {
+    return (
+      <TouchableOpacity activeOpacity={1} style={styles.slideInnerContainer} onPress={() => {
         alert(`You've clicked '${title}'`);
       }}>
       <View style={styles.shadow}/>
@@ -50,6 +51,7 @@ export default class SliderEntry extends Component {
           {subtitle}
         </Text>
       </View>
-    </TouchableOpacity>);
+      </TouchableOpacity>
+    );
   }
 }

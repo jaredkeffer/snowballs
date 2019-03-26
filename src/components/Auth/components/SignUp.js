@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback, Keyboard, Image } from 'react-native';
 import { Auth, I18n, JS } from 'aws-amplify';
-import { Button, Container, Content, Form, Item, Input, Label, Text, Toast, Root } from 'native-base';
-import {v4 as uuid4} from 'uuid';
+import { Button, Container, Content, Form, Item, Input, Label, Text, Toast, Root, Spinner } from 'native-base';
 import AuthPiece from './AuthPiece';
 import { LinkCell } from '../AmplifyUI';
 
@@ -24,6 +23,7 @@ export default class SignUp extends AuthPiece {
   }
 
   signUpFields = [
+    {name: 'name', required: true, label: 'Full Name'},
     {name: 'email', required: true, label: 'Email', keyboardType: 'email-address'},
     {name: 'confirmEmail', required: true, label: 'Confirm Email', keyboardType: 'email-address'},
     {name: 'password', required: true, label: 'Password', password: true},
@@ -52,7 +52,13 @@ export default class SignUp extends AuthPiece {
     let numErrors = 0;
 
     if (invalids.length === 0) {
-      const { email, confirmEmail, password, confirmPassword, phoneNumber } = this.state;
+      const { name, email, confirmEmail, password, confirmPassword, phoneNumber } = this.state;
+
+      if (name.length < 3 || !name.includes(' ')){
+        this.error('Please enter your full name');
+        numErrors += 1;
+        if (numErrors > 2) return false;
+      }
 
       if (email !== confirmEmail) {
         this.error('Emails do not match');
@@ -90,17 +96,23 @@ export default class SignUp extends AuthPiece {
   signUp() {
     Keyboard.dismiss();
     this.setState({loading: true});
-    if (!this.isValid()) return;
-    console.log('passed validation');
-    let { email, confirmEmail, password, confirmPassword, phoneNumber, } = this.state;
 
-    let signup_info = {
+    if (!this.isValid()) return;
+    
+    let { name, email, password, phoneNumber, } = this.state;
+
+    let signupInfo = {
       username: email,
-      email, confirmEmail, password, confirmPassword, phoneNumber,
-      attributes: {}
+      password,
+
+      attributes: {
+        given_name: name,
+        email,
+        phone_number: `+1${phoneNumber}`,
+      }
     };
 
-    Auth.signUp(signup_info).then(data => {
+    Auth.signUp(signupInfo).then(data => {
       this.changeState('confirmSignUp', data.user.email);
     }).catch(err => {
       this.error(err)
@@ -117,7 +129,7 @@ export default class SignUp extends AuthPiece {
   }
 
   showComponent(theme) {
-    const { email, confirmEmail, password, confirmPassword, phoneNumber, loading } = this.state;
+    const { name, email, confirmEmail, password, confirmPassword, phoneNumber, loading } = this.state;
 
     return (
       <Root>
@@ -161,7 +173,9 @@ export default class SignUp extends AuthPiece {
                 <View style={{paddingTop:10}}>
                   <Button block success bordered
                     onPress={this.signUp}
-                    disabled={!email || !confirmEmail || !password || !confirmPassword || !phoneNumber || loading}>
+                    disabled={!name || !email || !confirmEmail || !password || !confirmPassword || !phoneNumber || loading}
+                  >
+                    {loading && <Spinner color="white" />}
                     <Text>{I18n.get('Sign Up').toUpperCase()}</Text>
                   </Button>
                 </View>

@@ -17,12 +17,9 @@ class App extends React.Component {
   state = {
     isLoadingComplete: false,
   };
-  componentDidMount() {
-    this.firstLogin();
-  }
 
-  async firstLogin() {
-    let userDetails = await UsersAPI.getUserDetails(true);
+  async firstLogin(refreshCache) {
+    let userDetails = await UsersAPI.getUserDetails(refreshCache);
     if ( userDetails.length > 0 ){
       const { preferences } = userDetails[0];
       if ( preferences ) this.setState({first: false});
@@ -65,6 +62,7 @@ class App extends React.Component {
       Asset.loadAsync([
         require('./src/assets/images/icon.png'),
       ]),
+      this.firstLogin(true),
       // Font.loadAsync({
       //   ...Icon.Ionicons.font,
       //   'space-mono': require('./src/assets/fonts/SpaceMono-Regular.ttf'),

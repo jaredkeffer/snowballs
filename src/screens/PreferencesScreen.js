@@ -1,35 +1,24 @@
 import React from 'react';
-import { Button } from 'react-native-elements';
 import { Cache } from 'aws-amplify';
-import { ActivityIndicator, View, SafeAreaView, ScrollView, StyleSheet, Text, FlatList } from 'react-native';
+import { Button, H1, H2, H3 } from 'native-base';
+import { ActivityIndicator, ImageBackground, View, SafeAreaView, ScrollView, StyleSheet, Text, FlatList } from 'react-native';
 import layout from '../constants/Layout';
 import Preference from '../components/Preference';
+import { PreferenceQuestions } from '../constants/Questions';
 import UsersAPI from '../api/users';
 
 export default class PreferencesScreen extends React.PureComponent {
   constructor(props) {
     super(props)
+    this.bgImage = require('../assets/images/canal-venice-gondola.jpg');
     this.state = {
       selected: (new Map()),
       saved: false,
       saveDisabled: true,
+      pageIndex: 0,
     };
     this._setSelected();
   }
-
-  preferenceWordList = [
-    {id: 'Local', key:'Local'},
-    {id: 'Comedy', key:'Comedy'},
-    {id: 'Nightlife', key:'Nightlife'},
-    {id: 'Dance', key:'Dance'},
-    {id: 'Arts', key:'Arts'},
-    {id: 'Food', key:'Food'},
-    {id: 'Cultural', key:'Cultural'},
-    {id: 'Academic', key:'Academic'},
-    {id: 'Natural', key:'Natural'},
-    {id: 'Culinary', key:'Culinary'},
-    {id: 'Historical', key:'Historical'},
-  ];
 
   _setSelected = async () => {
     let userDetails = await UsersAPI.getUserDetails();
@@ -74,6 +63,31 @@ export default class PreferencesScreen extends React.PureComponent {
     />
   );
 
+  createQuestion = (item) => {
+    return (
+      <View style={[styles.container, {marginBottom:5, paddingHorizontal: 10}]}>
+        <View style={{flex: 1, alignItems: 'center'}}>
+          <H1>{item.question}</H1>
+          {item.subtitle && <Text style={{fontSize: 16, color: '#383838'}}>{item.subtitle}</Text>}
+        </View>
+        <FlatList horizontal={false} numColumns={(item.columns) ? item.columns : 3}
+          data={item.options}
+          contentContainerStyle={{alignItems:'center',}}
+          extraData={this.state}
+          keyExtractor={this._keyExtractor}
+          renderItem={this._renderItem}
+          key={item.question}
+        />
+      </View>
+    );
+  }
+
+  nextOrSave = () => {
+    const { pageIndex } = this.state;
+    if (pageIndex === PreferenceQuestions.length -1) return this.save();
+    else return this.setState({pageIndex: pageIndex + 1});
+  }
+
   async save() {
     // start the spinner in the save btn
     this.setState({saving: true});
@@ -90,8 +104,15 @@ export default class PreferencesScreen extends React.PureComponent {
 
     UsersAPI.putUserDetails(userId.sub, preferences).then((response) => {
       this.setState({saved: true}, () => {
-        const {goBack} = this.props.navigation;
-        setTimeout(() => goBack(), 1300);
+        // const {goBack} = this.props.navigation;
+        // setTimeout(() => goBack(), 1300);
+        const { navigate } = this.props.navigation;
+        let thankyouObj = {
+          subtitle: 'Hey you! Yeah you! You’ve successfully completed your profile.\nWhen you’re ready click next so we can begin to create a personalized itinerary for your next trip.',
+          title: 'Thank You!',
+          nextScreen: 'CreateItinerary',
+        }
+        navigate('ThankYou', thankyouObj);
       });
     }).catch((error) => {
       console.log(preferences);
@@ -103,33 +124,45 @@ export default class PreferencesScreen extends React.PureComponent {
   }
 
   render() {
-    let hidePrefsView = (this.state.saved) ? {'display': 'none'} : {};
-    let showThanks = (this.state.saved) ? {} : {'display': 'none'};
+    const { pageIndex, saveDisabled } = this.state;
+
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={[styles.container, showThanks, styles.thanksContainer]}>
-          <Text style={styles.thanks}>Your preferences have been saved!</Text>
-        </View>
-        <ScrollView style={[styles.container, hidePrefsView]}>
-          <View style={[styles.container, {marginBottom:5}]}>
-            <Text style={styles.title}>
-              Select the types of experiences you enjoy...
-            </Text>
-            <FlatList horizontal={false} numColumns={3}
-              contentContainerStyle={{alignItems:'center',}}
-              data={this.preferenceWordList}
-              extraData={this.state}
-              keyExtractor={this._keyExtractor}
-              renderItem={this._renderItem}
-            />
+      <ImageBackground
+        source={this.bgImage}
+        style={{width: '100%', height: '100%'}}
+        imageStyle={{opacity: 0.35}}
+      >
+        <SafeAreaView style={styles.container}>
+          <ScrollView style={[styles.container, {paddingTop: 30}]}>
+            {this.createQuestion(PreferenceQuestions[pageIndex])}
+          </ScrollView>
+          <View>
+            <View style={[styles.btnContainer]}>
+              {(pageIndex > 0) &&
+                <Button block
+                  onPress={() => this.setState({pageIndex: pageIndex - 1})}
+                  style={[{backgroundColor: '#383838'}, styles.saveBtn]}
+                >
+                  <Text style={{color: 'white', fontSize: 18,}}>Back</Text>
+                </Button>
+              }
+              <Button block
+                onPress={this.nextOrSave}
+                disabled={saveDisabled}
+                style={[(saveDisabled) ? {backgroundColor: '#ccc'} : {backgroundColor: '#383838'}, styles.saveBtn]}
+              >
+                <Text style={[(saveDisabled) ? {} : {color: 'white'}, {fontSize: 18,}]}>{(pageIndex === PreferenceQuestions.length - 1) ? 'Finish' : 'Next'}</Text>
+              </Button>
+            </View>
+            <View style={{flex: 1, flexDirection: 'row', height: 20, marginBottom: 36,}}>
+              {PreferenceQuestions.map((item, index) => {
+                let styleProgressView = (pageIndex >= index) ? styles.progressFull : styles.progressEmpty;
+                return <View key={index} style={styleProgressView}/>;
+              })}
+            </View>
           </View>
-        </ScrollView>
-        <View style={[styles.btnContainer, hidePrefsView]}>
-          <Button onPress={() => this.save()} title="Save Preferences"
-            disabled={this.state.saveDisabled} loading={this.state.saving}
-            buttonStyle={[styles.saveBtn]}/>
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
+      </ImageBackground>
     );
   }
 }
@@ -137,39 +170,27 @@ export default class PreferencesScreen extends React.PureComponent {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
   },
-  thanksContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
+  progressFull: {backgroundColor: 'white', borderRadius: 10, flex: 1,height: 20, margin: 10, marginHorizontal: 20},
+  progressEmpty: {borderColor: 'white', borderRadius: 10, borderWidth: 2, flex: 1,height: 20, margin: 10, marginHorizontal: 20},
   title: {
     fontSize: 32,
     padding: 10,
   },
-  contentContainer: {
+  saveBtn: {
     flex: 1,
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    paddingTop: 10,
+    marginHorizontal: 20,
+    borderColor: '#383838',
+    borderWidth: 1,
+    borderRadius: 10,
   },
   btnContainer: {
-    flexDirection: 'row',
-    marginBottom: 20,
-    justifyContent: 'center'
-  },
-  saveBtn: {
-    paddingVertical: 18,
-    borderRadius: 10,
-    backgroundColor: '#4388d6',
-    width: layout.window.width / 1.5,
+    alignItems: 'center',
+    flexDirection: 'row'
   },
   thanks: {
-    color: 'green',
-    fontSize: 28,
+    color: '#383838',
     padding: 20,
   }
 });

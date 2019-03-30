@@ -28,10 +28,14 @@ export default class CreateItineraryScreen extends Component {
     const { steps } = navigation.state.params;
     let thankyouObj = {
       subtitle: 'We’re hard at work building your itinerary. We’ll send you a notification once we’re done.  In the meantime, check out our home screen.',
-      title: 'Itinerary Requested',
-      nextScreen: 'Home',
+      title: 'Itinerary Processing',
+      nextScreen: 'Concierge',
+      buttonText: 'Back to Itineraries',
+      refreshCache: true,
     }
     console.log('submitting new itinerary');
+    // TODO: add api call here to send email to Dez and create an new itinerary in the db.
+    //       before I get to creating an itinerary in the db I have to rework the security to be iam role-row specific.
     navigation.navigate('ThankYou', thankyouObj);
   }
 

@@ -8,21 +8,13 @@ import UsersAPI from '../api/users';
 
 export default class ThankYouScreen extends React.PureComponent {
 
-  constructor(props) {
-    super(props);
-    // console.log(props.navigation.state.params);
-    let { title, subtitle, nextScreen } = props.navigation.state.params;
-    this.state = {
-      title, subtitle, nextScreen
-    }
-  }
-
   static navigationOptions = {
     title: "Thank You",
   };
 
   render() {
-    let { title, subtitle, nextScreen } = this.state
+    let { title, subtitle, nextScreen, buttonText, refreshCache } = this.props.navigation.state.params;
+
     return (
       <SafeAreaView style={styles.container}>
         <Content style={[styles.container,]} contentContainerStyle={{ justifyContent: 'center', flex: 1 }}>
@@ -33,9 +25,9 @@ export default class ThankYouScreen extends React.PureComponent {
               {subtitle}
             </H3>
             <Button block style={{backgroundColor: '#383838', marginHorizontal: 10}}
-              onPress={() => this.props.navigation.navigate(nextScreen)}
+              onPress={() => this.props.navigation.navigate(nextScreen, {refreshCache})}
             >
-              <Text style={{color: 'white', fontSize: 16}}>Next</Text>
+              <Text style={{color: 'white', fontSize: 16}}>{(buttonText) ? buttonText : 'Next'}</Text>
             </Button>
           </View>
         </Content>

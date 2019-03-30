@@ -45,7 +45,7 @@ export default class CreateItineraryScreen extends Component {
           botFontColor='#000'
           scrollViewProps={{style: {backgroundColor: '#fff', paddingTop: 4,}}}
           handleEnd={this.handleEnd}
-          submitButtonStyle={{backgroundColor: '#0099ff'}}
+          submitButtonColor="#383838"
         />
       </SafeAreaView>
     );

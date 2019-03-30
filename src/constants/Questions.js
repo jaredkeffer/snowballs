@@ -54,11 +54,11 @@ export const formattedSteps = () => {
 
 export default Questions = [
   {
-    question: 'Hi! thanks for using Odyssey! Let\'s get started building your itinerary.\n\nWhat city do you want to travel to?',
+    question: 'Hi! Thanks for using Odyssey! Let\'s get started building your itinerary.\n\nWhat city do you want to travel to?',
     open: true,
   },
   {
-    question: 'Select below when you want to take this trip. When you are finished selecting the dates, press "Done"',
+    question: 'Select below when you want to take this trip. When you are finished selecting the dates, press "Done."',
     component: <WhenAndWhere />
   },
   {
@@ -102,11 +102,11 @@ export default Questions = [
     open: true,
   },
   {
-    question:'Is there anything that you cannot miss in <city>? \n(For example: in NYC the Statue of Liberty)',
+    question:'Is there anything that you cannot miss in <city>? \n(For example: If you were traveling to Paris and you absolutely had to go the Eiffel Tower, you would put Eiffel Tower)',
     open: true,
   },
   {
-    question:'Is there anything else about your travel preferences that you would like us to know?',
+    question:'Is there anything else about your travel preferences that you would like us to know?\n(Feel free to tell us anything and everything!)',
     open: true,
   },
 ];

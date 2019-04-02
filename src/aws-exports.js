@@ -15,10 +15,6 @@ const awsmobile = {
         {
             "tableName": "experiences",
             "region": "us-east-1"
-        },
-        {
-            "tableName": "itineraries",
-            "region": "us-east-1"
         }
     ],
     "aws_cloud_logic_custom": [
@@ -30,11 +26,6 @@ const awsmobile = {
         {
             "name": "experiences",
             "endpoint": "https://6qud7l5rr8.execute-api.us-east-1.amazonaws.com/Prod",
-            "region": "us-east-1"
-        },
-        {
-            "name": "itineraries",
-            "endpoint": "https://4brj7niq38.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
         }
     ]

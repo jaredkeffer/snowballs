@@ -13,7 +13,7 @@ let path = '/itineraries';
   aka Em's Road trip idea
 
 */
-async function getNewItinerary(start, end, city) {
+async function createNewItinerary(start, end, city) {
   let newPath = `${path}/new`;
 
   // get current user token
@@ -40,7 +40,7 @@ async function getNewItinerary(start, end, city) {
 }
 
 const ItineraryAPI = {
-  getNewItinerary
+  createNewItinerary
 }
 
 export default ItineraryAPI;

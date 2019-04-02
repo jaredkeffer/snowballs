@@ -6,6 +6,7 @@ import ActionButton from 'react-native-action-button';
 import { CarouselWrapper } from '../components/CarouselWrapper';
 import ItinerariesList from '../components/ItinerariesList';
 import ItineraryAPI from '../api/itineraries';
+import UsersAPI from '../api/users';
 
 import layout from '../constants/Layout';
 
@@ -36,6 +37,8 @@ export default class ConciergeScreen extends React.Component {
 
   _loadData = () => {
     // TODO: add api call here and then return an object  of the filtered lists
+    // 1. get itineraries by user id
+    // // TODO: update dynamo with GSI for user id (and date? as range key)
     let data = {
       upcoming: this.data,
       recommended: this.data,
@@ -78,24 +81,24 @@ export default class ConciergeScreen extends React.Component {
             day: 0,
             date: '3/4/2019',
             experiences: [
-              {type: {category: 'meal', name:'breakfast'}, expId: 'food-place-id-6'},
-              {type: {category: 'museum',}, expId: 'experienceId-4'},
-              {type: {category: 'meal', name:'lunch'}, expId: 'food-place-id-5'},
-              {type: {category: 'park',}, expId: 'experienceId-5'},
-              {type: {category: 'meal', name:'dinner'}, expId: 'food-place-id-8'},
-              {type: {category: 'adventure',}, expId: 'experienceId-6'},
+              {metadata: {type: 'meal', name:'breakfast'}, expId: 'food-place-id-6'},
+              {metadata: {type: 'museum',}, expId: 'experienceId-4'},
+              {metadata: {type: 'meal', name:'lunch'}, expId: 'food-place-id-5'},
+              {metadata: {type: 'park',}, expId: 'experienceId-5'},
+              {metadata: {type: 'meal', name:'dinner'}, expId: 'food-place-id-8'},
+              {metadata: {type: 'adventure',}, expId: 'experienceId-6'},
             ],
           },
           {
             day: 1,
             date: '3/5/2019',
             experiences: [
-              {type: {category: 'meal', name:'breakfast'}, expId: 'food-place-id-6'},
-              {type: {category: 'museum',}, expId: 'experienceId-4'},
-              {type: {category: 'meal', name:'lunch'}, expId: 'food-place-id-5'},
-              {type: {category: 'park',}, expId: 'experienceId-5'},
-              {type: {category: 'meal', name:'dinner'}, expId: 'food-place-id-8'},
-              {type: {category: 'adventure',}, expId: 'experienceId-6'},
+              {metadata: {type: 'meal', name:'breakfast'}, expId: 'food-place-id-6'},
+              {metadata: {type: 'museum',}, expId: 'experienceId-4'},
+              {metadata: {type: 'meal', name:'lunch'}, expId: 'food-place-id-5'},
+              {metadata: {type: 'park',}, expId: 'experienceId-5'},
+              {metadata: {type: 'meal', name:'dinner'}, expId: 'food-place-id-8'},
+              {metadata: {type: 'adventure',}, expId: 'experienceId-6'},
             ],
           },
         ]

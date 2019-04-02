@@ -28,8 +28,8 @@ let dynamodb = new AWS.DynamoDB();
 let dynamodbClient = new AWS.DynamoDB.DocumentClient();
 let ses = new AWS.SES();
 
-app.post('/itineraries/new', async (req, res) => {
-  let { sub, email, city, activitySlots, start, end} = req.body;
+app.post('/users/itineraries', async (req, res) => {
+  let { sub, email, city, activitySlots, start, end, questions, answers, } = req.body;
   console.log('req.body: ',req.body);
   console.log('email: ',req.body);
   let itinerary = {};

@@ -150,17 +150,6 @@
 				}
 			}
 		},
-		"storageitineraries": {
-			"Type": "AWS::CloudFormation::Stack",
-			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/itineraries-cloudformation-template.json",
-				"Parameters": {
-					"tableName": "itineraries",
-					"partitionKeyName": "itinerary_id",
-					"partitionKeyType": "S"
-				}
-			}
-		},
 		"functionusers": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -208,26 +197,6 @@
 				"Parameters": {}
 			}
 		},
-		"functionitineraries": {
-			"Type": "AWS::CloudFormation::Stack",
-			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/itineraries-cloudformation-template.json",
-				"Parameters": {
-					"storageitinerariesName": {
-						"Fn::GetAtt": [
-							"storageitineraries",
-							"Outputs.Name"
-						]
-					},
-					"storageitinerariesArn": {
-						"Fn::GetAtt": [
-							"storageitineraries",
-							"Outputs.Arn"
-						]
-					}
-				}
-			}
-		},
 		"functionitinerariesNew": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -249,6 +218,18 @@
 					"functionusersArn": {
 						"Fn::GetAtt": [
 							"functionusers",
+							"Outputs.Arn"
+						]
+					},
+					"functionitinerariesNewName": {
+						"Fn::GetAtt": [
+							"functionitinerariesNew",
+							"Outputs.Name"
+						]
+					},
+					"functionitinerariesNewArn": {
+						"Fn::GetAtt": [
+							"functionitinerariesNew",
 							"Outputs.Arn"
 						]
 					}
@@ -281,38 +262,6 @@
 					"functionexperiencesGeoArn": {
 						"Fn::GetAtt": [
 							"functionexperiencesGeo",
-							"Outputs.Arn"
-						]
-					}
-				}
-			}
-		},
-		"apiitineraries": {
-			"Type": "AWS::CloudFormation::Stack",
-			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/itineraries-cloudformation-template.json",
-				"Parameters": {
-					"functionitinerariesName": {
-						"Fn::GetAtt": [
-							"functionitineraries",
-							"Outputs.Name"
-						]
-					},
-					"functionitinerariesArn": {
-						"Fn::GetAtt": [
-							"functionitineraries",
-							"Outputs.Arn"
-						]
-					},
-					"functionitinerariesNewName": {
-						"Fn::GetAtt": [
-							"functionitinerariesNew",
-							"Outputs.Name"
-						]
-					},
-					"functionitinerariesNewArn": {
-						"Fn::GetAtt": [
-							"functionitinerariesNew",
 							"Outputs.Arn"
 						]
 					}

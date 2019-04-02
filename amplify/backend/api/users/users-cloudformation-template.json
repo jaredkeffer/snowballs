@@ -16,20 +16,6 @@
           "functionusersArn": {
             "Type": "String",
             "Default": "functionusersArn"
-          },
-        
-          
-          
-    
-          "functionitinerariesNewName": {
-            "Type": "String",
-            "Default": "functionitinerariesNewName"
-          },
-        
-          
-          "functionitinerariesNewArn": {
-            "Type": "String",
-            "Default": "functionitinerariesNewArn"
           }
         
           
@@ -39,13 +25,13 @@
     "Resources": {
         
         
-        "PolicyAPIGWodysseyf2124d94auth": {
+        "PolicyAPIGWodysseyff5c9784auth": {
             "DependsOn": [
-              "odysseyf2124d94"
+              "odysseyff5c9784"
             ],
             "Type": "AWS::IAM::Policy",
             "Properties": {
-              "PolicyName": "PolicyAPIGWodysseyf2124d94auth",
+              "PolicyName": "PolicyAPIGWodysseyff5c9784auth",
               "Roles": [
                 "dyssey-20190202111147-authRole"
               ],
@@ -75,7 +61,7 @@
                             },
                             ":",
                             {
-                              "Ref": "odysseyf2124d94"
+                              "Ref": "odysseyff5c9784"
                             },
                             "/Prod/*",
                             "/users/*"
@@ -96,62 +82,10 @@
                             },
                             ":",
                             {
-                              "Ref": "odysseyf2124d94"
+                              "Ref": "odysseyff5c9784"
                             },
                             "/Prod/*",
                             "/users"
-                          ]
-                        ]
-                      }
-                    
-                      ,
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:execute-api:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                              "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                              "Ref": "odysseyf2124d94"
-                            },
-                            "/Prod/*",
-                            "/users/itineraries/*"
-                          ]
-                        ]
-                      },
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:execute-api:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                              "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                              "Ref": "odysseyf2124d94"
-                            },
-                            "/Prod/*",
-                            "/users/itineraries"
                           ]
                         ]
                       }
@@ -169,97 +103,16 @@
           },
         
         
-          
-        "PolicyAPIGWodysseyf2124d94unauth": {
-            "DependsOn": [
-              "odysseyf2124d94"
-            ],
-            "Type": "AWS::IAM::Policy",
-            "Properties": {
-              "PolicyName": "PolicyAPIGWodysseyf2124d94unauth",
-              "Roles": [
-                 "dyssey-20190202111147-unauthRole"
-              ],
-              "PolicyDocument": {
-                "Version": "2012-10-17",
-                "Statement": [
-                  {
-                    "Effect": "Allow",
-                    "Action": [
-                      "execute-api:Invoke"
-                    ],
-                    "Resource": [
-                    
-                    
-                    
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:execute-api:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                              "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                              "Ref": "odysseyf2124d94"
-                            },
-                            "/Prod/*",
-                            "/users/*"
-                          ]
-                        ]
-                      },
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:execute-api:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                              "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                              "Ref": "odysseyf2124d94"
-                            },
-                            "/Prod/*",
-                            "/users"
-                          ]
-                        ]
-                      }
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    ]
-                  }
-                ]
-              }
-            }
-          },
-        
-      "odysseyf2124d94": {
+      "odysseyff5c9784": {
         "Type": "AWS::ApiGateway::RestApi",
         "Properties": {
           "Description": "",
-          "Name": "odysseyf2124d94",
+          "Name": "odysseyff5c9784",
           "Body": {
             "swagger": "2.0",
             "info": {
               "version": "2018-05-24T17:52:00Z",
-              "title": "odysseyf2124d94"
+              "title": "odysseyff5c9784"
             },
             "host": {
                 "Fn::Join": [
@@ -488,217 +341,6 @@
                     "type": "aws_proxy"
                   }
                 }
-              },   
-              
-              "/users/itineraries": {
-                "options": {
-                  "consumes": [
-                    "application/json"
-                  ],
-                  "produces": [
-                    "application/json"
-                  ],
-                  "responses": {
-                    "200": {
-                      "description": "200 response",
-                      "headers": {
-                        "Access-Control-Allow-Origin": {
-                          "type": "string"
-                        },
-                        "Access-Control-Allow-Methods": {
-                          "type": "string"
-                        },
-                        "Access-Control-Allow-Headers": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  },
-                  "x-amazon-apigateway-integration": {
-                    "responses": {
-                      "default": {
-                        "statusCode": "200",
-                        "responseParameters": {
-                          "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
-                          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                          "method.response.header.Access-Control-Allow-Origin": "'*'"
-                        }
-                      }
-                    },
-                    "requestTemplates": {
-                      "application/json": "{\"statusCode\": 200}"
-                    },
-                    "passthroughBehavior": "when_no_match",
-                    "type": "mock"
-                  }
-                },
-                "x-amazon-apigateway-any-method": {
-                  "consumes": [
-                    "application/json"
-                  ],
-                  "produces": [
-                    "application/json"
-                  ],
-                  "parameters": [
-                    {
-                      "in": "body",
-                      "name": "RequestSchema",
-                      "required": false,
-                      "schema": {
-                        "$ref": "#/definitions/RequestSchema"
-                      }
-                    }
-                  ],
-                  "responses": {
-                    "200": {
-                      "description": "200 response",
-                      "schema": {
-                        "$ref": "#/definitions/ResponseSchema"
-                      }
-                    }
-                  },
-                          
-                    "security": [
-                        {
-                          "sigv4": []
-                        }
-                      ],
-                  
-                  "x-amazon-apigateway-integration": {
-                    "responses": {
-                      "default": {
-                        "statusCode": "200"
-                      }
-                    },
-                    "uri": {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:apigateway:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":lambda:path/2015-03-31/functions/",
-                            
-                            {
-                                
-                                "Ref": "functionitinerariesNewArn"
-                            },
-                            
-                            "/invocations"
-                          ]
-                        ]
-                      },
-                    "passthroughBehavior": "when_no_match",
-                    "httpMethod": "POST",
-                    "type": "aws_proxy"
-                  }
-                }
-              },
-              "/users/itineraries/{proxy+}": {
-                "options": {
-                  "consumes": [
-                    "application/json"
-                  ],
-                  "produces": [
-                    "application/json"
-                  ],
-                  "responses": {
-                    "200": {
-                      "description": "200 response",
-                      "headers": {
-                        "Access-Control-Allow-Origin": {
-                          "type": "string"
-                        },
-                        "Access-Control-Allow-Methods": {
-                          "type": "string"
-                        },
-                        "Access-Control-Allow-Headers": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  },
-                  "x-amazon-apigateway-integration": {
-                    "responses": {
-                      "default": {
-                        "statusCode": "200",
-                        "responseParameters": {
-                          "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
-                          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                          "method.response.header.Access-Control-Allow-Origin": "'*'"
-                        }
-                      }
-                    },
-                    "requestTemplates": {
-                      "application/json": "{\"statusCode\": 200}"
-                    },
-                    "passthroughBehavior": "when_no_match",
-                    "type": "mock"
-                  }
-                },
-                "x-amazon-apigateway-any-method": {
-                  "consumes": [
-                    "application/json"
-                  ],
-                  "produces": [
-                    "application/json"
-                  ],
-                  "parameters": [
-                    {
-                      "in": "body",
-                      "name": "RequestSchema",
-                      "required": false,
-                      "schema": {
-                        "$ref": "#/definitions/RequestSchema"
-                      }
-                    }
-                  ],
-                  "responses": {
-                    "200": {
-                      "description": "200 response",
-                      "schema": {
-                        "$ref": "#/definitions/ResponseSchema"
-                      }
-                    }
-                  },
-                          
-                    "security": [
-                        {
-                          "sigv4": []
-                        }
-                      ],
-                  
-                  "x-amazon-apigateway-integration": {
-                    "responses": {
-                      "default": {
-                        "statusCode": "200"
-                      }
-                    },
-                    "uri": {
-                      "Fn::Join": [
-                        "",
-                        [
-                          "arn:aws:apigateway:",
-                          {
-                            "Ref": "AWS::Region"
-                          },
-                          ":lambda:path/2015-03-31/functions/",
-                          
-                          {
-                            
-                            "Ref": "functionitinerariesNewArn"
-                          },
-                          
-                          "/invocations"
-                        ]
-                      ]
-                    },
-                    "passthroughBehavior": "when_no_match",
-                    "httpMethod": "POST",
-                    "type": "aws_proxy"
-                  }
-                }
               }   
               
             },
@@ -744,7 +386,7 @@
                   
         
         
-        "functionusersPermissionodysseyf2124d94": {
+        "functionusersPermissionodysseyff5c9784": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
                 "FunctionName": 
@@ -768,41 +410,7 @@
                             },
                             ":",
                             {
-                                "Ref": "odysseyf2124d94"
-                            },
-                            "/*/*/*"
-                        ]
-                    ]
-                }
-            }
-        },
-        
-        
-        "functionitinerariesNewPermissionodysseyf2124d94": {
-            "Type": "AWS::Lambda::Permission",
-            "Properties": {
-                "FunctionName": 
-                    {
-                        "Ref":  "functionitinerariesNewName"
-                    },
-                    
-                    "Action": "lambda:InvokeFunction",
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "arn:aws:execute-api:",
-                            {
-                                "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                                "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                                "Ref": "odysseyf2124d94"
+                                "Ref": "odysseyff5c9784"
                             },
                             "/*/*/*"
                         ]
@@ -815,13 +423,13 @@
         
         
         
-      "DeploymentAPIGWodysseyf2124d945b2e4786": {
+      "DeploymentAPIGWodysseyff5c9784": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",
           "StageName": "Prod",
           "RestApiId": {
-            "Ref": "odysseyf2124d94"
+            "Ref": "odysseyff5c9784"
           }
         }
       }
@@ -829,7 +437,7 @@
     "Outputs": {
         "RootUrl": {
             "Description": "Root URL of the API gateway",
-            "Value": {"Fn::Join": ["", ["https://", {"Ref": "odysseyf2124d94"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/Prod"]]}
+            "Value": {"Fn::Join": ["", ["https://", {"Ref": "odysseyff5c9784"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/Prod"]]}
         },
         "ApiName": {
           "Description": "API Friendly name",

@@ -9,23 +9,23 @@ const awsmobile = {
     "aws_dynamodb_all_tables_region": "us-east-1",
     "aws_dynamodb_table_schemas": [
         {
-            "tableName": "users",
+            "tableName": "experiences",
             "region": "us-east-1"
         },
         {
-            "tableName": "experiences",
+            "tableName": "users",
             "region": "us-east-1"
         }
     ],
     "aws_cloud_logic_custom": [
         {
-            "name": "users",
-            "endpoint": "https://0hkhmt69m7.execute-api.us-east-1.amazonaws.com/Prod",
+            "name": "experiences",
+            "endpoint": "https://6qud7l5rr8.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
         },
         {
-            "name": "experiences",
-            "endpoint": "https://6qud7l5rr8.execute-api.us-east-1.amazonaws.com/Prod",
+            "name": "users",
+            "endpoint": "https://rbf9smf47i.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
         }
     ]

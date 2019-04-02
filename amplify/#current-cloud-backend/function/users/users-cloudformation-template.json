@@ -31,14 +31,14 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "dyssey-20190202111147-deployment",
-					"S3Key": "amplify-builds/users-1549132233-latest-build.zip"
+					"S3Key": "amplify-builds/users-1554171514-latest-build.zip"
 				}
 			}
 		},
 		"LambdaExecutionRole": {
 			"Type": "AWS::IAM::Role",
 			"Properties": {
-				"RoleName": "odysseyLambdaRoleeebf7f8f",
+				"RoleName": "odysseyLambdaRole0ae32f1f",
 				"AssumeRolePolicyDocument": {
 					"Version": "2012-10-17",
 					"Statement": [
@@ -101,11 +101,17 @@
 							"Action": [
 								"dynamodb:GetItem",
 								"dynamodb:Query",
-								"dynamodb:Scan",
 								"dynamodb:PutItem",
 								"dynamodb:UpdateItem",
 								"dynamodb:DeleteItem"
 							],
+							"Condition": {
+								"ForAllValues:StringEquals": {
+									"dynamodb:LeadingKeys": [
+										"${cognito-identity.amazonaws.com:sub}"
+									]
+								}
+							},
 							"Resource": [
 								{
 									"Ref": "storageusersArn"

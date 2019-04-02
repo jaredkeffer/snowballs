@@ -4,33 +4,21 @@
             "name": "/users",
             "lambdaFunction": "users",
             "privacy": {
-                "protected": true,
-                "auth": "rw",
-                "unauth": "rw"
-            }
-        },
-        {
-            "name": "/users/itineraries",
-            "lambdaFunction": "itinerariesNew",
-            "privacy": {
                 "private": true,
                 "auth": "rw"
             }
         }
     ],
     "resourceName": "users",
-    "apiName": "odysseyf2124d94",
+    "apiName": "odysseyff5c9784",
     "functionArns": [
         {
             "lambdaFunction": "users"
-        },
-        {
-            "lambdaFunction": "itinerariesNew"
         }
     ],
     "privacy": {
-        "auth": 2,
-        "unauth": 1,
+        "auth": 1,
+        "unauth": 0,
         "authRoleName": "dyssey-20190202111147-authRole",
         "unAuthRoleName": "dyssey-20190202111147-unauthRole"
     },
@@ -42,15 +30,6 @@
                 "Name",
                 "Arn"
             ]
-        },
-        {
-            "category": "function",
-            "resourceName": "itinerariesNew",
-            "attributes": [
-                "Name",
-                "Arn"
-            ]
         }
-    ],
-    "uuid": "5b2e4786"
+    ]
 }

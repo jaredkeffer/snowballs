@@ -19,8 +19,8 @@ let tableName = "users";
 const userIdPresent = false; // TODO: update in case is required to use that definition
 const partitionKeyName = "user_id";
 const partitionKeyType = "S";
-const sortKeyName = "";
-const sortKeyType = "";
+const sortKeyName = "data_type";
+const sortKeyType = "S";
 const hasSortKey = sortKeyName !== "";
 const path = "/users";
 const UNAUTH = 'UNAUTH';

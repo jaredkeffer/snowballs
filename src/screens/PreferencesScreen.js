@@ -21,7 +21,7 @@ export default class PreferencesScreen extends React.PureComponent {
   }
 
   _setSelected = async () => {
-    let userDetails = await UsersAPI.getUserDetails();
+    let userDetails = await UsersAPI.getUserPreferences();
     let preferences = (userDetails && userDetails[0] && userDetails[0].preferences && userDetails[0].preferences)
       ? userDetails[0].preferences
       : false;
@@ -92,7 +92,7 @@ export default class PreferencesScreen extends React.PureComponent {
     // start the spinner in the save btn
     this.setState({saving: true});
 
-    // get the current user preferences
+    // get the current user
     let userId = await UsersAPI.getUser();
     let preferences = {};
 
@@ -102,7 +102,7 @@ export default class PreferencesScreen extends React.PureComponent {
       // else delete preferences[key];
     });
 
-    UsersAPI.putUserDetails(userId.sub, preferences).then((response) => {
+    UsersAPI.putUserPreferences(userId.identityId, preferences).then((response) => {
       this.setState({saved: true}, () => {
         // const {goBack} = this.props.navigation;
         // setTimeout(() => goBack(), 1300);

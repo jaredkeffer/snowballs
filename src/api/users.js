@@ -1,4 +1,5 @@
 import { API, Analytics, Auth, Cache } from 'aws-amplify';
+import { DATA_TYPE } from '../constants/DataTypes';
 
 let apiName = 'users';
 let path = '/users';
@@ -6,13 +7,13 @@ let path = '/users';
 /*
  * Returns user information from Cognito or Cache
  */
-async function getUser() {
+async function getUser(refreshCache) {
+  let cachedUser;
 
-  let user = await Cache.getItem('authUser');
-  if (user) {
-    console.debug('cached getUser():', user);
-    return user;
-  }
+  if (refreshCache) await Cache.removeItem('user');
+  else cachedUser = await Cache.getItem('authUser');
+
+  if (cachedUser) return cachedUser;
 
   console.debug('fetching user from Cognito');
 
@@ -22,7 +23,17 @@ async function getUser() {
     return;
   });
 
-  user = {...authUser.attributes, username:authUser.username};
+  let credentials = await Auth.currentCredentials().catch((error) => {
+    console.warn('Error getting currentCredentials()');
+    return;
+  })
+
+  user = {...authUser.attributes,
+    username:authUser.username,
+    name: authUser.given_name,
+    email: authUser.email,
+    identityId: credentials.identityId,
+  };
 
   // Cache the relevant user info from cognito
   await Cache.setItem('authUser', user, {priority: 1});
@@ -35,7 +46,7 @@ async function getUser() {
  * @param userId {string}
  * @returns {*} response from Lambda (aka Dynamo)
  */
-async function getUserDetails(refreshCache) {
+async function getUserPreferences(refreshCache) {
   let cachedUser;
 
   if (refreshCache) await Cache.removeItem('user');
@@ -44,13 +55,14 @@ async function getUserDetails(refreshCache) {
   if (cachedUser) return cachedUser;
 
   // Get user_id from Cognito (primary key for dynamo table)
-  console.debug('getUser for getUserDetails()');
+  console.debug('getUser for getUserPreferences()');
   let authUser = await getUser();
-  let sub = authUser.sub;
-  console.debug('user sub: ', authUser.sub);
+  let sub = authUser.identityId;
+  console.debug('user identityId: ', authUser.identityId);
 
   // Create API path to call API GW
-  let userPath = `${path}/${sub}`;
+  // let userPath = `${path}/${sub}`;
+  let userPath = path + ['/object', sub, DATA_TYPE.PREFERENCES].join('/');
 
   // get user from dynamo
   console.debug('fetching user info from dynamo');
@@ -63,7 +75,7 @@ async function getUserDetails(refreshCache) {
   // Cache the response
   let cachingUser = await Cache.setItem('user', response, {priority: 2});
 
-  console.debug(`getUserDetails(${sub}):`, response);
+  console.debug(`getUserPreferences(${sub}):`, response);
   return response;
 }
 
@@ -72,10 +84,11 @@ async function getUserDetails(refreshCache) {
  * @param preferences {Map}
  * @returns {*} response from Lambda (aka Dynamo)
  */
-async function putUserDetails(userId, preferences) {
+async function putUserPreferences(userId, preferences) {
   let myInit = {
     body: {
       user_id: userId,
+      data_type: DATA_TYPE.PREFERENCES,
       preferences: {...preferences},
     },
     headers: {}
@@ -84,13 +97,14 @@ async function putUserDetails(userId, preferences) {
   console.debug('myinit: ', myInit);
 
   let response = await API.put(apiName, path, myInit);
+  console.log(response);
   return Cache.removeItem('user');
 }
 
 const UsersAPI = {
   getUser: getUser,
-  getUserDetails: getUserDetails,
-  putUserDetails: putUserDetails,
+  getUserPreferences: getUserPreferences,
+  putUserPreferences: putUserPreferences,
 }
 
 export default UsersAPI;

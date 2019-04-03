@@ -9,6 +9,9 @@
 		"storageexperiencesArn": {
 			"Type": "String",
 			"Default": "storageexperiencesArn"
+		},
+		"env": {
+			"Type": "String"
 		}
 	},
 	"Resources": {
@@ -20,7 +23,24 @@
 			},
 			"Properties": {
 				"Handler": "index.handler",
-				"FunctionName": "experiences",
+				"FunctionName": {
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						"experiences",
+						{
+							"Fn::Join": [
+								"",
+								[
+									"experiences",
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
+				},
 				"Role": {
 					"Fn::GetAtt": [
 						"LambdaExecutionRole",
@@ -32,13 +52,37 @@
 				"Code": {
 					"S3Bucket": "dyssey-20190202111147-deployment",
 					"S3Key": "amplify-builds/experiences-1549132239-latest-build.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"ENV": {
+							"Ref": "env"
+						}
+					}
 				}
 			}
 		},
 		"LambdaExecutionRole": {
 			"Type": "AWS::IAM::Role",
 			"Properties": {
-				"RoleName": "odysseyLambdaRole7d7cf652",
+				"RoleName": {
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						"odysseyLambdaRole7d7cf652",
+						{
+							"Fn::Join": [
+								"",
+								[
+									"odysseyLambdaRole7d7cf652",
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
+				},
 				"AssumeRolePolicyDocument": {
 					"Version": "2012-10-17",
 					"Statement": [
@@ -135,6 +179,16 @@
 			"Value": {
 				"Ref": "AWS::Region"
 			}
+		}
+	},
+	"Conditions": {
+		"ShouldNotCreateEnvResources": {
+			"Fn::Equals": [
+				{
+					"Ref": "env"
+				},
+				"NONE"
+			]
 		}
 	}
 }

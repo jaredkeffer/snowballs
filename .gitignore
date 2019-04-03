@@ -7,3 +7,7 @@ npm-debug.*
 *.p12
 *.key
 *.mobileprovision
+
+build/
+dist/
+node_modules/

@@ -1,116 +1,133 @@
 {
-    "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "DynamoDB resource stack creation using Amplify CLI",
-    "Parameters": {
-        "partitionKeyName": {
-            "Type": "String"
-        },
-        "partitionKeyType": {
-            "Type": "String"
-        },
-        
-        "tableName": {
-            "Type": "String"
-        }
-    },
-    "Resources": {
-        "DynamoDBTable": {
-            "Type": "AWS::DynamoDB::Table",
-            "Properties": {
-                "AttributeDefinitions": [
-                  
-                  {
-                      "AttributeName": "experience_id",
-                      "AttributeType": "S"
-                  }  , 
-                  
-                  {
-                      "AttributeName": "city",
-                      "AttributeType": "S"
-                  }  , 
-                  
-                  {
-                      "AttributeName": "activity_slot",
-                      "AttributeType": "S"
-                  } 
-                  
-                ],
-                "KeySchema": [
-                  
-                  {
-                    "AttributeName": "experience_id",
-                    "KeyType": "HASH"
-                  } 
-                  
-                ],
-                "ProvisionedThroughput": {
-                    "ReadCapacityUnits": "5",
-                    "WriteCapacityUnits": "5"
-                },
-                "TableName": {
-                   "Ref": "tableName"
-                },
-                
-                "GlobalSecondaryIndexes": [
-                  
-                    {
-                        "IndexName": "city",
-                        "KeySchema": [
-                            
-                            {
-                                "AttributeName": "city",
-                                "KeyType": "HASH"
-                            }  , 
-                            
-                            {
-                                "AttributeName": "activity_slot",
-                                "KeyType": "RANGE"
-                            } 
-                            
-                        ],
-                        "Projection": {
-                            "ProjectionType": "ALL"
-                        },
-                        "ProvisionedThroughput": {
-                            "ReadCapacityUnits": "5",
-                            "WriteCapacityUnits": "5"
-                        }
-                    } 
-                  
-                ]
-                
-            }
-        }
-    },
-    "Outputs": {
-        "Name": {
-            "Value": {
-                "Ref": "DynamoDBTable"
-            }
-        },
-        "Arn": {
-            "Value": {
-                "Fn::GetAtt": [
-                    "DynamoDBTable",
-                    "Arn"
-                ]
-            }
-        },
-        "PartitionKeyName": {
-            "Value": {
-                "Ref": "partitionKeyName"
-            }
-        },
-        "PartitionKeyType": {
-            "Value": {
-                "Ref": "partitionKeyType"
-            }
-        },
-        
-        "Region": {
-            "Value": {
-                "Ref": "AWS::Region"
-            }
-        }
-    }
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "DynamoDB resource stack creation using Amplify CLI",
+	"Parameters": {
+		"partitionKeyName": {
+			"Type": "String"
+		},
+		"partitionKeyType": {
+			"Type": "String"
+		},
+		"tableName": {
+			"Type": "String"
+		},
+		"env": {
+			"Type": "String"
+		}
+	},
+	"Resources": {
+		"DynamoDBTable": {
+			"Type": "AWS::DynamoDB::Table",
+			"Properties": {
+				"AttributeDefinitions": [
+					{
+						"AttributeName": "experience_id",
+						"AttributeType": "S"
+					},
+					{
+						"AttributeName": "city",
+						"AttributeType": "S"
+					},
+					{
+						"AttributeName": "activity_slot",
+						"AttributeType": "S"
+					}
+				],
+				"KeySchema": [
+					{
+						"AttributeName": "experience_id",
+						"KeyType": "HASH"
+					}
+				],
+				"ProvisionedThroughput": {
+					"ReadCapacityUnits": "5",
+					"WriteCapacityUnits": "5"
+				},
+				"TableName": {
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						{
+							"Ref": "tableName"
+						},
+						{
+							"Fn::Join": [
+								"",
+								[
+									{
+										"Ref": "tableName"
+									},
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
+				},
+				"GlobalSecondaryIndexes": [
+					{
+						"IndexName": "city",
+						"KeySchema": [
+							{
+								"AttributeName": "city",
+								"KeyType": "HASH"
+							},
+							{
+								"AttributeName": "activity_slot",
+								"KeyType": "RANGE"
+							}
+						],
+						"Projection": {
+							"ProjectionType": "ALL"
+						},
+						"ProvisionedThroughput": {
+							"ReadCapacityUnits": "5",
+							"WriteCapacityUnits": "5"
+						}
+					}
+				]
+			}
+		}
+	},
+	"Outputs": {
+		"Name": {
+			"Value": {
+				"Ref": "DynamoDBTable"
+			}
+		},
+		"Arn": {
+			"Value": {
+				"Fn::GetAtt": [
+					"DynamoDBTable",
+					"Arn"
+				]
+			}
+		},
+		"PartitionKeyName": {
+			"Value": {
+				"Ref": "partitionKeyName"
+			}
+		},
+		"PartitionKeyType": {
+			"Value": {
+				"Ref": "partitionKeyType"
+			}
+		},
+		"Region": {
+			"Value": {
+				"Ref": "AWS::Region"
+			}
+		}
+	},
+	"Conditions": {
+		"ShouldNotCreateEnvResources": {
+			"Fn::Equals": [
+				{
+					"Ref": "env"
+				},
+				"NONE"
+			]
+		}
+	}
 }

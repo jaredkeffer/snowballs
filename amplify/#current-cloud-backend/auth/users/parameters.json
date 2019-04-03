@@ -1,4 +1,22 @@
 {
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    },
+    "unauthRoleArn": {
+        "Fn::GetAtt": [
+            "UnauthRole",
+            "Arn"
+        ]
+    },
     "identityPoolName": "odysseyIdPool",
     "allowUnauthenticatedIdentities": true,
     "thirdPartyAuth": false,
@@ -51,7 +69,5 @@
     "authSelections": "identityPoolAndUserPool",
     "resourceName": "users",
     "unAuthRoleName": "dyssey-20190202111147-unauthRole",
-    "authRoleName": "dyssey-20190202111147-authRole",
-    "unAuthRoleArn": "arn:aws:iam::846380405817:role/dyssey-20190202111147-unauthRole",
-    "authRoleArn": "arn:aws:iam::846380405817:role/dyssey-20190202111147-authRole"
+    "unAuthRoleArn": "arn:aws:iam::846380405817:role/dyssey-20190202111147-unauthRole"
 }

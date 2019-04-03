@@ -10,7 +10,24 @@
 			},
 			"Properties": {
 				"Handler": "index.handler",
-				"FunctionName": "experiencesGeo",
+				"FunctionName": {
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						"experiencesGeo",
+						{
+							"Fn::Join": [
+								"",
+								[
+									"experiencesGeo",
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
+				},
 				"Role": {
 					"Fn::GetAtt": [
 						"LambdaExecutionRole",
@@ -22,13 +39,37 @@
 				"Code": {
 					"S3Bucket": "dyssey-20190202111147-deployment",
 					"S3Key": "amplify-builds/experiencesGeo-1549132242-latest-build.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"ENV": {
+							"Ref": "env"
+						}
+					}
 				}
 			}
 		},
 		"LambdaExecutionRole": {
 			"Type": "AWS::IAM::Role",
 			"Properties": {
-				"RoleName": "odysseyLambdaRoled111ebf4",
+				"RoleName": {
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						"odysseyLambdaRoled111ebf4",
+						{
+							"Fn::Join": [
+								"",
+								[
+									"odysseyLambdaRoled111ebf4",
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
+				},
 				"AssumeRolePolicyDocument": {
 					"Version": "2012-10-17",
 					"Statement": [
@@ -109,6 +150,21 @@
 			"Value": {
 				"Ref": "AWS::Region"
 			}
+		}
+	},
+	"Parameters": {
+		"env": {
+			"Type": "String"
+		}
+	},
+	"Conditions": {
+		"ShouldNotCreateEnvResources": {
+			"Fn::Equals": [
+				{
+					"Ref": "env"
+				},
+				"NONE"
+			]
 		}
 	}
 }

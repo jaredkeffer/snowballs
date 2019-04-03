@@ -9,6 +9,9 @@
 		"storageusersArn": {
 			"Type": "String",
 			"Default": "storageusersArn"
+		},
+		"env": {
+			"Type": "String"
 		}
 	},
 	"Resources": {
@@ -20,7 +23,24 @@
 			},
 			"Properties": {
 				"Handler": "index.handler",
-				"FunctionName": "users",
+				"FunctionName": {
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						"users",
+						{
+							"Fn::Join": [
+								"",
+								[
+									"users",
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
+				},
 				"Role": {
 					"Fn::GetAtt": [
 						"LambdaExecutionRole",
@@ -32,13 +52,37 @@
 				"Code": {
 					"S3Bucket": "dyssey-20190202111147-deployment",
 					"S3Key": "amplify-builds/users-1554223802-latest-build.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"ENV": {
+							"Ref": "env"
+						}
+					}
 				}
 			}
 		},
 		"LambdaExecutionRole": {
 			"Type": "AWS::IAM::Role",
 			"Properties": {
-				"RoleName": "odysseyLambdaRole0ae32f1f",
+				"RoleName": {
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						"odysseyLambdaRole0ae32f1f",
+						{
+							"Fn::Join": [
+								"",
+								[
+									"odysseyLambdaRole0ae32f1f",
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
+				},
 				"AssumeRolePolicyDocument": {
 					"Version": "2012-10-17",
 					"Statement": [
@@ -141,6 +185,16 @@
 			"Value": {
 				"Ref": "AWS::Region"
 			}
+		}
+	},
+	"Conditions": {
+		"ShouldNotCreateEnvResources": {
+			"Fn::Equals": [
+				{
+					"Ref": "env"
+				},
+				"NONE"
+			]
 		}
 	}
 }

@@ -1,5 +1,5 @@
 {
-    "providers": {
+    "NONE": {
         "awscloudformation": {
             "AuthRoleName": "dyssey-20190202111147-authRole",
             "UnauthRoleArn": "arn:aws:iam::846380405817:role/dyssey-20190202111147-unauthRole",

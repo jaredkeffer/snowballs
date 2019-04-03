@@ -2,9 +2,16 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "API Gateway resource stack creation using Amplify CLI",
     
-    
     "Parameters": {
-        
+        "authRoleName": {
+            "Type":  "String"
+        },
+        "unauthRoleName": {
+            "Type":  "String"
+        },
+        "env": {
+            "Type": "String"
+        },
     
     
           "functionexperiencesName": {
@@ -34,10 +41,19 @@
         
           
           
-        },
     
+    },
+     "Conditions": {
+        "ShouldNotCreateEnvResources": {
+            "Fn::Equals": [
+                {
+                    "Ref": "env"
+                },
+                "NONE"
+            ]
+        }
+    },
     "Resources": {
-        
         
         "PolicyAPIGWodyssey3c83dedfauth": {
             "DependsOn": [
@@ -47,7 +63,7 @@
             "Properties": {
               "PolicyName": "PolicyAPIGWodyssey3c83dedfauth",
               "Roles": [
-                "dyssey-20190202111147-authRole"
+                {"Ref": "authRoleName"}
               ],
               "PolicyDocument": {
                 "Version": "2012-10-17",
@@ -77,12 +93,22 @@
                             {
                               "Ref": "odyssey3c83dedf"
                             },
-                            "/Prod/*",
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                              "r",
                             "/experiences/*"
                           ]
                         ]
                       },
-                      {
+                                            {
                         "Fn::Join": [
                           "",
                           [
@@ -98,7 +124,17 @@
                             {
                               "Ref": "odyssey3c83dedf"
                             },
-                            "/Prod/*",
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                              "r",
                             "/experiences"
                           ]
                         ]
@@ -107,8 +143,72 @@
                       ,
                     
                     
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:aws:execute-api:",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            ":",
+                            {
+                              "Ref": "AWS::AccountId"
+                            },
+                            ":",
+                            {
+                              "Ref": "odyssey3c83dedf"
+                            },
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                              "w",
+                            "/experiences/*"
+                          ]
+                        ]
+                      },
+                                            {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:aws:execute-api:",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            ":",
+                            {
+                              "Ref": "AWS::AccountId"
+                            },
+                            ":",
+                            {
+                              "Ref": "odyssey3c83dedf"
+                            },
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                              "w",
+                            "/experiences"
+                          ]
+                        ]
+                      }
                     
                     
+                    
+                      ,
                     
                     
                     
@@ -130,12 +230,22 @@
                             {
                               "Ref": "odyssey3c83dedf"
                             },
-                            "/Prod/GET",
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                              "r",
                             "/experiences/geo/*"
                           ]
                         ]
                       },
-                      {
+                                            {
                         "Fn::Join": [
                           "",
                           [
@@ -151,49 +261,17 @@
                             {
                               "Ref": "odyssey3c83dedf"
                             },
-                            "/Prod/GET",
-                            "/experiences/geo"
-                          ]
-                        ]
-                      },
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:execute-api:",
+                            "/",
                             {
-                              "Ref": "AWS::Region"
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
                             },
-                            ":",
-                            {
-                              "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                              "Ref": "odyssey3c83dedf"
-                            },
-                            "/Prod/HEAD",
-                            "/experiences/geo/*"
-                          ]
-                        ]
-                      },
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:execute-api:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                              "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                              "Ref": "odyssey3c83dedf"
-                            },
-                            "/Prod/HEAD",
+                              "r",
                             "/experiences/geo"
                           ]
                         ]
@@ -211,7 +289,6 @@
           },
         
         
-          
         "PolicyAPIGWodyssey3c83dedfunauth": {
             "DependsOn": [
               "odyssey3c83dedf"
@@ -220,7 +297,7 @@
             "Properties": {
               "PolicyName": "PolicyAPIGWodyssey3c83dedfunauth",
               "Roles": [
-                 "dyssey-20190202111147-unauthRole"
+                 {"Ref": "unauthRoleName"}
               ],
               "PolicyDocument": {
                 "Version": "2012-10-17",
@@ -230,8 +307,7 @@
                     "Action": [
                       "execute-api:Invoke"
                     ],
-                    "Resource": [
-                    
+                     "Resource": [
                     
                     
                     
@@ -251,74 +327,23 @@
                             {
                               "Ref": "odyssey3c83dedf"
                             },
-                            "/Prod/GET",
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                              "r",
                             "/experiences/*"
-                          ]
-                        ]
-                      },
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:execute-api:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                              "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                              "Ref": "odyssey3c83dedf"
-                            },
-                            "/Prod/GET",
-                            "/experiences"
-                          ]
-                        ]
-                      },
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:execute-api:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                              "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                              "Ref": "odyssey3c83dedf"
-                            },
-                            "/Prod/HEAD",
-                            "/experiences/*"
-                          ]
-                        ]
-                      },
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:execute-api:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                              "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                              "Ref": "odyssey3c83dedf"
-                            },
-                            "/Prod/HEAD",
-                            "/experiences"
                           ]
                         ]
                       }
+                    
+                    
                     
                       ,
                     
@@ -326,8 +351,6 @@
                     
                     
                     
-                    
-                    
                       {
                         "Fn::Join": [
                           "",
@@ -344,74 +367,22 @@
                             {
                               "Ref": "odyssey3c83dedf"
                             },
-                            "/Prod/GET",
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                              "r",
                             "/experiences/geo/*"
-                          ]
-                        ]
-                      },
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:execute-api:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                              "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                              "Ref": "odyssey3c83dedf"
-                            },
-                            "/Prod/GET",
-                            "/experiences/geo"
-                          ]
-                        ]
-                      },
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:execute-api:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                              "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                              "Ref": "odyssey3c83dedf"
-                            },
-                            "/Prod/HEAD",
-                            "/experiences/geo/*"
-                          ]
-                        ]
-                      },
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:execute-api:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                              "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                              "Ref": "odyssey3c83dedf"
-                            },
-                            "/Prod/HEAD",
-                            "/experiences/geo"
                           ]
                         ]
                       }
+                    
                     
                     
                     
@@ -446,7 +417,23 @@
                   ]
                 ]
               },
-            "basePath": "/Prod",
+            "basePath": {
+              "Fn::If": [
+                "ShouldNotCreateEnvResources",
+                "/Prod",
+                {
+                  "Fn::Join": [
+                      "",
+                      [
+                          "/",
+                          {
+                              "Ref": "env"
+                          }
+                      ]
+                  ]
+                } 
+              ]
+            },
             "schemes": [
               "https"
             ],
@@ -986,13 +973,19 @@
         
         
         
-        
-        
       "DeploymentAPIGWodyssey3c83dedf": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",
-          "StageName": "Prod",
+          "StageName": {
+            "Fn::If": [
+              "ShouldNotCreateEnvResources",
+              "Prod", 
+              {
+                "Ref": "env"
+              } 
+            ]
+          },
           "RestApiId": {
             "Ref": "odyssey3c83dedf"
           }
@@ -1002,7 +995,7 @@
     "Outputs": {
         "RootUrl": {
             "Description": "Root URL of the API gateway",
-            "Value": {"Fn::Join": ["", ["https://", {"Ref": "odyssey3c83dedf"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/Prod"]]}
+            "Value": {"Fn::Join": ["", ["https://", {"Ref": "odyssey3c83dedf"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/", {"Fn::If": ["ShouldNotCreateEnvResources","Prod", {"Ref": "env"} ]}]]}
         },
         "ApiName": {
           "Description": "API Friendly name",

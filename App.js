@@ -19,7 +19,7 @@ class App extends React.Component {
   };
 
   async firstLogin(refreshCache) {
-    let userPreferences = await UsersAPI.getUserPreferences();
+    let userPreferences = await UsersAPI.getUserPreferences(refreshCache);
     if (userPreferences && userPreferences.preferences) this.setState({first: false});
     else this.setState({first: true});
   }
@@ -52,12 +52,10 @@ class App extends React.Component {
   _loadResourcesAsync = async () => {
     return Promise.all([
       UsersAPI.getUser(true),
-      // add true to refresh Cache here on app load
-      UsersAPI.getUserPreferences(true),
+      this.firstLogin(true),
       Asset.loadAsync([
         require('./src/assets/images/icon.png'),
       ]),
-      this.firstLogin(true),
       // Font.loadAsync({
       //   ...Icon.Ionicons.font,
       //   'space-mono': require('./src/assets/fonts/SpaceMono-Regular.ttf'),

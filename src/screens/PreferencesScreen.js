@@ -32,6 +32,7 @@ export default class PreferencesScreen extends React.PureComponent {
       }
       let selected = new Map([...preferencesMap, ...this.state.selected]);
       this.setState({selected});
+      this.setState({saveDisabled: false});
     }
   }
 

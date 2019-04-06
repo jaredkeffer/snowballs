@@ -11,7 +11,7 @@ async function getUser(refreshCache) {
   let cachedUser;
 
   if (refreshCache) await Cache.removeItem('user');
-  else cachedUser = await Cache.getItem('authUser');
+  else cachedUser = await Cache.getItem('user');
 
   if (cachedUser) return cachedUser;
 
@@ -29,7 +29,7 @@ async function getUser(refreshCache) {
   console.log(user);
 
   // Cache the relevant user info from cognito
-  await Cache.setItem('authUser', user, {priority: 1});
+  await Cache.setItem('user', user, {priority: 1});
   console.debug('getUser():', user);
 
   return user;
@@ -42,8 +42,8 @@ async function getUser(refreshCache) {
 async function getUserPreferences(refreshCache) {
   let cachedUser;
 
-  if (refreshCache) await Cache.removeItem('user');
-  else cachedUser = await Cache.getItem('user');
+  if (refreshCache) await Cache.removeItem('user.preferences');
+  else cachedUser = await Cache.getItem('user.preferences');
 
   if (cachedUser) return cachedUser;
 
@@ -54,8 +54,8 @@ async function getUserPreferences(refreshCache) {
   console.debug('user sub: ', sub);
 
   // Create API path to call API GW
-  let userPath = `${path}/${sub}`;
-  // let userPath = path + ['/object', sub, DATA_TYPE.PREFERENCES].join('/');
+  // let userPath = `${path}/${sub}`;
+  let userPath = path + ['/object', sub, DATA_TYPE.PREFERENCES].join('/');
 
   // get user from dynamo
   console.debug('fetching user info from dynamo');
@@ -67,7 +67,7 @@ async function getUserPreferences(refreshCache) {
   if (!response) return undefined;
 
   // Cache the response
-  let cachingUser = await Cache.setItem('user', response, {priority: 2});
+  let cachingUser = await Cache.setItem('user.preferences', response, {priority: 2});
 
   console.debug(`getUserPreferences(${sub}):`, response);
   return response;
@@ -84,6 +84,7 @@ async function putUserPreferences(userId, preferences) {
       user_id: userId,
       data_type: DATA_TYPE.PREFERENCES,
       [DATA_TYPE.PREFERENCES]: {...preferences},
+      last_updated: new Date().getTime(),
     },
     headers: {}
   };

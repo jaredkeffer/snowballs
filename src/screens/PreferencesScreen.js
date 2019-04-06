@@ -21,9 +21,9 @@ export default class PreferencesScreen extends React.PureComponent {
   }
 
   _setSelected = async () => {
-    let userDetails = await UsersAPI.getUserPreferences();
-    let preferences = (userDetails && userDetails[0] && userDetails[0].preferences && userDetails[0].preferences)
-      ? userDetails[0].preferences
+    let userPreferences = await UsersAPI.getUserPreferences();
+    let preferences = (userPreferences && Object.keys(userPreferences).length )
+      ? userPreferences.preferences
       : false;
     if (preferences) {
       let preferencesMap = new Map();

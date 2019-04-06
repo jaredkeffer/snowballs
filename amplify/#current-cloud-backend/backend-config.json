@@ -40,6 +40,7 @@
 		"users": {
 			"service": "Lambda",
 			"providerPlugin": "awscloudformation",
+			"build": true,
 			"dependsOn": [
 				{
 					"category": "storage",
@@ -49,8 +50,7 @@
 						"Arn"
 					]
 				}
-			],
-			"build": true
+			]
 		}
 	},
 	"api": {

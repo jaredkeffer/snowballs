@@ -110,6 +110,7 @@ export default class PreferencesScreen extends React.PureComponent {
           subtitle: 'Hey you! Yeah you! You’ve successfully completed your profile.\nWhen you’re ready click next so we can begin to create a personalized itinerary for your next trip.',
           title: 'Thank You!',
           nextScreen: 'CreateItinerary',
+          screenOptions: {allowSkip: true},
         }
         navigate('ThankYou', thankyouObj);
       });

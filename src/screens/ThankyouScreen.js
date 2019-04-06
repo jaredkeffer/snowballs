@@ -13,7 +13,7 @@ export default class ThankYouScreen extends React.PureComponent {
   };
 
   render() {
-    let { title, subtitle, nextScreen, buttonText, refreshCache } = this.props.navigation.state.params;
+    let { title, subtitle, nextScreen, buttonText, refreshCache, screenOptions } = this.props.navigation.state.params;
 
     return (
       <SafeAreaView style={styles.container}>
@@ -25,7 +25,7 @@ export default class ThankYouScreen extends React.PureComponent {
               {subtitle}
             </H3>
             <Button block style={{backgroundColor: '#383838', marginHorizontal: 10}}
-              onPress={() => this.props.navigation.navigate(nextScreen, {refreshCache})}
+              onPress={() => this.props.navigation.navigate(nextScreen, {...screenOptions, refreshCache})}
             >
               <Text style={{color: 'white', fontSize: 16}}>{(buttonText) ? buttonText : 'Next'}</Text>
             </Button>

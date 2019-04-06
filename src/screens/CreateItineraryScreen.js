@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Alert, Platform, SafeAreaView, StatusBar, StyleSheet, TextInput, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, SafeAreaView, StatusBar, StyleSheet, TextInput, TouchableOpacity, } from 'react-native';
+import { Button, Text, View} from 'native-base';
 import { Cache } from 'aws-amplify';
 import ChatBot from 'react-native-chatbot';
 import DateRangePicker from '../components/DateRangePicker';
@@ -26,12 +27,26 @@ export default class CreateItineraryScreen extends Component {
     this.props.navigation.navigate('ReviewItinerary', {steps, values});
   }
 
+  skip = () => {
+    console.log('skipping initial itinerary creation');
+    const { navigation } = this.props;
+    navigation.navigate('Home');
+  }
+
   render() {
     const { botName, showChatBot, welcomeMessage } = this.state;
+    const { navigation } = this.props;
     let steps = formattedSteps();
+
+    let allowSkip = (navigation.state && navigation.state.params) ? navigation.state.params.allowSkip : true;
 
     return (
       <SafeAreaView style={styles.container}>
+        {allowSkip &&
+          <Button transparent info block onPress={this.skip} >
+            <Text>Skip</Text>
+          </Button>
+        }
         <ChatBot
           steps={steps}
           avatarStyle={{display: 'none'}}

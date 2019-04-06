@@ -102,7 +102,7 @@ export default class PreferencesScreen extends React.PureComponent {
       // else delete preferences[key];
     });
 
-    UsersAPI.putUserPreferences(userId.identityId, preferences).then((response) => {
+    UsersAPI.putUserPreferences(userId.sub, preferences).then((response) => {
       this.setState({saved: true}, () => {
         // const {goBack} = this.props.navigation;
         // setTimeout(() => goBack(), 1300);

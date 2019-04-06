@@ -51,7 +51,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "dyssey-20190202111147-deployment",
-					"S3Key": "amplify-builds/users-1554223802-latest-build.zip"
+					"S3Key": "amplify-builds/users-1554521391-latest-build.zip"
 				},
 				"Environment": {
 					"Variables": {
@@ -139,28 +139,6 @@
 									}
 								]
 							}
-						},
-						{
-							"Effect": "Allow",
-							"Action": [
-								"dynamodb:GetItem",
-								"dynamodb:Query",
-								"dynamodb:PutItem",
-								"dynamodb:UpdateItem",
-								"dynamodb:DeleteItem"
-							],
-							"Condition": {
-								"ForAllValues:StringEquals": {
-									"dynamodb:LeadingKeys": [
-										"${cognito-identity.amazonaws.com:sub}"
-									]
-								}
-							},
-							"Resource": [
-								{
-									"Ref": "storageusersArn"
-								}
-							]
 						}
 					]
 				}

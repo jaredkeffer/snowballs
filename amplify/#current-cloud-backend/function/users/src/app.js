@@ -16,11 +16,11 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 let tableName = "users";
 
-const userIdPresent = true; // TODO: update in case is required to use that definition
+const userIdPresent = false; // TODO: update in case is required to use that definition
 const partitionKeyName = "user_id";
 const partitionKeyType = "S";
-const sortKeyName = "data_type";
-const sortKeyType = "S";
+const sortKeyName = "";
+const sortKeyType = "";
 const hasSortKey = sortKeyName !== "";
 const path = "/users";
 const UNAUTH = 'UNAUTH';

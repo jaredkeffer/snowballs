@@ -19,10 +19,10 @@ class App extends React.Component {
   };
 
   async firstLogin(refreshCache) {
-    let userDetails = await UsersAPI.getUserDetails(refreshCache);
-    if ( userDetails.length > 0 ){
+    let userDetails = await UsersAPI.getUserPreferences();
+    if ( userDetails && userDetails.length > 0 ){
       const { preferences } = userDetails[0];
-      if ( preferences ) this.setState({first: false});
+      if (preferences) this.setState({first: false});
     }
     else {
       this.setState({first: true});
@@ -56,9 +56,9 @@ class App extends React.Component {
   // TODO: look into preloading images/user/dynamo items before page load.
   _loadResourcesAsync = async () => {
     return Promise.all([
-      UsersAPI.getUser(),
+      // UsersAPI.getUser(true),
       // add true to refresh Cache here on app load
-      UsersAPI.getUserDetails(),
+      // UsersAPI.getUserPreferences(true),
       Asset.loadAsync([
         require('./src/assets/images/icon.png'),
       ]),

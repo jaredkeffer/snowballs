@@ -23,17 +23,10 @@ async function getUser(refreshCache) {
     return;
   });
 
-  let credentials = await Auth.currentCredentials().catch((error) => {
-    console.warn('Error getting currentCredentials()');
-    return;
-  })
+  let { given_name, email, sub, phone_number } = authUser.attributes;
+  let user = { given_name, email, sub, phone_number };
 
-  user = {...authUser.attributes,
-    username:authUser.username,
-    name: authUser.given_name,
-    email: authUser.email,
-    identityId: credentials.identityId,
-  };
+  console.log(user);
 
   // Cache the relevant user info from cognito
   await Cache.setItem('authUser', user, {priority: 1});
@@ -57,20 +50,21 @@ async function getUserPreferences(refreshCache) {
   // Get user_id from Cognito (primary key for dynamo table)
   console.debug('getUser for getUserPreferences()');
   let authUser = await getUser();
-  let sub = authUser.identityId;
-  console.debug('user identityId: ', authUser.identityId);
+  let sub = authUser.sub;
+  console.debug('user sub: ', sub);
 
   // Create API path to call API GW
-  // let userPath = `${path}/${sub}`;
-  let userPath = path + ['/object', sub, DATA_TYPE.PREFERENCES].join('/');
+  let userPath = `${path}/${sub}`;
+  // let userPath = path + ['/object', sub, DATA_TYPE.PREFERENCES].join('/');
 
   // get user from dynamo
   console.debug('fetching user info from dynamo');
   let response = await API.get(apiName, userPath)
     .catch((error) => {
       console.warn('Error getting Dynamo User', error);
-      return;
     });
+
+  if (!response) return undefined;
 
   // Cache the response
   let cachingUser = await Cache.setItem('user', response, {priority: 2});
@@ -89,7 +83,7 @@ async function putUserPreferences(userId, preferences) {
     body: {
       user_id: userId,
       data_type: DATA_TYPE.PREFERENCES,
-      preferences: {...preferences},
+      [DATA_TYPE.PREFERENCES]: {...preferences},
     },
     headers: {}
   };

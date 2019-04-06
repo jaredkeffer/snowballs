@@ -87,11 +87,11 @@ async function getUserItineraries(refreshCache) {
   else cachedItineraries = await Cache.getItem('user.itineraries');
 
   if (cachedItineraries) {
-    console.log('itineraries returned from cache');
+    console.log('return itineraries from cache');
     return cachedItineraries
   }
 
-  console.debug('getting user itineraries');
+  console.debug('getting user itineraries from dynamo');
 
   let user = await getUser();
   let userPath = buildPath(user.sub, DATA_TYPE.ITINERARIES);

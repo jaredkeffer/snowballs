@@ -38,10 +38,10 @@ export default class ConciergeScreen extends React.Component {
     this.props.navigation.navigate('NewItinerary');
   }
 
-  _loadData = async (setState) => {
+  _loadData = async (setState, refreshCache) => {
     console.log('loading data');
 
-    let rawData = await api.getUserItineraries(true);
+    let rawData = await api.getUserItineraries(refreshCache);
     rawData.itineraries.sort((a, b) => a.dates.start > b.dates.start);
 
     let now = new Date();

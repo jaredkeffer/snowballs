@@ -3,7 +3,6 @@ import { Button, Container, Content, H1, H2, H3, View, Text } from 'native-base'
 import { Alert, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { I18n } from 'aws-amplify';
 import DateRangePicker from '../components/DateRangePicker';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import layout from '../constants/Layout';
 

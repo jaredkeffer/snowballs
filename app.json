@@ -11,7 +11,7 @@
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "splash": {
-      "image": "./src/assets/images/grey-ship.png",
+      "image": "./src/assets/images/black-logo-no-bg.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

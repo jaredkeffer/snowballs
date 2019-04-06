@@ -163,6 +163,6 @@ export const PreferenceQuestions = [
       {id: 'Basic AF', key:'Basic AF'},
       {id: 'A Creative', key:'A Creative'},
     ],
-    columns: 1,
+    columns: 2,
   }
 ];

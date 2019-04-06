@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import Colors from '../constants/Colors';
+import layout from '../constants/Layout';
 
 export default class Preference extends React.PureComponent {
 
@@ -31,8 +32,10 @@ const styles = StyleSheet.create({
     borderColor: '#383838',
     borderWidth: 1,
     borderRadius: 10,
+    width: layout.window.width / 2 - 30,
   },
   preferenceText: {
     fontSize: 18,
+    textAlign: 'center',
   }
 });

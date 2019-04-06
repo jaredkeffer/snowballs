@@ -4,7 +4,7 @@ import { Content, Button, H1, H2, H3 } from 'native-base';
 import {ImageBackground, Image, View, SafeAreaView, StyleSheet, Text } from 'react-native';
 import layout from '../constants/Layout';
 import Preference from '../components/Preference';
-import UsersAPI from '../api/users';
+import api from '../api';
 
 export default class ThankYouScreen extends React.PureComponent {
 

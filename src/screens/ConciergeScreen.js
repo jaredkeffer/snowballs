@@ -6,7 +6,7 @@ import ActionButton from 'react-native-action-button';
 import { CarouselWrapper } from '../components/CarouselWrapper';
 import ItinerariesList from '../components/ItinerariesList';
 import ItineraryAPI from '../api/itineraries';
-import UsersAPI from '../api/users';
+import api from '../api';
 
 import layout from '../constants/Layout';
 
@@ -36,9 +36,10 @@ export default class ConciergeScreen extends React.Component {
   }
 
   _loadData = () => {
-    // TODO: add api call here and then return an object  of the filtered lists
     // 1. get itineraries by user id
-    // // TODO: update dynamo with GSI for user id (and date? as range key)
+
+
+    // LOOK INTO: update dynamo with GSI for user id (and date? as range key)
     let data = {
       upcoming: this.data,
       recommended: this.data,

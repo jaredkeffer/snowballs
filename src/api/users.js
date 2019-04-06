@@ -96,10 +96,10 @@ async function putUserPreferences(userId, preferences) {
   return Cache.removeItem('user');
 }
 
-const UsersAPI = {
-  getUser: getUser,
-  getUserPreferences: getUserPreferences,
-  putUserPreferences: putUserPreferences,
+const users = {
+  getUser,
+  getUserPreferences,
+  putUserPreferences,
 }
 
-export default UsersAPI;
+export default users;

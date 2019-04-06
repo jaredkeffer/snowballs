@@ -3,7 +3,7 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import NativeBase from "native-base";
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator, { FirstAppLogin } from './src/navigation/AppNavigator';
-import UsersAPI from './src/api/users';
+import api from './src/api';
 
 import {ConfirmSignUp, ForgotPassword, Loading, SignIn, SignUp} from './src/components/Auth/components';
 
@@ -19,7 +19,7 @@ class App extends React.Component {
   };
 
   async firstLogin(refreshCache) {
-    let userPreferences = await UsersAPI.getUserPreferences(refreshCache);
+    let userPreferences = await api.getUserPreferences(refreshCache);
     if (userPreferences && userPreferences.preferences) this.setState({first: false});
     else this.setState({first: true});
   }
@@ -51,7 +51,7 @@ class App extends React.Component {
   // TODO: look into preloading images/user/dynamo items before page load.
   _loadResourcesAsync = async () => {
     return Promise.all([
-      UsersAPI.getUser(true),
+      api.getUser(true),
       this.firstLogin(true),
       Asset.loadAsync([
         require('./src/assets/images/icon.png'),

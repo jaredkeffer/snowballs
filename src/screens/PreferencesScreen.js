@@ -5,7 +5,7 @@ import { ActivityIndicator, ImageBackground, View, SafeAreaView, ScrollView, Sty
 import layout from '../constants/Layout';
 import Preference from '../components/Preference';
 import { PreferenceQuestions } from '../constants/Questions';
-import UsersAPI from '../api/users';
+import api from '../api';
 
 export default class PreferencesScreen extends React.PureComponent {
   constructor(props) {
@@ -21,7 +21,7 @@ export default class PreferencesScreen extends React.PureComponent {
   }
 
   _setSelected = async () => {
-    let userPreferences = await UsersAPI.getUserPreferences();
+    let userPreferences = await api.getUserPreferences();
     let preferences = (userPreferences && Object.keys(userPreferences).length )
       ? userPreferences.preferences
       : false;
@@ -94,7 +94,7 @@ export default class PreferencesScreen extends React.PureComponent {
     this.setState({saving: true});
 
     // get the current user
-    let userId = await UsersAPI.getUser();
+    let userId = await api.getUser();
     let preferences = {};
 
     // add the state preferences if changed
@@ -103,7 +103,7 @@ export default class PreferencesScreen extends React.PureComponent {
       // else delete preferences[key];
     });
 
-    UsersAPI.putUserPreferences(userId.sub, preferences).then((response) => {
+    api.putUserPreferences(userId.sub, preferences).then((response) => {
       this.setState({saved: true}, () => {
         // const {goBack} = this.props.navigation;
         // setTimeout(() => goBack(), 1300);

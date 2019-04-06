@@ -39,8 +39,8 @@ async function createNewItinerary(start, end, city) {
   console.log('post response', response);
 }
 
-const ItineraryAPI = {
+const ItinerariesAPI = {
   createNewItinerary
 }
 
-export default ItineraryAPI;
+export default ItinerariesAPI;

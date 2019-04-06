@@ -93,8 +93,6 @@ export default class PreferencesScreen extends React.PureComponent {
     // start the spinner in the save btn
     this.setState({saving: true});
 
-    // get the current user
-    let userId = await api.getUser();
     let preferences = {};
 
     // add the state preferences if changed
@@ -103,7 +101,7 @@ export default class PreferencesScreen extends React.PureComponent {
       // else delete preferences[key];
     });
 
-    api.putUserPreferences(userId.sub, preferences).then((response) => {
+    api.putUserPreferences(preferences).then((response) => {
       this.setState({saved: true}, () => {
         // const {goBack} = this.props.navigation;
         // setTimeout(() => goBack(), 1300);

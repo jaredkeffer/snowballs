@@ -6,17 +6,12 @@ import { TouchableOpacity, Container, Content, List, ListItem, Thumbnail, Text, 
 export default class ItinerariesList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      refreshing: false,
-    };
+
   }
 
   _refresh = () => {
-    console.log('refreshing');
-    this.setState({refreshing:true});
-    setTimeout( () => {
-      this.setState({refreshing:false});
-    },1500);
+    console.log('_refreshing from itin list component');
+    this.props.onRefresh(true);
   }
 
   renderItem = (item) => {
@@ -38,18 +33,16 @@ export default class ItinerariesList extends Component {
       </ListItem>
     )
   }
-// TODO: add this pull to refresh thing somehow
-// onRefresh={this._refresh} refreshing={this.state.refreshing}
+
   render() {
     return (
-        <Content >
-            <FlatList
-              data={ this.props.data }
-              onRefresh={this._refresh}
-              refreshing={this.state.refreshing}
-              renderItem={this.renderItem}
-            />
-        </Content>
+      <FlatList
+        onRefresh={this._refresh}
+        data={ this.props.data }
+        onRefresh={this._refresh}
+        refreshing={this.props.refreshing}
+        renderItem={this.renderItem}
+      />
     );
   }
 }

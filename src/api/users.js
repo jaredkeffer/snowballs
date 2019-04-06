@@ -4,6 +4,10 @@ import { DATA_TYPE } from '../constants/DataTypes';
 let apiName = 'users';
 let path = '/users';
 
+let buildPath = (sub, dataType) => {
+  return path + ['/object', sub, dataType].join('/');
+}
+
 /*
  * Returns user information from Cognito or Cache
  */
@@ -54,14 +58,13 @@ async function getUserPreferences(refreshCache) {
   console.debug('user sub: ', sub);
 
   // Create API path to call API GW
-  // let userPath = `${path}/${sub}`;
-  let userPath = path + ['/object', sub, DATA_TYPE.PREFERENCES].join('/');
+  let userPath = buildPath(authUser.sub, DATA_TYPE.PREFERENCES);
 
   // get user from dynamo
   console.debug('fetching user info from dynamo');
   let response = await API.get(apiName, userPath)
     .catch((error) => {
-      console.warn('Error getting Dynamo User', error);
+      console.warn('Error getting user preferences from dynamo', error);
     });
 
   if (!response) return undefined;
@@ -74,14 +77,51 @@ async function getUserPreferences(refreshCache) {
 }
 
 /*
+ * @param refreshCache {boolean}
+ * @returns {*} itineraries response from Lambda (aka Dynamo)
+ */
+async function getUserItineraries(refreshCache) {
+  let cachedItineraries;
+
+  if (refreshCache) await Cache.removeItem('user.itineraries');
+  else cachedItineraries = await Cache.getItem('user.itineraries');
+
+  if (cachedItineraries) {
+    console.log('itineraries returned from cache');
+    return cachedItineraries
+  }
+
+  console.debug('getting user itineraries');
+
+  let user = await getUser();
+  let userPath = buildPath(user.sub, DATA_TYPE.ITINERARIES);
+
+  let response = await API.get(apiName, userPath)
+    .catch((error) => {
+      console.warn('Error getting itineraries from dynamo', error);
+    });
+
+  if (!response) return undefined;
+
+  // Cache the response
+  let cachingItineraries = await Cache.setItem('user.itineraries', response, {priority: 2});
+
+  console.debug(`getUserItineraries():`, Object.keys(response));
+  return response;
+}
+
+/*
  * @param userId {string}
  * @param preferences {Map}
  * @returns {*} response from Lambda (aka Dynamo)
  */
-async function putUserPreferences(userId, preferences) {
+async function putUserPreferences(preferences) {
+
+  let user = await getUser();
+
   let myInit = {
     body: {
-      user_id: userId,
+      user_id: user.sub,
       data_type: DATA_TYPE.PREFERENCES,
       [DATA_TYPE.PREFERENCES]: {...preferences},
       last_updated: new Date().getTime(),
@@ -100,6 +140,9 @@ const users = {
   getUser,
   getUserPreferences,
   putUserPreferences,
+
+  getUserItineraries,
+
 }
 
 export default users;

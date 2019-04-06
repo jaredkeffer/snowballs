@@ -1,212 +1,140 @@
 {
-	"providers": {
-		"awscloudformation": {
-			"AuthRoleName": "dyssey-20190202111147-authRole",
-			"UnauthRoleArn": "arn:aws:iam::846380405817:role/dyssey-20190202111147-unauthRole",
-			"AuthRoleArn": "arn:aws:iam::846380405817:role/dyssey-20190202111147-authRole",
-			"Region": "us-east-1",
-			"DeploymentBucketName": "dyssey-20190202111147-deployment",
-			"UnauthRoleName": "dyssey-20190202111147-unauthRole",
-			"StackName": "dyssey-20190202111147",
-			"StackId": "arn:aws:cloudformation:us-east-1:846380405817:stack/dyssey-20190202111147/01829690-2716-11e9-ac7b-12557b211f7c"
-		}
-	},
-	"auth": {
-		"users": {
-			"service": "Cognito",
-			"providerPlugin": "awscloudformation",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/auth/users-cloudformation-template.yml",
-				"logicalId": "authusers"
-			},
-			"lastPushTimeStamp": "2019-04-06T03:31:15.540Z",
-			"output": {
-				"AppClientSecret": "1epman2qitpimfm45kjhme3oboou6tolsg42ssd6khg2b5lnjr58",
-				"UserPoolId": "us-east-1_QcNFpa6Z2",
-				"AppClientIDWeb": "6ccfqjut05h05rmilpvvopt6im",
-				"AppClientID": "4h9dr5d7jir7g1mjmiqifn8pq8",
-				"IdentityPoolId": "us-east-1:47ba4dc5-1765-4af3-9591-67eb232f77c8",
-				"IdentityPoolName": "odysseyIdPool",
-				"UserPoolName": "odysseyUserPool"
-			},
-			"lastPushDirHash": "Mn3pIHF+ilKSzDIIgvUAZ6dMCTY="
-		}
-	},
-	"storage": {
-		"experiences": {
-			"service": "DynamoDB",
-			"providerPlugin": "awscloudformation",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/experiences-cloudformation-template.json",
-				"logicalId": "storageexperiences"
-			},
-			"lastPushTimeStamp": "2019-04-06T03:31:15.541Z",
-			"output": {
-				"PartitionKeyName": "experience_id",
-				"Region": "us-east-1",
-				"Arn": "arn:aws:dynamodb:us-east-1:846380405817:table/experiences",
-				"PartitionKeyType": "S",
-				"Name": "experiences"
-			},
-			"lastPushDirHash": "rfplMBx5GgBL1Kl3E5n/XQ7A0GM="
-		},
-		"users": {
-			"service": "DynamoDB",
-			"providerPlugin": "awscloudformation",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/users-cloudformation-template.json",
-				"logicalId": "storageusers"
-			},
-			"lastPushTimeStamp": "2019-04-06T03:31:15.543Z",
-			"output": {
-				"PartitionKeyName": "user_id",
-				"SortKeyName": "data_type",
-				"SortKeyType": "S",
-				"Region": "us-east-1",
-				"Arn": "arn:aws:dynamodb:us-east-1:846380405817:table/users",
-				"PartitionKeyType": "S",
-				"Name": "users"
-			},
-			"lastPushDirHash": "5Jr30Oe4OgUGXGJ3Qua79SxgasE="
-		}
-	},
-	"function": {
-		"experiences": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true,
-			"dependsOn": [
-				{
-					"category": "storage",
-					"resourceName": "experiences",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				}
-			],
-			"lastBuildTimeStamp": "2019-02-02T18:30:39.311Z",
-			"lastPackageTimeStamp": "2019-02-02T18:30:58.603Z",
-			"distZipFilename": "experiences-1549132239-latest-build.zip",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/experiences-cloudformation-template.json",
-				"logicalId": "functionexperiences"
-			},
-			"lastPushTimeStamp": "2019-04-06T03:31:15.544Z",
-			"output": {
-				"Region": "us-east-1",
-				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:experiences",
-				"Name": "experiences"
-			},
-			"lastPushDirHash": "xDUBLZbZO6EW6vKpcbJPOHpAsJY="
-		},
-		"experiencesGeo": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true,
-			"dependsOn": [],
-			"lastBuildTimeStamp": "2019-02-02T18:30:42.500Z",
-			"lastPackageTimeStamp": "2019-02-02T18:30:53.870Z",
-			"distZipFilename": "experiencesGeo-1549132242-latest-build.zip",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/experiencesGeo-cloudformation-template.json",
-				"logicalId": "functionexperiencesGeo"
-			},
-			"lastPushTimeStamp": "2019-04-06T03:31:15.544Z",
-			"output": {
-				"Region": "us-east-1",
-				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:experiencesGeo",
-				"Name": "experiencesGeo"
-			},
-			"lastPushDirHash": "QwLCyjT04Du9Dts2/MRm/awVv7U="
-		},
-		"users": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true,
-			"dependsOn": [
-				{
-					"category": "storage",
-					"resourceName": "users",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				}
-			],
-			"lastBuildTimeStamp": "2019-04-02T02:18:34.673Z",
-			"lastPackageTimeStamp": "2019-04-06T03:29:55.953Z",
-			"distZipFilename": "users-1554521391-latest-build.zip",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/users-cloudformation-template.json",
-				"logicalId": "functionusers"
-			},
-			"lastPushTimeStamp": "2019-04-06T03:31:15.548Z",
-			"output": {
-				"Region": "us-east-1",
-				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:users",
-				"Name": "users"
-			},
-			"lastPushDirHash": "vQpEOnkqtuTCS5gygoGoCI1wUNo="
-		}
-	},
-	"api": {
-		"experiences": {
-			"service": "API Gateway",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [
-				{
-					"category": "function",
-					"resourceName": "experiences",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				},
-				{
-					"category": "function",
-					"resourceName": "experiencesGeo",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				}
-			],
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/experiences-cloudformation-template.json",
-				"logicalId": "apiexperiences"
-			},
-			"lastPushTimeStamp": "2019-04-06T03:31:15.546Z",
-			"output": {
-				"ApiName": "experiences",
-				"RootUrl": "https://6qud7l5rr8.execute-api.us-east-1.amazonaws.com/Prod"
-			},
-			"lastPushDirHash": "Dht4EJ2gNYEBQgfh3uWFGPNQ/ss="
-		},
-		"users": {
-			"service": "API Gateway",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [
-				{
-					"category": "function",
-					"resourceName": "users",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				}
-			],
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/users-cloudformation-template.json",
-				"logicalId": "apiusers"
-			},
-			"lastPushTimeStamp": "2019-04-06T03:31:15.547Z",
-			"output": {
-				"ApiName": "users",
-				"RootUrl": "https://rbf9smf47i.execute-api.us-east-1.amazonaws.com/Prod"
-			},
-			"lastPushDirHash": "EWsvgcudWZ2CdU0aOzFqKq7mLOI="
-		}
-	},
-	"interactions": {}
+    "providers": {
+        "awscloudformation": {
+            "AuthRoleName": "dyssey-20190202111147-authRole",
+            "UnauthRoleArn": "arn:aws:iam::846380405817:role/dyssey-20190202111147-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::846380405817:role/dyssey-20190202111147-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "dyssey-20190202111147-deployment",
+            "UnauthRoleName": "dyssey-20190202111147-unauthRole",
+            "StackName": "dyssey-20190202111147",
+            "StackId": "arn:aws:cloudformation:us-east-1:846380405817:stack/dyssey-20190202111147/01829690-2716-11e9-ac7b-12557b211f7c"
+        }
+    },
+    "auth": {
+        "users": {
+            "service": "Cognito",
+            "providerPlugin": "awscloudformation",
+            "providerMetadata": {
+                "s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/auth/users-cloudformation-template.yml",
+                "logicalId": "authusers"
+            },
+            "lastPushTimeStamp": "2019-04-06T03:47:16.798Z",
+            "output": {
+                "AppClientSecret": "1epman2qitpimfm45kjhme3oboou6tolsg42ssd6khg2b5lnjr58",
+                "UserPoolId": "us-east-1_QcNFpa6Z2",
+                "AppClientIDWeb": "6ccfqjut05h05rmilpvvopt6im",
+                "AppClientID": "4h9dr5d7jir7g1mjmiqifn8pq8",
+                "IdentityPoolId": "us-east-1:47ba4dc5-1765-4af3-9591-67eb232f77c8",
+                "IdentityPoolName": "odysseyIdPool",
+                "UserPoolName": "odysseyUserPool"
+            },
+            "lastPushDirHash": "Mn3pIHF+ilKSzDIIgvUAZ6dMCTY="
+        }
+    },
+    "storage": {
+        "experiences": {
+            "service": "DynamoDB",
+            "providerPlugin": "awscloudformation",
+            "providerMetadata": {
+                "s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/experiences-cloudformation-template.json",
+                "logicalId": "storageexperiences"
+            },
+            "lastPushTimeStamp": "2019-04-06T03:47:16.799Z",
+            "output": {
+                "PartitionKeyName": "experience_id",
+                "Region": "us-east-1",
+                "Arn": "arn:aws:dynamodb:us-east-1:846380405817:table/experiences",
+                "PartitionKeyType": "S",
+                "Name": "experiences"
+            },
+            "lastPushDirHash": "rfplMBx5GgBL1Kl3E5n/XQ7A0GM="
+        }
+    },
+    "function": {
+        "experiences": {
+            "service": "Lambda",
+            "providerPlugin": "awscloudformation",
+            "build": true,
+            "dependsOn": [
+                {
+                    "category": "storage",
+                    "resourceName": "experiences",
+                    "attributes": [
+                        "Name",
+                        "Arn"
+                    ]
+                }
+            ],
+            "lastBuildTimeStamp": "2019-02-02T18:30:39.311Z",
+            "lastPackageTimeStamp": "2019-02-02T18:30:58.603Z",
+            "distZipFilename": "experiences-1549132239-latest-build.zip",
+            "providerMetadata": {
+                "s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/experiences-cloudformation-template.json",
+                "logicalId": "functionexperiences"
+            },
+            "lastPushTimeStamp": "2019-04-06T03:47:16.800Z",
+            "output": {
+                "Region": "us-east-1",
+                "Arn": "arn:aws:lambda:us-east-1:846380405817:function:experiences",
+                "Name": "experiences"
+            },
+            "lastPushDirHash": "xDUBLZbZO6EW6vKpcbJPOHpAsJY="
+        },
+        "experiencesGeo": {
+            "service": "Lambda",
+            "providerPlugin": "awscloudformation",
+            "build": true,
+            "dependsOn": [],
+            "lastBuildTimeStamp": "2019-02-02T18:30:42.500Z",
+            "lastPackageTimeStamp": "2019-02-02T18:30:53.870Z",
+            "distZipFilename": "experiencesGeo-1549132242-latest-build.zip",
+            "providerMetadata": {
+                "s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/experiencesGeo-cloudformation-template.json",
+                "logicalId": "functionexperiencesGeo"
+            },
+            "lastPushTimeStamp": "2019-04-06T03:47:16.801Z",
+            "output": {
+                "Region": "us-east-1",
+                "Arn": "arn:aws:lambda:us-east-1:846380405817:function:experiencesGeo",
+                "Name": "experiencesGeo"
+            },
+            "lastPushDirHash": "QwLCyjT04Du9Dts2/MRm/awVv7U="
+        }
+    },
+    "api": {
+        "experiences": {
+            "service": "API Gateway",
+            "providerPlugin": "awscloudformation",
+            "dependsOn": [
+                {
+                    "category": "function",
+                    "resourceName": "experiences",
+                    "attributes": [
+                        "Name",
+                        "Arn"
+                    ]
+                },
+                {
+                    "category": "function",
+                    "resourceName": "experiencesGeo",
+                    "attributes": [
+                        "Name",
+                        "Arn"
+                    ]
+                }
+            ],
+            "providerMetadata": {
+                "s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/experiences-cloudformation-template.json",
+                "logicalId": "apiexperiences"
+            },
+            "lastPushTimeStamp": "2019-04-06T03:47:16.802Z",
+            "output": {
+                "ApiName": "experiences",
+                "RootUrl": "https://6qud7l5rr8.execute-api.us-east-1.amazonaws.com/Prod"
+            },
+            "lastPushDirHash": "Dht4EJ2gNYEBQgfh3uWFGPNQ/ss="
+        }
+    },
+    "interactions": {}
 }

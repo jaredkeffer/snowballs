@@ -49,25 +49,6 @@
 				"Name": "experiences"
 			},
 			"lastPushDirHash": "rfplMBx5GgBL1Kl3E5n/XQ7A0GM="
-		},
-		"users": {
-			"service": "DynamoDB",
-			"providerPlugin": "awscloudformation",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/users-cloudformation-template.json",
-				"logicalId": "storageusers"
-			},
-			"lastPushTimeStamp": "2019-04-06T03:31:15.543Z",
-			"output": {
-				"PartitionKeyName": "user_id",
-				"SortKeyName": "data_type",
-				"SortKeyType": "S",
-				"Region": "us-east-1",
-				"Arn": "arn:aws:dynamodb:us-east-1:846380405817:table/users",
-				"PartitionKeyType": "S",
-				"Name": "users"
-			},
-			"lastPushDirHash": "5Jr30Oe4OgUGXGJ3Qua79SxgasE="
 		}
 	},
 	"function": {
@@ -119,35 +100,6 @@
 				"Name": "experiencesGeo"
 			},
 			"lastPushDirHash": "QwLCyjT04Du9Dts2/MRm/awVv7U="
-		},
-		"users": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true,
-			"dependsOn": [
-				{
-					"category": "storage",
-					"resourceName": "users",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				}
-			],
-			"lastBuildTimeStamp": "2019-04-02T02:18:34.673Z",
-			"lastPackageTimeStamp": "2019-04-06T03:29:55.953Z",
-			"distZipFilename": "users-1554521391-latest-build.zip",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/users-cloudformation-template.json",
-				"logicalId": "functionusers"
-			},
-			"lastPushTimeStamp": "2019-04-06T03:31:15.548Z",
-			"output": {
-				"Region": "us-east-1",
-				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:users",
-				"Name": "users"
-			},
-			"lastPushDirHash": "vQpEOnkqtuTCS5gygoGoCI1wUNo="
 		}
 	},
 	"api": {
@@ -182,30 +134,6 @@
 				"RootUrl": "https://6qud7l5rr8.execute-api.us-east-1.amazonaws.com/Prod"
 			},
 			"lastPushDirHash": "Dht4EJ2gNYEBQgfh3uWFGPNQ/ss="
-		},
-		"users": {
-			"service": "API Gateway",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [
-				{
-					"category": "function",
-					"resourceName": "users",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				}
-			],
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/users-cloudformation-template.json",
-				"logicalId": "apiusers"
-			},
-			"lastPushTimeStamp": "2019-04-06T03:31:15.547Z",
-			"output": {
-				"ApiName": "users",
-				"RootUrl": "https://rbf9smf47i.execute-api.us-east-1.amazonaws.com/Prod"
-			},
-			"lastPushDirHash": "EWsvgcudWZ2CdU0aOzFqKq7mLOI="
 		}
 	},
 	"interactions": {}

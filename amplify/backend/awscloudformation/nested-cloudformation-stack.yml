@@ -157,20 +157,6 @@
 				}
 			}
 		},
-		"storageusers": {
-			"Type": "AWS::CloudFormation::Stack",
-			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/users-cloudformation-template.json",
-				"Parameters": {
-					"tableName": "users",
-					"partitionKeyName": "user_id",
-					"partitionKeyType": "S",
-					"sortKeyName": "data_type",
-					"sortKeyType": "S",
-					"env": "NONE"
-				}
-			}
-		},
 		"functionexperiences": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -197,27 +183,6 @@
 			"Properties": {
 				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/experiencesGeo-cloudformation-template.json",
 				"Parameters": {
-					"env": "NONE"
-				}
-			}
-		},
-		"functionusers": {
-			"Type": "AWS::CloudFormation::Stack",
-			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/users-cloudformation-template.json",
-				"Parameters": {
-					"storageusersName": {
-						"Fn::GetAtt": [
-							"storageusers",
-							"Outputs.Name"
-						]
-					},
-					"storageusersArn": {
-						"Fn::GetAtt": [
-							"storageusers",
-							"Outputs.Arn"
-						]
-					},
 					"env": "NONE"
 				}
 			}
@@ -254,33 +219,6 @@
 					"functionexperiencesGeoArn": {
 						"Fn::GetAtt": [
 							"functionexperiencesGeo",
-							"Outputs.Arn"
-						]
-					},
-					"env": "NONE"
-				}
-			}
-		},
-		"apiusers": {
-			"Type": "AWS::CloudFormation::Stack",
-			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/users-cloudformation-template.json",
-				"Parameters": {
-					"authRoleName": {
-						"Ref": "AuthRoleName"
-					},
-					"unauthRoleName": {
-						"Ref": "UnauthRoleName"
-					},
-					"functionusersName": {
-						"Fn::GetAtt": [
-							"functionusers",
-							"Outputs.Name"
-						]
-					},
-					"functionusersArn": {
-						"Fn::GetAtt": [
-							"functionusers",
 							"Outputs.Arn"
 						]
 					},

@@ -41,13 +41,33 @@ export default class ConciergeScreen extends React.Component {
 
   _loadData = async (setState) => {
     console.log('loading data');
-    let rawData = await api.getUserItineraries(true);
 
-    // LOOK INTO: update dynamo with GSI for user id (and date? as range key)
+    let rawData = await api.getUserItineraries(true);
+    rawData.itineraries.sort((a, b) => a.dates.start > b.dates.start);
+
+    let now = new Date();
+
     let data = {
-      upcoming: rawData.itineraries,
+      // saving for later
+      // current: rawData.itineraries.filter((itinerary) => {
+      //   let endIsBeforeNow = now.getTime() > itinerary.dates.end
+      //       startAfterNow  = now.getTime() < itinerary.dates.start;
+      //   if (endIsBeforeNow) return false;
+      //   return true;
+      // }),
+      upcoming: rawData.itineraries
+        .filter((itinerary) => {
+          let endIsBeforeNow = now.getTime() > itinerary.dates.end;
+          if (endIsBeforeNow) return false;
+          return true;
+        }),
       recommended: rawData.itineraries,
-      past: rawData.itineraries,
+      past: rawData.itineraries
+        .filter((itinerary) => {
+          let endIsBeforeNow = now.getTime() > itinerary.dates.end;
+          if (endIsBeforeNow) return true;
+          return false;
+        }),
     };
 
     if (setState) {
@@ -71,13 +91,13 @@ export default class ConciergeScreen extends React.Component {
               refreshing={this.state.refreshing}
               onRefresh={this._loadData}/>
           </Tab>
-          <Tab heading="Recommended" activeTextStyle={{color: '#383838'}}>
+          {/* <Tab heading="Recommended" activeTextStyle={{color: '#383838'}}>
             <ItinerariesList
               data={recommended}
               onPressItem={this._onPressItem}
               refreshing={this.state.refreshing}
               onRefresh={this._loadData}/>
-          </Tab>
+          </Tab> */}
           <Tab heading="History" activeTextStyle={{color: '#383838'}}>
             <ItinerariesList
               data={past}

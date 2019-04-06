@@ -26,6 +26,8 @@ export default class ItinerariesList extends Component {
         <Body>
           <Text>{rowData.title}</Text>
           <Text note numberOfLines={3}>{`${start} - ${end}`}</Text>
+          {/* // TODO: add some color or symbols here to show itinerary status */}
+          <Text note>Creation Status: {(rowData.status) ? rowData.status : 'In Progress'}</Text>
         </Body>
         <Right>
           <Icon type="FontAwesome" name='chevron-right' style={{fontSize: 16}}/>

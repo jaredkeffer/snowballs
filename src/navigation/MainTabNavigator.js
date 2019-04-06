@@ -10,6 +10,7 @@ import ExploreLocalScreen from '../screens/ExploreLocalScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PreferencesScreen from '../screens/PreferencesScreen';
 import CreateItineraryScreen from '../screens/CreateItineraryScreen';
+import ViewItineraryScreen from '../screens/ViewItineraryScreen';
 import ReviewItineraryScreen from '../screens/ReviewItineraryScreen';
 import ThankyouScreen from '../screens/ThankyouScreen';
 
@@ -29,6 +30,7 @@ HomeStack.navigationOptions = {
 
 const ConciergeStack = createStackNavigator({
   Concierge: ConciergeScreen,
+  ViewItinerary: ViewItineraryScreen,
   NewItinerary: CreateItineraryScreen,
   ReviewItinerary: ReviewItineraryScreen,
   ThankYou: ThankyouScreen,

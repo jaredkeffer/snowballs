@@ -26,13 +26,12 @@ export default class ConciergeScreen extends React.Component {
 
   static navigationOptions = {
     title: "Concierge",
-    headerBackTitle: 'Cancel',
+    headerBackTitle: 'Back',
   };
 
   _onPressItem = (itineraryItem) => {
-    console.log(itineraryItem.title);
-    // START HERE ----
-    // TODO: go to view itinerary page, and pass in the id of the itinerary viewed
+    console.log('navigating to', itineraryItem.title);
+    this.props.navigation.navigate('ViewItinerary', {itinerary: itineraryItem});
   };
 
   _newItineraryBtnPressed = () => {

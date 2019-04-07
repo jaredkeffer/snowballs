@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, } from 'react-native';
-import { Container, Header, Content, Tab, Tabs, View, Text, Spinner, } from 'native-base';
+import { StyleSheet, ImageBackground } from 'react-native';
+import { Container, Header, Content, Tab, Tabs, View, Text, Spinner } from 'native-base';
 
 import ActionButton from 'react-native-action-button';
 import { CarouselWrapper } from '../components/CarouselWrapper';
@@ -41,12 +41,18 @@ export default class ViewItineraryScreen extends React.Component {
   }
 
   render() {
+
+    let { itinerary } = this.state;
+
     return (
       <Container>
         <Content>
-          <Text>
-            {JSON.stringify(this.state.itinerary, undefined, 2)}
-          </Text>
+          <ImageBackground style={{height: 150}} imageStyle={{opacity: 0.8}}
+            source={{uri: itinerary.img}}>
+            <Text style={{padding: 20, textAlign: 'center', color: 'black', fontSize: 24}}>
+              {itinerary.title}
+            </Text>
+          </ImageBackground>
         </Content>
       </Container>
     );

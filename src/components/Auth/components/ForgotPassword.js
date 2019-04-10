@@ -158,7 +158,7 @@ export default class ForgotPassword extends AuthPiece {
           <View style={{flex: 1, width: '100%', paddingHorizontal: 20}}>
             <View style={{flex:1, flexDirection: 'row',}}>
               <View style={{flex:1}}>
-                <Image style={{width: 75, height: 75}} source={require('../../../assets/images/icon.png')}/>
+                <Image style={{resizeMode:'contain', width: 75, height: 75}} source={require('../../../assets/images/icon.png')}/>
               </View>
               <View style={{flex:4, justifyContent:'center'}}>
                 <Text style={{textAlign:'center', fontSize: 24}}>Forgot Password</Text>

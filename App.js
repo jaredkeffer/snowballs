@@ -51,7 +51,6 @@ class App extends React.Component {
   // TODO: look into preloading images/user/dynamo items before page load.
   _loadResourcesAsync = async () => {
     return Promise.all([
-      api.getUser(true),
       this.firstLogin(true),
       Asset.loadAsync([
         require('./src/assets/images/icon.png'),

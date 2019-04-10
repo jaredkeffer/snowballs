@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, ImageBackground } from 'react-native';
-import { Container, Header, Content, Tab, Tabs, View, Text, Spinner } from 'native-base';
+import { Container, Content, View, Text, Card, CardItem, Body  } from 'native-base';
 
 import ActionButton from 'react-native-action-button';
 import { CarouselWrapper } from '../components/CarouselWrapper';
@@ -43,16 +43,40 @@ export default class ViewItineraryScreen extends React.Component {
   render() {
 
     let { itinerary } = this.state;
-
+    // console.log(itinerary);
+    let start = new Date(itinerary.dates.start)
+        end = new Date(itinerary.dates.end)
+    console.log(start);
+    console.log(end);
     return (
       <Container>
         <Content>
-          <ImageBackground style={{height: 150}} imageStyle={{opacity: 0.8}}
-            source={{uri: itinerary.img}}>
-            <Text style={{padding: 20, textAlign: 'center', color: 'black', fontSize: 24}}>
+          <ImageBackground style={{justifyContent: 'center', height: 150, backgroundColor: 'black'}}
+            source={{uri: itinerary.img}} imageStyle={{opacity: 0.8}}>
+            <Text style={{textAlign: 'center', color: 'white', fontSize: 34, fontWeight: '800'}}>
               {itinerary.title}
             </Text>
+            <Text style={{textAlign: 'center', color: 'white', fontSize: 24, fontWeight: '500'}}>
+              {start.toLocaleDateString()} - {end.toLocaleDateString()}
+            </Text>
           </ImageBackground>
+          {/* Itinerary Overview */}
+          <Card>
+            <CardItem header>
+              <Text>Overview</Text>
+            </CardItem>
+            <CardItem>
+              <Body>
+                <Text>
+                  Itinerary description here
+                </Text>
+              </Body>
+            </CardItem>
+         </Card>
+          {/* Days experiences in a tab view? */}
+          {/* Days experiences in a list view */}
+          {/* Days experiences in a carousel view? */}
+          {/*  */}
         </Content>
       </Container>
     );

@@ -21,7 +21,7 @@ export default class ConciergeScreen extends React.Component {
       itineraries:{},
       refreshing: true,
     };
-    this._loadData(true);
+    this._loadData(true, true);
   }
 
   static navigationOptions = {
@@ -41,39 +41,47 @@ export default class ConciergeScreen extends React.Component {
   _loadData = async (setState, refreshCache) => {
     console.log('loading data');
 
-    let rawData = await api.getUserItineraries(refreshCache);
-    rawData.itineraries.sort((a, b) => a.dates.start > b.dates.start);
-
-    let now = new Date();
-
     let data = {
+      upcoming: [],
       // saving for later
-      // current: rawData.itineraries.filter((itinerary) => {
-      //   let endIsBeforeNow = now.getTime() > itinerary.dates.end
-      //       startAfterNow  = now.getTime() < itinerary.dates.start;
-      //   if (endIsBeforeNow) return false;
-      //   return true;
-      // }),
-      upcoming: rawData.itineraries
-        .filter((itinerary) => {
-          let endIsBeforeNow = now.getTime() > itinerary.dates.end;
-          if (endIsBeforeNow) return false;
-          return true;
-        }),
-      recommended: rawData.itineraries,
-      past: rawData.itineraries
-        .filter((itinerary) => {
-          let endIsBeforeNow = now.getTime() > itinerary.dates.end;
-          if (endIsBeforeNow) return true;
-          return false;
-        }),
+      // recommended: [],
+      past: [],
     };
 
+    let rawData = await api.getUserItineraries(refreshCache);
+
+    if (rawData.itineraries && rawData.itineraries.length) {
+      rawData.itineraries.sort((a, b) => a.dates.start > b.dates.start);
+
+      let now = new Date();
+
+      data = {
+        // saving for later
+        // current: rawData.itineraries.filter((itinerary) => {
+        //   let endIsBeforeNow = now.getTime() > itinerary.dates.end
+        //       startAfterNow  = now.getTime() < itinerary.dates.start;
+        //   if (endIsBeforeNow) return false;
+        //   return true;
+        // }),
+        upcoming: rawData.itineraries
+          .filter((itinerary) => {
+            let endIsBeforeNow = now.getTime() > itinerary.dates.end;
+            if (endIsBeforeNow) return false;
+            return true;
+          }),
+        recommended: rawData.itineraries,
+        past: rawData.itineraries
+          .filter((itinerary) => {
+            let endIsBeforeNow = now.getTime() > itinerary.dates.end;
+            if (endIsBeforeNow) return true;
+            return false;
+          }),
+      };
+    }
     if (setState) {
       this.setState({itineraries: data});
-      this.setState({refreshing: false});
     }
-
+    this.setState({refreshing: false});
     return data;
   }
 
@@ -106,7 +114,7 @@ export default class ConciergeScreen extends React.Component {
           </Tab>
         </Tabs>
         <ActionButton
-          buttonColor="#00a820"
+          buttonColor="#383838"
           onPress={this._newItineraryBtnPressed} />
       </Container>
     );

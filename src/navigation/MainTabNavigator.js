@@ -1,5 +1,6 @@
 import React from 'react';
 import { Platform } from 'react-native';
+import { Text } from 'native-base';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
@@ -97,4 +98,10 @@ export default createBottomTabNavigator({
   // MarketplaceStack,
   // ExploreLocalStack,
   SettingsStack,
+},
+{
+  tabBarOptions: {
+    activeTintColor: '#383838',
+    inactiveTintColor: '#ccc',
+  }
 });

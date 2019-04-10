@@ -38,12 +38,12 @@ export default class CreateItineraryScreen extends Component {
     const { navigation } = this.props;
     let steps = formattedSteps();
 
-    let allowSkip = (navigation.state && navigation.state.params) ? navigation.state.params.allowSkip : true;
+    let allowSkip = (navigation.state && navigation.state.params) ? navigation.state.params.allowSkip : false;
 
     return (
       <SafeAreaView style={styles.container}>
         {allowSkip &&
-          <Button transparent info block onPress={this.skip} >
+          <Button transparent info block onPress={this.skip} style={{paddingTop: 12}}>
             <Text>Skip</Text>
           </Button>
         }

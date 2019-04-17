@@ -10,12 +10,12 @@ let path = '/experiences';
 async function getExperienceDetails(id, refreshCache) {
   let cachedExperience,
       cacheId = `experience-${id}`;
-  
+
   if (refreshCache) await Cache.removeItem(cacheId);
   else cachedExperience = await Cache.getItem(cacheId);
 
   if (cachedExperience) {
-    console.log('got from cache');
+    console.log('got from cache', cachedExperience);
     return cachedExperience;
   }
 
@@ -30,10 +30,10 @@ async function getExperienceDetails(id, refreshCache) {
     });
 
   // Cache the response
-  if (response) await Cache.setItem(cacheId, response, {priority: 4});
+  if (response) await Cache.setItem(cacheId, response[0], {priority: 4});
 
   // console.debug(`getExperienceDetails(${id}):`, response);
-  return response;
+  return response[0];
 }
 
 /*

@@ -16,17 +16,17 @@ export default class MetaExperienceView extends React.PureComponent {
     this._loadExperience(this.props.experienceId);
   }
 
-  _loadExperience = async (experienceId) => {
-    let experience = await api.getExperienceDetails(experienceId);
+  _loadExperience = async (experienceId, refreshCache) => {
+    let experience = await api.getExperienceDetails(experienceId, refreshCache);
 
     this.setState({loading: false});
-    this.setState({experience: experience[0]});
+    this.setState({experience: experience});
     return experience;
   }
 
   render() {
     const { experience, loading } = this.state;
-    
+
     return (
       <Card  style={{width: '100%',}}>
         {loading && <Spinner color="#ccc"/>}

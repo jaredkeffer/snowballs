@@ -2,6 +2,9 @@
 	"AWSTemplateFormatVersion": "2010-09-09",
 	"Description": "Lambda resource stack creation using Amplify CLI",
 	"Parameters": {
+		"env": {
+			"Type": "String"
+		},
 		"storageexperiencesName": {
 			"Type": "String",
 			"Default": "storageexperiencesName"
@@ -9,9 +12,16 @@
 		"storageexperiencesArn": {
 			"Type": "String",
 			"Default": "storageexperiencesArn"
-		},
-		"env": {
-			"Type": "String"
+		}
+	},
+	"Conditions": {
+		"ShouldNotCreateEnvResources": {
+			"Fn::Equals": [
+				{
+					"Ref": "env"
+				},
+				"NONE"
+			]
 		}
 	},
 	"Resources": {
@@ -41,6 +51,13 @@
 						}
 					]
 				},
+				"Environment": {
+					"Variables": {
+						"ENV": {
+							"Ref": "env"
+						}
+					}
+				},
 				"Role": {
 					"Fn::GetAtt": [
 						"LambdaExecutionRole",
@@ -51,14 +68,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "dyssey-20190202111147-deployment",
-					"S3Key": "amplify-builds/experiences-1549132239-latest-build.zip"
-				},
-				"Environment": {
-					"Variables": {
-						"ENV": {
-							"Ref": "env"
-						}
-					}
+					"S3Key": "amplify-builds/experiences-1555388488-latest-build.zip"
 				}
 			}
 		},
@@ -68,12 +78,12 @@
 				"RoleName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"odysseyLambdaRole7d7cf652",
+						"odysseyLambdaRole9fc12fce",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"odysseyLambdaRole7d7cf652",
+									"odysseyLambdaRole9fc12fce",
 									"-",
 									{
 										"Ref": "env"
@@ -179,16 +189,6 @@
 			"Value": {
 				"Ref": "AWS::Region"
 			}
-		}
-	},
-	"Conditions": {
-		"ShouldNotCreateEnvResources": {
-			"Fn::Equals": [
-				{
-					"Ref": "env"
-				},
-				"NONE"
-			]
 		}
 	}
 }

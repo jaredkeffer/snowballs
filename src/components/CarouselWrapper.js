@@ -59,13 +59,21 @@ export class CarouselWrapper extends React.Component {
     return (<View style={styles.container}>
       <Text style={{...styles.subtitle,  ...whiteText}}>{title}</Text>
       <Carousel ref={c => this._slider1Ref = c}
-      data={data} renderItem={this._renderItemWithParallax}
-      sliderWidth={sliderWidth} itemWidth={itemWidth} layout={layout}
-      hasParallaxImages={true} firstItem={SLIDER_FIRST_ITEM}
-      inactiveSlideScale={0.94} inactiveSlideOpacity={0.7}
-      containerCustomStyle={styles.slider} loop={true} loopClonesPerSide={2}
-      contentContainerCustomStyle={styles.sliderContentContainer}
-      onSnapToItem={(index) => this.setState({sliderActiveSlide: index})}/>
+        data={data}
+        renderItem={this._renderItemWithParallax}
+        sliderWidth={sliderWidth}
+        itemWidth={itemWidth}
+        layout={layout}
+        hasParallaxImages={true}
+        firstItem={SLIDER_FIRST_ITEM}
+        inactiveSlideScale={0.94}
+        inactiveSlideOpacity={0.7}
+        containerCustomStyle={styles.slider}
+        loop={true}
+        loopClonesPerSide={2}
+        contentContainerCustomStyle={styles.sliderContentContainer}
+        onSnapToItem={(index) => this.setState({sliderActiveSlide: index})}
+      />
 
       { paginate ? this.pagination(data, sliderActiveSlide) : false }
     </View>);

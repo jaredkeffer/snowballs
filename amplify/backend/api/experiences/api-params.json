@@ -5,33 +5,29 @@
             "lambdaFunction": "experiences",
             "privacy": {
                 "protected": true,
-                "auth": "rw",
-                "unauth": "r"
-            }
-        },
-        {
-            "name": "/experiences/geo",
-            "lambdaFunction": "experiencesGeo",
-            "privacy": {
-                "protected": true,
-                "auth": "r",
-                "unauth": "r"
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ],
+                "unauth": [
+                    "/GET"
+                ]
             }
         }
     ],
     "resourceName": "experiences",
-    "apiName": "odyssey3c83dedf",
+    "apiName": "experiences",
     "functionArns": [
         {
             "lambdaFunction": "experiences"
-        },
-        {
-            "lambdaFunction": "experiencesGeo"
         }
     ],
     "privacy": {
-        "auth": 2,
-        "unauth": 2,
+        "auth": 1,
+        "unauth": 1,
         "authRoleName": "dyssey-20190202111147-authRole",
         "unAuthRoleName": "dyssey-20190202111147-unauthRole"
     },
@@ -39,14 +35,6 @@
         {
             "category": "function",
             "resourceName": "experiences",
-            "attributes": [
-                "Name",
-                "Arn"
-            ]
-        },
-        {
-            "category": "function",
-            "resourceName": "experiencesGeo",
             "attributes": [
                 "Name",
                 "Arn"

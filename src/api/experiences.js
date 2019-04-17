@@ -8,12 +8,16 @@ let path = '/experiences';
  * @returns {*} response from Lambda (aka Dynamo)
  */
 async function getExperienceDetails(id, refreshCache) {
-  let cachedExperience;
+  let cachedExperience,
+      cacheId = `experience-${id}`;
+  
+  if (refreshCache) await Cache.removeItem(cacheId);
+  else cachedExperience = await Cache.getItem(cacheId);
 
-  if (refreshCache) Cache.removeItem(id);
-  else cachedExperience = await Cache.getItem(id);
-
-  if (cachedExperience) return cachedExperience;
+  if (cachedExperience) {
+    console.log('got from cache');
+    return cachedExperience;
+  }
 
   // Create API path to call API GW
   let experiencePath = `${path}/${id}`;
@@ -22,13 +26,13 @@ async function getExperienceDetails(id, refreshCache) {
   console.debug('fetching experience details from dynamo');
   let response = await API.get(apiName, experiencePath)
     .catch((error) => {
-      console.error('Error getting experience: ', id, error);
+      console.warn('Error getting experience: ', id, error);
     });
 
   // Cache the response
-  // cachedExperience = await Cache.setItem(id, response, {priority: 4});
+  if (response) await Cache.setItem(cacheId, response, {priority: 4});
 
-  console.debug(`getExperienceDetails(${id}):`, response);
+  // console.debug(`getExperienceDetails(${id}):`, response);
   return response;
 }
 

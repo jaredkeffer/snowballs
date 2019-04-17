@@ -171,36 +171,6 @@
 				}
 			}
 		},
-		"functionexperiences": {
-			"Type": "AWS::CloudFormation::Stack",
-			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/experiences-cloudformation-template.json",
-				"Parameters": {
-					"storageexperiencesName": {
-						"Fn::GetAtt": [
-							"storageexperiences",
-							"Outputs.Name"
-						]
-					},
-					"storageexperiencesArn": {
-						"Fn::GetAtt": [
-							"storageexperiences",
-							"Outputs.Arn"
-						]
-					},
-					"env": "NONE"
-				}
-			}
-		},
-		"functionexperiencesGeo": {
-			"Type": "AWS::CloudFormation::Stack",
-			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/experiencesGeo-cloudformation-template.json",
-				"Parameters": {
-					"env": "NONE"
-				}
-			}
-		},
 		"functionusers": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -222,38 +192,20 @@
 				}
 			}
 		},
-		"apiexperiences": {
+		"functionexperiences": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/experiences-cloudformation-template.json",
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/experiences-cloudformation-template.json",
 				"Parameters": {
-					"authRoleName": {
-						"Ref": "AuthRoleName"
-					},
-					"unauthRoleName": {
-						"Ref": "UnauthRoleName"
-					},
-					"functionexperiencesName": {
+					"storageexperiencesName": {
 						"Fn::GetAtt": [
-							"functionexperiences",
+							"storageexperiences",
 							"Outputs.Name"
 						]
 					},
-					"functionexperiencesArn": {
+					"storageexperiencesArn": {
 						"Fn::GetAtt": [
-							"functionexperiences",
-							"Outputs.Arn"
-						]
-					},
-					"functionexperiencesGeoName": {
-						"Fn::GetAtt": [
-							"functionexperiencesGeo",
-							"Outputs.Name"
-						]
-					},
-					"functionexperiencesGeoArn": {
-						"Fn::GetAtt": [
-							"functionexperiencesGeo",
+							"storageexperiences",
 							"Outputs.Arn"
 						]
 					},
@@ -281,6 +233,33 @@
 					"functionusersArn": {
 						"Fn::GetAtt": [
 							"functionusers",
+							"Outputs.Arn"
+						]
+					},
+					"env": "NONE"
+				}
+			}
+		},
+		"apiexperiences": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/experiences-cloudformation-template.json",
+				"Parameters": {
+					"authRoleName": {
+						"Ref": "AuthRoleName"
+					},
+					"unauthRoleName": {
+						"Ref": "UnauthRoleName"
+					},
+					"functionexperiencesName": {
+						"Fn::GetAtt": [
+							"functionexperiences",
+							"Outputs.Name"
+						]
+					},
+					"functionexperiencesArn": {
+						"Fn::GetAtt": [
+							"functionexperiences",
 							"Outputs.Arn"
 						]
 					},

@@ -16,27 +16,6 @@
 		}
 	},
 	"function": {
-		"experiences": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [
-				{
-					"category": "storage",
-					"resourceName": "experiences",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				}
-			],
-			"build": true
-		},
-		"experiencesGeo": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [],
-			"build": true
-		},
 		"users": {
 			"service": "Lambda",
 			"providerPlugin": "awscloudformation",
@@ -51,31 +30,24 @@
 					]
 				}
 			]
-		}
-	},
-	"api": {
+		},
 		"experiences": {
-			"service": "API Gateway",
+			"service": "Lambda",
 			"providerPlugin": "awscloudformation",
+			"build": true,
 			"dependsOn": [
 				{
-					"category": "function",
+					"category": "storage",
 					"resourceName": "experiences",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
-				},
-				{
-					"category": "function",
-					"resourceName": "experiencesGeo",
 					"attributes": [
 						"Name",
 						"Arn"
 					]
 				}
 			]
-		},
+		}
+	},
+	"api": {
 		"users": {
 			"service": "API Gateway",
 			"providerPlugin": "awscloudformation",
@@ -83,6 +55,20 @@
 				{
 					"category": "function",
 					"resourceName": "users",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			]
+		},
+		"experiences": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "experiences",
 					"attributes": [
 						"Name",
 						"Arn"

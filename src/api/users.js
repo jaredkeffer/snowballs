@@ -30,8 +30,6 @@ async function getUser(refreshCache) {
   let { given_name, email, sub, phone_number } = authUser.attributes;
   let user = { given_name, email, sub, phone_number };
 
-  console.log(user);
-
   // Cache the relevant user info from cognito
   await Cache.setItem('user', user, {priority: 1});
   console.debug('getUser():', user);
@@ -132,7 +130,6 @@ async function putUserPreferences(preferences) {
   console.debug('myinit: ', myInit);
 
   let response = await API.put(apiName, path, myInit);
-  console.log(response);
   return Cache.removeItem('user');
 }
 

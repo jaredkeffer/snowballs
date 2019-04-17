@@ -23,20 +23,6 @@
           "functionexperiencesArn": {
             "Type": "String",
             "Default": "functionexperiencesArn"
-          },
-        
-          
-          
-    
-          "functionexperiencesGeoName": {
-            "Type": "String",
-            "Default": "functionexperiencesGeoName"
-          },
-        
-          
-          "functionexperiencesGeoArn": {
-            "Type": "String",
-            "Default": "functionexperiencesGeoArn"
           }
         
           
@@ -55,13 +41,13 @@
     },
     "Resources": {
         
-        "PolicyAPIGWodyssey3c83dedfauth": {
+        "PolicyAPIGWexperiencesauth": {
             "DependsOn": [
-              "odyssey3c83dedf"
+              "experiences"
             ],
             "Type": "AWS::IAM::Policy",
             "Properties": {
-              "PolicyName": "PolicyAPIGWodyssey3c83dedfauth",
+              "PolicyName": "PolicyAPIGWexperiencesauth",
               "Roles": [
                 {"Ref": "authRoleName"}
               ],
@@ -91,7 +77,7 @@
                             },
                             ":",
                             {
-                              "Ref": "odyssey3c83dedf"
+                              "Ref": "experiences"
                             },
                             "/",
                             {
@@ -103,7 +89,7 @@
                                 } 
                               ]
                             },
-                              "r",
+                              "/POST",
                             "/experiences/*"
                           ]
                         ]
@@ -122,7 +108,7 @@
                             },
                             ":",
                             {
-                              "Ref": "odyssey3c83dedf"
+                              "Ref": "experiences"
                             },
                             "/",
                             {
@@ -134,7 +120,7 @@
                                 } 
                               ]
                             },
-                              "r",
+                              "/POST",
                             "/experiences"
                           ]
                         ]
@@ -157,7 +143,7 @@
                             },
                             ":",
                             {
-                              "Ref": "odyssey3c83dedf"
+                              "Ref": "experiences"
                             },
                             "/",
                             {
@@ -169,7 +155,7 @@
                                 } 
                               ]
                             },
-                              "w",
+                              "/GET",
                             "/experiences/*"
                           ]
                         ]
@@ -188,7 +174,7 @@
                             },
                             ":",
                             {
-                              "Ref": "odyssey3c83dedf"
+                              "Ref": "experiences"
                             },
                             "/",
                             {
@@ -200,18 +186,13 @@
                                 } 
                               ]
                             },
-                              "w",
+                              "/GET",
                             "/experiences"
                           ]
                         ]
                       }
                     
-                    
-                    
                       ,
-                    
-                    
-                    
                     
                     
                       {
@@ -228,7 +209,7 @@
                             },
                             ":",
                             {
-                              "Ref": "odyssey3c83dedf"
+                              "Ref": "experiences"
                             },
                             "/",
                             {
@@ -240,8 +221,8 @@
                                 } 
                               ]
                             },
-                              "r",
-                            "/experiences/geo/*"
+                              "/PUT",
+                            "/experiences/*"
                           ]
                         ]
                       },
@@ -259,7 +240,7 @@
                             },
                             ":",
                             {
-                              "Ref": "odyssey3c83dedf"
+                              "Ref": "experiences"
                             },
                             "/",
                             {
@@ -271,8 +252,140 @@
                                 } 
                               ]
                             },
-                              "r",
-                            "/experiences/geo"
+                              "/PUT",
+                            "/experiences"
+                          ]
+                        ]
+                      }
+                    
+                      ,
+                    
+                    
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:aws:execute-api:",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            ":",
+                            {
+                              "Ref": "AWS::AccountId"
+                            },
+                            ":",
+                            {
+                              "Ref": "experiences"
+                            },
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                              "/PATCH",
+                            "/experiences/*"
+                          ]
+                        ]
+                      },
+                                            {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:aws:execute-api:",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            ":",
+                            {
+                              "Ref": "AWS::AccountId"
+                            },
+                            ":",
+                            {
+                              "Ref": "experiences"
+                            },
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                              "/PATCH",
+                            "/experiences"
+                          ]
+                        ]
+                      }
+                    
+                      ,
+                    
+                    
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:aws:execute-api:",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            ":",
+                            {
+                              "Ref": "AWS::AccountId"
+                            },
+                            ":",
+                            {
+                              "Ref": "experiences"
+                            },
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                              "/DELETE",
+                            "/experiences/*"
+                          ]
+                        ]
+                      },
+                                            {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:aws:execute-api:",
+                            {
+                              "Ref": "AWS::Region"
+                            },
+                            ":",
+                            {
+                              "Ref": "AWS::AccountId"
+                            },
+                            ":",
+                            {
+                              "Ref": "experiences"
+                            },
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                              "/DELETE",
+                            "/experiences"
                           ]
                         ]
                       }
@@ -289,13 +402,13 @@
           },
         
         
-        "PolicyAPIGWodyssey3c83dedfunauth": {
+        "PolicyAPIGWexperiencesunauth": {
             "DependsOn": [
-              "odyssey3c83dedf"
+              "experiences"
             ],
             "Type": "AWS::IAM::Policy",
             "Properties": {
-              "PolicyName": "PolicyAPIGWodyssey3c83dedfunauth",
+              "PolicyName": "PolicyAPIGWexperiencesunauth",
               "Roles": [
                  {"Ref": "unauthRoleName"}
               ],
@@ -325,7 +438,7 @@
                             },
                             ":",
                             {
-                              "Ref": "odyssey3c83dedf"
+                              "Ref": "experiences"
                             },
                             "/",
                             {
@@ -337,48 +450,8 @@
                                 } 
                               ]
                             },
-                              "r",
+                              "/GET",
                             "/experiences/*"
-                          ]
-                        ]
-                      }
-                    
-                    
-                    
-                      ,
-                    
-                    
-                    
-                    
-                    
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:execute-api:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                              "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                              "Ref": "odyssey3c83dedf"
-                            },
-                            "/",
-                            {
-                              "Fn::If": [
-                                "ShouldNotCreateEnvResources",
-                                "Prod", 
-                                {
-                                  "Ref": "env"
-                                } 
-                              ]
-                            },
-                              "r",
-                            "/experiences/geo/*"
                           ]
                         ]
                       }
@@ -394,16 +467,16 @@
             }
           },
         
-      "odyssey3c83dedf": {
+      "experiences": {
         "Type": "AWS::ApiGateway::RestApi",
         "Properties": {
           "Description": "",
-          "Name": "odyssey3c83dedf",
+          "Name": "experiences",
           "Body": {
             "swagger": "2.0",
             "info": {
               "version": "2018-05-24T17:52:00Z",
-              "title": "odyssey3c83dedf"
+              "title": "experiences"
             },
             "host": {
                 "Fn::Join": [
@@ -648,217 +721,6 @@
                     "type": "aws_proxy"
                   }
                 }
-              },   
-              
-              "/experiences/geo": {
-                "options": {
-                  "consumes": [
-                    "application/json"
-                  ],
-                  "produces": [
-                    "application/json"
-                  ],
-                  "responses": {
-                    "200": {
-                      "description": "200 response",
-                      "headers": {
-                        "Access-Control-Allow-Origin": {
-                          "type": "string"
-                        },
-                        "Access-Control-Allow-Methods": {
-                          "type": "string"
-                        },
-                        "Access-Control-Allow-Headers": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  },
-                  "x-amazon-apigateway-integration": {
-                    "responses": {
-                      "default": {
-                        "statusCode": "200",
-                        "responseParameters": {
-                          "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
-                          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                          "method.response.header.Access-Control-Allow-Origin": "'*'"
-                        }
-                      }
-                    },
-                    "requestTemplates": {
-                      "application/json": "{\"statusCode\": 200}"
-                    },
-                    "passthroughBehavior": "when_no_match",
-                    "type": "mock"
-                  }
-                },
-                "x-amazon-apigateway-any-method": {
-                  "consumes": [
-                    "application/json"
-                  ],
-                  "produces": [
-                    "application/json"
-                  ],
-                  "parameters": [
-                    {
-                      "in": "body",
-                      "name": "RequestSchema",
-                      "required": false,
-                      "schema": {
-                        "$ref": "#/definitions/RequestSchema"
-                      }
-                    }
-                  ],
-                  "responses": {
-                    "200": {
-                      "description": "200 response",
-                      "schema": {
-                        "$ref": "#/definitions/ResponseSchema"
-                      }
-                    }
-                  },
-                          
-                    "security": [
-                        {
-                          "sigv4": []
-                        }
-                      ],
-                  
-                  "x-amazon-apigateway-integration": {
-                    "responses": {
-                      "default": {
-                        "statusCode": "200"
-                      }
-                    },
-                    "uri": {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:aws:apigateway:",
-                            {
-                              "Ref": "AWS::Region"
-                            },
-                            ":lambda:path/2015-03-31/functions/",
-                            
-                            {
-                                
-                                "Ref": "functionexperiencesGeoArn"
-                            },
-                            
-                            "/invocations"
-                          ]
-                        ]
-                      },
-                    "passthroughBehavior": "when_no_match",
-                    "httpMethod": "POST",
-                    "type": "aws_proxy"
-                  }
-                }
-              },
-              "/experiences/geo/{proxy+}": {
-                "options": {
-                  "consumes": [
-                    "application/json"
-                  ],
-                  "produces": [
-                    "application/json"
-                  ],
-                  "responses": {
-                    "200": {
-                      "description": "200 response",
-                      "headers": {
-                        "Access-Control-Allow-Origin": {
-                          "type": "string"
-                        },
-                        "Access-Control-Allow-Methods": {
-                          "type": "string"
-                        },
-                        "Access-Control-Allow-Headers": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  },
-                  "x-amazon-apigateway-integration": {
-                    "responses": {
-                      "default": {
-                        "statusCode": "200",
-                        "responseParameters": {
-                          "method.response.header.Access-Control-Allow-Methods": "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'",
-                          "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                          "method.response.header.Access-Control-Allow-Origin": "'*'"
-                        }
-                      }
-                    },
-                    "requestTemplates": {
-                      "application/json": "{\"statusCode\": 200}"
-                    },
-                    "passthroughBehavior": "when_no_match",
-                    "type": "mock"
-                  }
-                },
-                "x-amazon-apigateway-any-method": {
-                  "consumes": [
-                    "application/json"
-                  ],
-                  "produces": [
-                    "application/json"
-                  ],
-                  "parameters": [
-                    {
-                      "in": "body",
-                      "name": "RequestSchema",
-                      "required": false,
-                      "schema": {
-                        "$ref": "#/definitions/RequestSchema"
-                      }
-                    }
-                  ],
-                  "responses": {
-                    "200": {
-                      "description": "200 response",
-                      "schema": {
-                        "$ref": "#/definitions/ResponseSchema"
-                      }
-                    }
-                  },
-                          
-                    "security": [
-                        {
-                          "sigv4": []
-                        }
-                      ],
-                  
-                  "x-amazon-apigateway-integration": {
-                    "responses": {
-                      "default": {
-                        "statusCode": "200"
-                      }
-                    },
-                    "uri": {
-                      "Fn::Join": [
-                        "",
-                        [
-                          "arn:aws:apigateway:",
-                          {
-                            "Ref": "AWS::Region"
-                          },
-                          ":lambda:path/2015-03-31/functions/",
-                          
-                          {
-                            
-                            "Ref": "functionexperiencesGeoArn"
-                          },
-                          
-                          "/invocations"
-                        ]
-                      ]
-                    },
-                    "passthroughBehavior": "when_no_match",
-                    "httpMethod": "POST",
-                    "type": "aws_proxy"
-                  }
-                }
               }   
               
             },
@@ -904,7 +766,7 @@
                   
         
         
-        "functionexperiencesPermissionodyssey3c83dedf": {
+        "functionexperiencesPermissionexperiences": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
                 "FunctionName": 
@@ -928,41 +790,7 @@
                             },
                             ":",
                             {
-                                "Ref": "odyssey3c83dedf"
-                            },
-                            "/*/*/*"
-                        ]
-                    ]
-                }
-            }
-        },
-        
-        
-        "functionexperiencesGeoPermissionodyssey3c83dedf": {
-            "Type": "AWS::Lambda::Permission",
-            "Properties": {
-                "FunctionName": 
-                    {
-                        "Ref":  "functionexperiencesGeoName"
-                    },
-                    
-                    "Action": "lambda:InvokeFunction",
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "arn:aws:execute-api:",
-                            {
-                                "Ref": "AWS::Region"
-                            },
-                            ":",
-                            {
-                                "Ref": "AWS::AccountId"
-                            },
-                            ":",
-                            {
-                                "Ref": "odyssey3c83dedf"
+                                "Ref": "experiences"
                             },
                             "/*/*/*"
                         ]
@@ -973,7 +801,7 @@
         
         
         
-      "DeploymentAPIGWodyssey3c83dedf": {
+      "DeploymentAPIGWexperiences": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",
@@ -987,7 +815,7 @@
             ]
           },
           "RestApiId": {
-            "Ref": "odyssey3c83dedf"
+            "Ref": "experiences"
           }
         }
       }
@@ -995,7 +823,7 @@
     "Outputs": {
         "RootUrl": {
             "Description": "Root URL of the API gateway",
-            "Value": {"Fn::Join": ["", ["https://", {"Ref": "odyssey3c83dedf"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/", {"Fn::If": ["ShouldNotCreateEnvResources","Prod", {"Ref": "env"} ]}]]}
+            "Value": {"Fn::Join": ["", ["https://", {"Ref": "experiences"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/", {"Fn::If": ["ShouldNotCreateEnvResources","Prod", {"Ref": "env"} ]}]]}
         },
         "ApiName": {
           "Description": "API Friendly name",

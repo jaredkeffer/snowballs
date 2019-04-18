@@ -22,18 +22,16 @@ export class CarouselWrapper extends React.Component {
       sliderActiveSlide: SLIDER_FIRST_ITEM,
       isDark: props.isDark,
     }
+    this._renderItemWithParallax = this._renderItemWithParallax.bind(this);
   }
 
   _renderItem({item, index}) {
     return <SliderEntry data={item} even={(index + 1) % 2 === 0}/>;
   }
 
-  _renderItemWithParallax({
-    item,
-    index
-  }, parallaxProps) {
+  _renderItemWithParallax({item, index}, parallaxProps) {
     return (<SliderEntry data={item} even={(index + 1) % 2 === 0}
-      parallax={true} parallaxProps={parallaxProps}/>);
+      parallax={true} parallaxProps={parallaxProps} navigate={(this.props.navigate) ? this.props.navigate : undefined}/>);
   }
 
   pagination() {

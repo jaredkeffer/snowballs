@@ -27,6 +27,12 @@ export default class SliderEntry extends Component {
       : (<Image source={{ uri: source }} style={styles.image}/>);
   }
 
+  goToExperienceView = () => {
+    const { data: {title, subtitle, experience_id} } = this.props;
+    console.log(`You selected ${title}: ${experience_id}`);
+    this.props.navigate('Experience', {experienceId: experience_id});
+  }
+
   render() {
     const { data: {title, subtitle}, even } = this.props;
 
@@ -37,9 +43,7 @@ export default class SliderEntry extends Component {
       : false;
 
     return (
-      <TouchableOpacity activeOpacity={1} style={styles.slideInnerContainer} onPress={() => {
-        alert(`You've clicked '${title}'`);
-      }}>
+      <TouchableOpacity activeOpacity={1} style={styles.slideInnerContainer} onPress={this.goToExperienceView}>
       <View style={styles.shadow}/>
       <View style={styles.imageContainer}>
         {this.image}

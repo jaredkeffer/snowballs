@@ -13,7 +13,7 @@ export default class Loading extends AuthPiece {
 
   showComponent(theme) {
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, alignItems: 'center', textAlign: 'center'}}>
         <Image style={{width: '100%'}} source={require('../../../assets/images/icon.png')}/>
         <Text>Loading Odyssey...</Text>
       </View>

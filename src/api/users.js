@@ -97,6 +97,7 @@ async function getUserItineraries(refreshCache) {
   let response = await API.get(apiName, userPath)
     .catch((error) => {
       console.warn('Error getting itineraries from dynamo', error);
+      // TODO: need to handle network errors in catch statements
     });
 
   if (!response) return undefined;

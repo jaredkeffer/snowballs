@@ -34,7 +34,8 @@ export default class ViewItineraryScreen extends React.Component {
   showingDays = [];
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.state.params.itinerary.title
+      title: navigation.state.params.itinerary.title,
+      headerBackTitle: ' ',
     };
   };
 
@@ -45,9 +46,6 @@ export default class ViewItineraryScreen extends React.Component {
     itinerary.days[index] = day;
 
     this.showingDays[index] = day.show;
-    if (this.showingDays.every(d => !d)){
-      this.navTitleView.fadeOut(10);
-    }
     this.setState({ itinerary });
   }
 
@@ -62,88 +60,87 @@ export default class ViewItineraryScreen extends React.Component {
         end = new Date(dates.end);
 
     return (
-          <HeaderImageScrollView
-            maxHeight={150}
-            minHeight={50}
-            headerImage={{uri: img}}
-            fadeOutForeground
-            renderForeground={() => (
-              <View style={{ height: 150, justifyContent: "center", alignItems: "center" }} >
-                <Text style={{color: 'white', fontSize: 34, fontWeight: '800'}}>
-                  {title}
-                </Text>
-                <Text style={{color: 'white', fontSize: 24, fontWeight: '500'}}>
-                  {start.toLocaleDateString()} - {end.toLocaleDateString()}
-                </Text>
-              </View>
-            )}
-            renderFixedForeground={() => (
-              <Animatable.View
-                style={{opacity: 0, paddingTop: 16,}}
-                ref={navTitleView => {
-                  this.navTitleView = navTitleView;
-              }}>
-                <Text style={{color: 'white', fontSize: 20, fontWeight: '500', textAlign: 'center',}}>
-                  {start.toLocaleDateString()} - {end.toLocaleDateString()}
-                </Text>
-              </Animatable.View>
-          )}>
-            <TriggeringView
-              onBeginHidden={() => this.navTitleView.fadeIn(200)}
-              onDisplay={() => this.navTitleView.fadeOut(100)}
-            >
-          {/* <ImageBackground style={{justifyContent: 'center', height: 150, backgroundColor: 'black'}}
-          {/* Itinerary Overview */}
-          {<Card transparent>
-            <CardItem header>
-              <Text>Overview</Text>
-            </CardItem>
-            <CardItem>
-              <Body>
-                <Text>{overview}</Text>
-              </Body>
-            </CardItem>
-          </Card>}
-          {/* Days: Apple Wallet Inspired */}
-          { days && days.map((day, index) => {
-            return (
-              <Card key={day.day}>
-                <CardItem button onPress={() => this.toggleDay(day, index)} style={{backgroundColor: '#f8f8f8',}}>
-                  <Body style={{justifyContent: 'center', flex: 1, flexDirection: 'row', paddingVertical: 2, }}>
-                    <Text>Day {day.day + 1} :</Text><Text style={{color: '#383838'}}> {day.date}</Text>
-                  </Body>
-                  <Right>
-                    <Icon style={{color: '#bbb'}} name={(day.show) ? 'md-close' : 'ios-arrow-down'}/>
-                  </Right>
-                </CardItem>
-                { day.show && day.description &&
-                  <CardItem>
-                    <Text>{day.description}</Text>
-                  </CardItem>}
-                { day.show &&
-                  <CardItem>
-                    <Body>
-                      {day.experiences.map((exp, index) =>
-                        <MetaExperienceView key={`${exp}-${index}`} experienceId={exp} onPress={this.props.navigation.navigate}/>)}
-                    </Body>
-                  </CardItem>
-                }
-             </Card>
-            )
-          }) }
-
-          {!days &&
-            <Card>
-              <CardItem>
-                <Text>
-                  It looks like your itinerary is still in the creation process! We'll send you a notification when it is ready.
-                </Text>
+      <HeaderImageScrollView
+        maxHeight={150}
+        minHeight={100}
+        headerImage={{uri: img}}
+        fadeOutForeground
+        renderForeground={() => (
+          <View style={{ height: 150, justifyContent: 'center', alignItems: 'center', }} >
+            <Text style={{color: 'white', fontSize: 34, fontWeight: '600'}}>
+              {title}
+            </Text>
+            <Text style={{color: 'white', fontSize: 24, fontWeight: '500'}}>
+              {start.toLocaleDateString()} - {end.toLocaleDateString()}
+            </Text>
+          </View>
+        )}
+        renderFixedForeground={() => (
+          <Animatable.View
+            style={{opacity: 0, paddingTop: 36,}}
+            ref={navTitleView => {
+              this.navTitleView = navTitleView;
+          }}>
+            <Text style={{color: 'white', fontSize: 20, fontWeight: '300', textAlign: 'center',}}>
+              {start.toLocaleDateString()} - {end.toLocaleDateString()}
+            </Text>
+          </Animatable.View>
+      )}>
+        <TriggeringView
+          onBeginHidden={() => this.navTitleView.fadeIn(200)}
+          onDisplay={() => this.navTitleView.fadeOut(100)}
+        >
+        {/* <ImageBackground style={{justifyContent: 'center', height: 150, backgroundColor: 'black'}}
+        {/* Itinerary Overview */}
+        <Card transparent>
+          <CardItem header>
+            <Text>Overview</Text>
+          </CardItem>
+          <CardItem>
+            <Body>
+              <Text>{overview}</Text>
+            </Body>
+          </CardItem>
+        </Card>
+        {/* Days: Apple Wallet Inspired */}
+        { days && days.map((day, index) => {
+          return (
+            <Card key={day.day}>
+              <CardItem button onPress={() => this.toggleDay(day, index)} style={{backgroundColor: '#f8f8f8',}}>
+                <Body style={{justifyContent: 'center', flex: 1, flexDirection: 'row', paddingVertical: 2, }}>
+                  <Text>Day {day.day + 1} :</Text><Text style={{color: '#383838'}}> {day.date}</Text>
+                </Body>
+                <Right>
+                  <Icon style={{color: '#bbb'}} name={(day.show) ? 'md-close' : 'ios-arrow-down'}/>
+                </Right>
               </CardItem>
-            </Card>
-          }
-        </TriggeringView>
-        </HeaderImageScrollView>
+              { day.show && day.description &&
+                <CardItem>
+                  <Text>{day.description}</Text>
+                </CardItem>}
+              { day.show &&
+                <CardItem>
+                  <Body>
+                    {day.experiences.map((exp, index) =>
+                      <MetaExperienceView key={`${exp}-${index}`} experienceId={exp} onPress={this.props.navigation.navigate}/>)}
+                  </Body>
+                </CardItem>
+              }
+           </Card>
+          )
+        })}
 
+        {!days &&
+          <Card>
+            <CardItem>
+              <Text>
+                It looks like your itinerary is still in the creation process! We'll send you a notification when it is ready.
+              </Text>
+            </CardItem>
+          </Card>
+        }
+      </TriggeringView>
+      </HeaderImageScrollView>
     );
   }
 }

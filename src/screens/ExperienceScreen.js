@@ -1,4 +1,5 @@
 import React from 'react';
+import { RefreshControl } from 'react-native';
 import { Container, Content, View, Text, Card, CardItem, Body, Icon, Right, Spinner } from 'native-base';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
 
@@ -39,6 +40,11 @@ export default class ExperienceScreen extends React.Component {
     };
   };
 
+  _onRefresh = () => {
+    this.setState({loading: true});
+    this._loadData(this.id, true);
+  }
+
   _loadData = async (experienceId, refreshCache) => {
     console.log('loading experience for: ', this.id);
     let experience = await api.getExperienceDetails(experienceId, refreshCache);
@@ -50,7 +56,7 @@ export default class ExperienceScreen extends React.Component {
 
   render() {
     const { loading, experience } = this.state;
-    if (loading || !experience) return <Container><Spinner color="grey"/></Container>
+    if (!experience) return <Container><Spinner color="grey"/></Container>
     return (
       <HeaderImageScrollView
         maxHeight={150}
@@ -58,6 +64,12 @@ export default class ExperienceScreen extends React.Component {
         maxOverlayOpacity={0.6}
         minOverlayOpacity={0.35}
         headerImage={{uri: experience.img}}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={this._onRefresh}
+          />
+        }
         fadeOutForeground
         renderForeground={() => (
           <View style={{ height: 150, justifyContent: "center", alignItems: "center" }} >
@@ -81,12 +93,19 @@ export default class ExperienceScreen extends React.Component {
           onBeginHidden={() => this.navTitleView.fadeIn(200)}
           onDisplay={() => this.navTitleView.fadeOut(100)}
         >
-          <Card>
-            <CardItem>
-              <Text>{experience.description}</Text>
-            </CardItem>
-          </Card>
-          <Text>{JSON.stringify(experience)}</Text>
+          {loading && <Spinner color="#383838" />}
+          {!loading &&
+            <Card>
+              <CardItem>
+                <Text>{experience.description}</Text>
+              </CardItem>
+              <CardItem>
+                <Text>{JSON.stringify(experience)}</Text>
+              </CardItem>
+              <CardItem>
+                <Text>{JSON.stringify(experience)}</Text>
+              </CardItem>
+            </Card>}
       </TriggeringView>
       </HeaderImageScrollView>
     );

@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, ImageBackground } from 'react-native';
-import { Container, Content, View, Text, Card, CardItem, Body, Icon, Right } from 'native-base';
+import { RefreshControl, StyleSheet, ImageBackground } from 'react-native';
+import { Container, Content, View, Text, Card, CardItem, Body, Icon, Right, Spinner } from 'native-base';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
 
 import * as Animatable from 'react-native-animatable';
@@ -26,44 +26,73 @@ export default class ViewItineraryScreen extends React.Component {
         : {},
       showNavTitle: false
     }
-
-    this._loadData();
+    // if (!this.state.itinerary) this._loadData();
   }
 
-  // small hack to get the title to disappear if you dismiss all the days
-  showingDays = [];
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.state.params.itinerary.title,
+      title: (navigation.state.params.itinerary.title)
+        ? navigation.state.params.itinerary.title
+        : 'Itinerary',
       headerBackTitle: ' ',
     };
   };
 
   toggleDay = (day, index) => {
     let { itinerary } = this.state;
-
     day.show = !day.show;
     itinerary.days[index] = day;
 
-    this.showingDays[index] = day.show;
     this.setState({ itinerary });
   }
 
-  _loadData = () => {
+  _loadData = async (id, refreshCache) => {
     console.log('loading view itinerary data aka experiences');
-    // TODO: eventually this will be driven off of our experience ids, and i think we will want to load them here
+
+    let data = await api.getUserItineraries(refreshCache);
+    let itinerary = this._findItinerary(id, data);
+    console.log(itinerary);
+    this.setState({itinerary});
+    this.setState({loading: false});
+  }
+
+  _findItinerary = (id, data) => {
+    let theItinerary;
+    data.itineraries.some((itin) => {
+      if (itin.itinerary_id == id) {
+        theItinerary = itin;
+        return true;
+      }
+    });
+    return theItinerary;
+  }
+
+  _onRefresh = () => {
+    this.setState({loading: true});
+    let id = (this.props.navigation.state.params.itinerary.itinerary_id)
+    this._loadData(id, true);
   }
 
   render() {
-    let { itinerary: {img, title, days, dates, overview, } } = this.state;
+    let { itinerary, loading } = this.state;
+
+    if (!itinerary) return <Spinner color="#ccc" style={{marginTop: 20}} />
+
+    let {img, title, days, dates, overview, } = itinerary;
     let start = new Date(dates.start)
         end = new Date(dates.end);
 
     return (
       <HeaderImageScrollView
         maxHeight={150}
-        minHeight={100}
+        minHeight={50}
         headerImage={{uri: img}}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={this._onRefresh}
+          />
+        }
         fadeOutForeground
         renderForeground={() => (
           <View style={{ height: 150, justifyContent: 'center', alignItems: 'center', }} >
@@ -77,7 +106,7 @@ export default class ViewItineraryScreen extends React.Component {
         )}
         renderFixedForeground={() => (
           <Animatable.View
-            style={{opacity: 0, paddingTop: 36,}}
+            style={{opacity: 0, paddingTop: 16,}}
             ref={navTitleView => {
               this.navTitleView = navTitleView;
           }}>
@@ -90,9 +119,9 @@ export default class ViewItineraryScreen extends React.Component {
           onBeginHidden={() => this.navTitleView.fadeIn(200)}
           onDisplay={() => this.navTitleView.fadeOut(100)}
         >
-        {/* <ImageBackground style={{justifyContent: 'center', height: 150, backgroundColor: 'black'}}
+        {loading && <Spinner color="#383838" />}
         {/* Itinerary Overview */}
-        <Card transparent>
+        {!loading && <Card transparent>
           <CardItem header>
             <Text>Overview</Text>
           </CardItem>
@@ -101,9 +130,9 @@ export default class ViewItineraryScreen extends React.Component {
               <Text>{overview}</Text>
             </Body>
           </CardItem>
-        </Card>
+        </Card>}
         {/* Days: Apple Wallet Inspired */}
-        { days && days.map((day, index) => {
+        { !loading && days && days.map((day, index) => {
           return (
             <Card key={day.day}>
               <CardItem button onPress={() => this.toggleDay(day, index)} style={{backgroundColor: '#f8f8f8',}}>
@@ -130,7 +159,7 @@ export default class ViewItineraryScreen extends React.Component {
           )
         })}
 
-        {!days &&
+        {!loading && !days &&
           <Card>
             <CardItem>
               <Text>

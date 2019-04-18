@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Image } from 'react-native';
 import { FlatList } from 'react-native';
 import { TouchableOpacity, Container, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, View,
-         Icon, Button, RefreshControl,  } from 'native-base';
+         Icon, Button,  } from 'native-base';
 
 export class EmptyScreen extends React.Component {
   render() {

@@ -45,6 +45,12 @@
 					]
 				}
 			]
+		},
+		"content": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": []
 		}
 	},
 	"api": {
@@ -69,6 +75,20 @@
 				{
 					"category": "function",
 					"resourceName": "experiences",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			]
+		},
+		"content": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "content",
 					"attributes": [
 						"Name",
 						"Arn"

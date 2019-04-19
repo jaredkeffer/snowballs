@@ -1,0 +1,40 @@
+{
+    "paths": [
+        {
+            "name": "/content",
+            "lambdaFunction": "content",
+            "privacy": {
+                "protected": true,
+                "auth": [
+                    "/GET"
+                ],
+                "unauth": [
+                    "/GET"
+                ]
+            }
+        }
+    ],
+    "resourceName": "content",
+    "apiName": "content",
+    "functionArns": [
+        {
+            "lambdaFunction": "content"
+        }
+    ],
+    "privacy": {
+        "auth": 1,
+        "unauth": 1,
+        "authRoleName": "dyssey-20190202111147-authRole",
+        "unAuthRoleName": "dyssey-20190202111147-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "content",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}

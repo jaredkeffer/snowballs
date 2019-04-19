@@ -213,6 +213,15 @@
 				}
 			}
 		},
+		"functioncontent": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/content-cloudformation-template.json",
+				"Parameters": {
+					"env": "NONE"
+				}
+			}
+		},
 		"apiusers": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -260,6 +269,33 @@
 					"functionexperiencesArn": {
 						"Fn::GetAtt": [
 							"functionexperiences",
+							"Outputs.Arn"
+						]
+					},
+					"env": "NONE"
+				}
+			}
+		},
+		"apicontent": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/content-cloudformation-template.json",
+				"Parameters": {
+					"authRoleName": {
+						"Ref": "AuthRoleName"
+					},
+					"unauthRoleName": {
+						"Ref": "UnauthRoleName"
+					},
+					"functioncontentName": {
+						"Fn::GetAtt": [
+							"functioncontent",
+							"Outputs.Name"
+						]
+					},
+					"functioncontentArn": {
+						"Fn::GetAtt": [
+							"functioncontent",
 							"Outputs.Arn"
 						]
 					},

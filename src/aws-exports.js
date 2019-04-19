@@ -28,6 +28,11 @@ const awsmobile = {
             "name": "experiences",
             "endpoint": "https://2jgbb32fvi.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
+        },
+        {
+            "name": "content",
+            "endpoint": "https://vaesb9usg1.execute-api.us-east-1.amazonaws.com/Prod",
+            "region": "us-east-1"
         }
     ]
 };

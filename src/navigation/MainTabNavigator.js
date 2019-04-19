@@ -41,7 +41,7 @@ const ConciergeStack = createStackNavigator({
 });
 
 ConciergeStack.navigationOptions = {
-  tabBarLabel: 'Book',
+  tabBarLabel: 'Concierge',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}

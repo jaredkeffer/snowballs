@@ -71,7 +71,7 @@ export default class ExperienceScreen extends React.Component {
   render() {
     const { loading, experience, showWeb } = this.state;
     if (!experience) return <LoadingSpinner />;
-
+    // TODO: Refactor into separate components to make code cleaner
     return (
       <HeaderImageScrollView
         maxHeight={150}

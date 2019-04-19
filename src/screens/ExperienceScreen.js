@@ -1,11 +1,13 @@
 import React from 'react';
-import { RefreshControl } from 'react-native';
-import { Container, Content, View, Text, Card, CardItem, Body, Icon, Right, Spinner } from 'native-base';
+import { RefreshControl, Linking } from 'react-native';
+import { Button, Container, Content, View, Text, Card, CardItem, Body, Icon, Right, Left, Spinner } from 'native-base';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
+import { WebBrowser } from 'expo';
 
 import * as Animatable from 'react-native-animatable';
 
 import MetaExperienceView from '../components/MetaExperienceView';
+import LoadingSpinner from '../components/LoadingSpinner';
 import api from '../api';
 
 import layout from '../constants/Layout';
@@ -35,8 +37,7 @@ export default class ExperienceScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Odyssey Experience', // TODO: Fix this to be dynamic
-      headerBackTitle: ' ',
+      title: (navigation.state.params.title) ? navigation.state.params.title : 'Loading...'
     };
   };
 
@@ -47,16 +48,30 @@ export default class ExperienceScreen extends React.Component {
 
   _loadData = async (experienceId, refreshCache) => {
     console.log('loading experience for: ', this.id);
+
     let experience = await api.getExperienceDetails(experienceId, refreshCache);
+    this.props.navigation.setParams({title: experience.city});
 
     this.setState({loading: false});
     this.setState({experience: experience});
+
     return experience;
   }
 
+  showCost = (cost) => {
+    if (cost <= 3) return <Text style={{color: '#bbb'}}><Text style={{color: '#383838'}}>$</Text>$$</Text>;
+    if (cost <= 6) return <Text style={{color: '#bbb'}}><Text style={{color: '#383838'}}>$$</Text>$</Text>;
+    return <Text style={{color: '#383838'}}>$$$</Text>;
+  }
+
+  _showWeb = async (url) => {
+    let result = await WebBrowser.openBrowserAsync(url);
+  }
+
   render() {
-    const { loading, experience } = this.state;
-    if (!experience) return <Container><Spinner color="grey"/></Container>
+    const { loading, experience, showWeb } = this.state;
+    if (!experience) return <LoadingSpinner />;
+
     return (
       <HeaderImageScrollView
         maxHeight={150}
@@ -76,14 +91,14 @@ export default class ExperienceScreen extends React.Component {
             <Text style={{color: 'white', fontSize: 34, fontWeight: '800'}}>
               {experience.name}
             </Text>
+            {/* We can put a map here like in the zillow app so that when you spwipe right then you see where it is */}
           </View>
         )}
         renderFixedForeground={() => (
           <Animatable.View
             style={{opacity: 0, paddingTop: 16,}}
-            ref={navTitleView => {
-              this.navTitleView = navTitleView;
-            }}>
+            ref={navTitleView => {this.navTitleView = navTitleView;}}
+          >
             <Text style={{color: 'white', fontSize: 20, fontWeight: '400', textAlign: 'center',}}>
             {experience.name}
             </Text>
@@ -95,17 +110,55 @@ export default class ExperienceScreen extends React.Component {
         >
           {loading && <Spinner color="#383838" />}
           {!loading &&
-            <Card>
-              <CardItem>
-                <Text>{experience.description}</Text>
-              </CardItem>
-              <CardItem>
-                <Text>{JSON.stringify(experience)}</Text>
-              </CardItem>
-              <CardItem>
-                <Text>{JSON.stringify(experience)}</Text>
-              </CardItem>
-            </Card>}
+            <View>
+              <Card>
+                <CardItem header bordered style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                  <Text style={{color: 'black'}}>Overview</Text>
+                  <Text>
+                    <Text>{experience.duration} hrs | </Text>
+                    {this.showCost(experience.cost)}
+                  </Text>
+                </CardItem>
+                <CardItem>
+                  <Text>{experience.description}</Text>
+                </CardItem>
+                <CardItem>
+                  <Body style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    {experience.type.length > 0 &&
+                      <Text>
+                        <Text style={{fontWeight: '500'}}>Tags: </Text>
+                        {(experience.type.length > 1) ? experience.type.join(', ') : experience.type[0]}
+                      </Text>
+                    }
+                  </Body>
+                </CardItem>
+              </Card>
+              <Card>
+                <CardItem header bordered>
+                  <Text style={{color: 'black'}}>Details</Text>
+                </CardItem>
+                <CardItem>
+                  <Text style={{flex: 1, fontWeight: '500'}}>Time Slot:</Text>
+                  <Text style={{flex: 2}}>{experience.slot}</Text>
+                </CardItem>
+                {experience.min_age && experience.max_age &&
+                  <CardItem>
+                    <Text style={{flex: 1, fontWeight: '500'}}>Age Range:</Text>
+                    <Text style={{flex: 2}}>{experience.min_age} - {experience.max_age}</Text>
+                  </CardItem>}
+                </Card>
+                {experience.website &&
+                <Card>
+                  <CardItem style={{padding: 0}}>
+                    <Body>
+                      <Text style={{fontWeight: '500'}}>Experience Webiste: </Text>
+                      <Button transparent dark onPress={() => this._showWeb(experience.website)}>
+                        <Text style={{marginLeft: -16, fontSize: 16, color: '#383838'}}>{experience.website}</Text>
+                      </Button>
+                    </Body>
+                  </CardItem>
+                </Card>}
+            </View>}
       </TriggeringView>
       </HeaderImageScrollView>
     );

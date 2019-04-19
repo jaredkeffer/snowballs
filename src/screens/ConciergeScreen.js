@@ -26,7 +26,7 @@ export default class ConciergeScreen extends React.Component {
 
   static navigationOptions = {
     title: "Concierge",
-    headerBackTitle: ' ',
+    headerBackTitle: 'Back',
   };
 
   _onPressItem = (itineraryItem) => {

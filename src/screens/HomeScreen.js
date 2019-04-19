@@ -29,7 +29,7 @@ const photos2 = [
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     title: "Odyssey",
-    headerBackTitle: ' ',
+    headerBackTitle: 'Back',
   };
 
   render() {

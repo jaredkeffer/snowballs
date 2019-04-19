@@ -1,22 +1,13 @@
 import React, { Component } from 'react';
 import { StyleSheet, Image } from 'react-native';
 import { FlatList } from 'react-native';
-import { TouchableOpacity, Container, Content, List, ListItem, Thumbnail, Text, Left, Body, Right, View,
-         Icon, Button,  } from 'native-base';
+import { Container, Content, ListItem, Thumbnail, Text, Left, Body, Right, View, Icon, } from 'native-base';
+import LoadingSpinner from './LoadingSpinner';
 
 export class EmptyScreen extends React.Component {
   render() {
 
-    if (this.props.loading) {
-      return (
-        <Content>
-          <View style={{paddingTop: 30, alignItems: 'center'}}>
-            <Text style={{textAlign: 'center', padding: 20}}>Loading...</Text>
-            <Image style={{width: 75, height: 75}} source={require('../assets/images/black-logo-no-bg.png')}/>
-          </View>
-        </Content>
-      )
-    }
+    if (this.props.loading) return <LoadingSpinner />;
 
     return (
       <Content>

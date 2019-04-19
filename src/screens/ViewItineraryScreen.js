@@ -34,7 +34,7 @@ export default class ViewItineraryScreen extends React.Component {
       title: (navigation.state.params.itinerary.title)
         ? navigation.state.params.itinerary.title
         : 'Itinerary',
-      headerBackTitle: ' ',
+
     };
   };
 

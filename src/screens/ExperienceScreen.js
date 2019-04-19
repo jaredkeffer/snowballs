@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshControl, Linking } from 'react-native';
+import { RefreshControl, TouchableOpacity, Linking } from 'react-native';
 import { Button, Container, Content, View, Text, Card, CardItem, Body, Icon, Right, Left, Spinner } from 'native-base';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
 import { WebBrowser } from 'expo';
@@ -115,7 +115,7 @@ export default class ExperienceScreen extends React.Component {
                 <CardItem header bordered style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                   <Text style={{color: 'black'}}>Overview</Text>
                   <Text>
-                    <Text>{experience.duration} hrs | </Text>
+                    <Text>{experience.duration} hrs<Text style={{color: '#aaa'}}> | </Text></Text>
                     {this.showCost(experience.cost)}
                   </Text>
                 </CardItem>
@@ -125,10 +125,19 @@ export default class ExperienceScreen extends React.Component {
                 <CardItem>
                   <Body style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     {experience.type.length > 0 &&
-                      <Text>
-                        <Text style={{fontWeight: '500'}}>Tags: </Text>
-                        {(experience.type.length > 1) ? experience.type.join(', ') : experience.type[0]}
-                      </Text>
+                      <View style={{flexDirection: 'row'}}>
+                        <Text>
+                          <Text style={{fontWeight: '500'}}>Tags: </Text>
+                        </Text>
+                        {experience.type.map((type) => {
+                          return (
+                            <TouchableOpacity key={type} onPres={() => undefined}>
+                              {/* <Text style={{color: '#0099ff'}}>#{type.toLowerCase()}</Text> */}
+                              <Text>{type}</Text>
+                            </TouchableOpacity>
+                          )
+                        })}
+                      </View>
                     }
                   </Body>
                 </CardItem>
@@ -141,10 +150,10 @@ export default class ExperienceScreen extends React.Component {
                   <Text style={{flex: 1, fontWeight: '500'}}>Time Slot:</Text>
                   <Text style={{flex: 2}}>{experience.slot}</Text>
                 </CardItem>
-                {experience.min_age && experience.max_age &&
+                {experience.min_age &&
                   <CardItem>
                     <Text style={{flex: 1, fontWeight: '500'}}>Age Range:</Text>
-                    <Text style={{flex: 2}}>{experience.min_age} - {experience.max_age}</Text>
+                    <Text style={{flex: 2}}>{experience.min_age}+</Text>
                   </CardItem>}
                 </Card>
                 {experience.website &&

@@ -127,6 +127,8 @@ export default class HomeScreen extends React.Component {
                 <View style={styles.container}>
                   <CarouselWrapper data={photos} title="Eat, Drink, & Explore" isDark={true}
                     paginate={true} navigate={this.props.navigation.navigate}/>
+                  <CarouselWrapper data={photos} title="Eat, Drink, & Explore" isDark={true}
+                    paginate={true} navigate={this.props.navigation.navigate}/>
                 </View>
                 <View style={{padding: 16, backgroundColor: '#383838'}}>
                   <Text style={{color: '#787878', textAlign: 'center'}}>Thanks for using Odyssey!</Text>
@@ -135,7 +137,7 @@ export default class HomeScreen extends React.Component {
             </Tab>
             <Tab heading={
                 <TabHeading>
-                  <Icon name="ios-business" style={styles.tabIcon} />
+                  <Icon name="md-compass" style={styles.tabIcon} />
                   <Text style={styles.tabText}>Experiences</Text>
                 </TabHeading>
               }

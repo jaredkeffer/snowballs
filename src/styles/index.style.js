@@ -9,7 +9,7 @@ export function wp (percentage) {
 
 export const colors = {
   white: '#fff',
-  black: '#1a1917',
+  black: '#383838',
   gray: '#888888',
   lightgrey: '#eee',
   background1: '#B721FF',

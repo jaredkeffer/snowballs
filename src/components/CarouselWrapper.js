@@ -1,5 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native'
+import { H2 } from 'native-base';
+
 import { sliderWidth, itemWidth } from '../styles/SliderEntry.style';
 import styles, { colors } from '../styles/index.style';
 
@@ -52,10 +54,13 @@ export class CarouselWrapper extends React.Component {
 
   carousel(number, title) {
     const { sliderActiveSlide, data, layout, paginate, isDark } = this.state;
+    const darkBg = isDark ? {backgroundColor: '#383838'} : {};
     const whiteText = isDark ? {color: 'white'} : {};
 
-    return (<View style={styles.container}>
-      <Text style={{...styles.subtitle,  ...whiteText}}>{title}</Text>
+    return (<View style={[styles.container, darkBg]}>
+      <H2 style={[{fontWeight: '500', paddingVertical: 10, textAlign: 'center', fontStyle: 'italic'}, whiteText]}>
+        {title}
+      </H2>
       <Carousel ref={c => this._slider1Ref = c}
         data={data}
         renderItem={this._renderItemWithParallax}

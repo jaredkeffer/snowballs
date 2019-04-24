@@ -109,7 +109,7 @@ export default class ExperienceScreen extends React.Component {
           onDisplay={() => this.navTitleView.fadeOut(100)}
         >
           {loading && <Spinner color="#383838" />}
-          {!loading &&
+          {!loading && experience.type !== 'article' &&
             <View>
               <Card>
                 <CardItem header bordered style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -131,7 +131,7 @@ export default class ExperienceScreen extends React.Component {
                         </Text>
                         {experience.type.map((type) => {
                           return (
-                            <TouchableOpacity key={type} onPres={() => undefined}>
+                            <TouchableOpacity key={type} onPress={() => console.log(`pressed ${type} tag`)}>
                               {/* <Text style={{color: '#0099ff'}}>#{type.toLowerCase()}</Text> */}
                               <Text>{type}</Text>
                             </TouchableOpacity>

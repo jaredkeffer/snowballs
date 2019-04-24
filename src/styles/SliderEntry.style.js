@@ -3,7 +3,7 @@ import { colors, wp, viewportHeight, viewportWidth } from './index.style';
 
 const IS_IOS = Platform.OS === 'ios';
 
-const slideHeight = viewportHeight * 0.5;
+const slideHeight = 250;
 const slideWidth = wp(75);
 const itemHorizontalMargin = wp(2);
 
@@ -66,7 +66,8 @@ export default StyleSheet.create({
         paddingHorizontal: 16,
         backgroundColor: colors.lightgrey,
         borderBottomLeftRadius: entryBorderRadius,
-        borderBottomRightRadius: entryBorderRadius
+        borderBottomRightRadius: entryBorderRadius,
+        paddingBottom: 10
     },
     textContainerEven: {
         backgroundColor: colors.black

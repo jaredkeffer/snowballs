@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, } from 'react-native';
-import { Container, Header, Content, Tab, Tabs, View, Text, Spinner, } from 'native-base';
+import { Container, Tab, Tabs, TabHeading, View, Text, Spinner, Icon, } from 'native-base';
 
 import ActionButton from 'react-native-action-button';
 import { CarouselWrapper } from '../components/CarouselWrapper';
@@ -90,7 +90,13 @@ export default class ConciergeScreen extends React.Component {
     return (
       <Container>
         <Tabs tabBarUnderlineStyle={{backgroundColor: '#383838'}}>
-          <Tab heading="Upcoming" activeTextStyle={{color: '#383838'}}>
+          <Tab heading={
+              <TabHeading>
+                <Icon name="md-timer" style={styles.tabIcon} />
+                <Text style={styles.tabText}>Upcoming</Text>
+              </TabHeading>
+            }
+          >
             {/* {loadingUpcoming && <Spinner color="#383838" />} */}
             <ItinerariesList
               data={upcoming}
@@ -105,7 +111,13 @@ export default class ConciergeScreen extends React.Component {
               refreshing={this.state.refreshing}
               onRefresh={this._loadData}/>
           </Tab> */}
-          <Tab heading="History" activeTextStyle={{color: '#383838'}}>
+          <Tab heading={
+              <TabHeading>
+                <Icon name="md-photos" style={styles.tabIcon} />
+                <Text style={styles.tabText}>History</Text>
+              </TabHeading>
+            }
+          >
             <ItinerariesList
               data={past}
               onPressItem={this._onPressItem}
@@ -126,4 +138,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  tabIcon: {color: '#383838', fontSize: 22},
+  tabText: {color: '#383838',},
 });

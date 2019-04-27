@@ -1,5 +1,5 @@
 export default {
   HomeScreen: {
-    searchBar: true,
+    searchBar: false,
   },
 }

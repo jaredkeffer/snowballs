@@ -23,6 +23,7 @@ export class CarouselWrapper extends React.Component {
       paginate: props.paginate,
       sliderActiveSlide: SLIDER_FIRST_ITEM,
       isDark: props.isDark,
+      subtitle: props.subtitle,
     }
     this._renderItemWithParallax = this._renderItemWithParallax.bind(this);
   }
@@ -53,7 +54,7 @@ export class CarouselWrapper extends React.Component {
   }
 
   carousel(number, title) {
-    const { sliderActiveSlide, data, layout, paginate, isDark } = this.state;
+    const { sliderActiveSlide, data, layout, paginate, isDark, subtitle } = this.state;
     const darkBg = isDark ? {backgroundColor: '#383838'} : {};
     const whiteText = isDark ? {color: 'white'} : {};
 
@@ -61,6 +62,9 @@ export class CarouselWrapper extends React.Component {
       <H2 style={[{fontWeight: '500', paddingVertical: 10, textAlign: 'center', fontStyle: 'italic'}, whiteText]}>
         {title}
       </H2>
+      {subtitle &&
+        <Text style={[{paddingHorizontal: 30, fontSize: 16, textAlign: 'center'},whiteText]}>{subtitle}</Text>
+      }
       <Carousel ref={c => this._slider1Ref = c}
         data={data}
         renderItem={this._renderItemWithParallax}

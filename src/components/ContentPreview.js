@@ -3,7 +3,7 @@ import Image from 'react-native';
 import { View, Footer, Thumbnail, Text, Card, CardItem, Body, Icon, Left, Right, Spinner } from 'native-base';
 import api from '../api/index'
 
-export default class ArticlePreview extends React.PureComponent {
+export default class ContentPreview extends React.PureComponent {
   render() {
     const { img, title, subtitle, content, dark } = this.props;
 
@@ -13,7 +13,7 @@ export default class ArticlePreview extends React.PureComponent {
     return (
       <Card style={{width: '100%',}}>
           <View>
-            <CardItem button onPress={() => this.props.onPress('Experience', {content})} style={{backgroundColor, color}}>
+            <CardItem button onPress={() => this.props.onPress('Article', {content})} style={{backgroundColor, color}}>
               {img &&
                 <Left style={{flex: 2}}>
                   <Thumbnail square large source={{uri: img}}/>

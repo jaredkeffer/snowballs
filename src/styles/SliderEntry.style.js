@@ -3,7 +3,7 @@ import { colors, wp, viewportHeight, viewportWidth } from './index.style';
 
 const IS_IOS = Platform.OS === 'ios';
 
-const slideHeight = 250;
+const slideHeight = 275;
 const slideWidth = wp(75);
 const itemHorizontalMargin = wp(2);
 
@@ -74,7 +74,7 @@ export default StyleSheet.create({
     },
     title: {
         color: colors.black,
-        fontSize: 13,
+        fontSize: 15,
         fontWeight: 'bold',
         letterSpacing: 0.5
     },
@@ -83,8 +83,8 @@ export default StyleSheet.create({
     },
     subtitle: {
         marginTop: 6,
-        color: colors.gray,
-        fontSize: 12,
+        color: colors.black,
+        fontSize: 13,
         fontStyle: 'italic'
     },
     subtitleEven: {

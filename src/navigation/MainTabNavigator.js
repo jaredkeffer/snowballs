@@ -14,11 +14,13 @@ import CreateItineraryScreen from '../screens/CreateItineraryScreen';
 import ViewItineraryScreen from '../screens/ViewItineraryScreen';
 import ReviewItineraryScreen from '../screens/ReviewItineraryScreen';
 import ThankyouScreen from '../screens/ThankyouScreen';
-import ExperienceScreen from '../screens/ExperienceScreen'
+import ExperienceScreen from '../screens/ExperienceScreen';
+import ArticleScreen from '../screens/ArticleScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
   Experience: ExperienceScreen,
+  Article: ArticleScreen,
 });
 
 HomeStack.navigationOptions = {

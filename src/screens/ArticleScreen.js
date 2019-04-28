@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, RefreshControl, } from 'react-native';
+import { StyleSheet, TouchableOpacity, RefreshControl, Image } from 'react-native';
 import { Button, Container, Content, View, Text, Card, CardItem, Body, Icon, Right, Left, Spinner } from 'native-base';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
+import { WebBrowser } from 'expo';
 
 import * as Animatable from 'react-native-animatable';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -96,6 +97,8 @@ export default class ArticleScreen extends React.Component {
                 { (typeof(overview) !== String) && overview.map((ov) =>
                     <CardItem transparent style={{paddingHorizontal: 6}} key={ov}><Text>{ov}</Text></CardItem>)}
                 { (typeof(overview) === String) && <Text>{overview}</Text> }
+
+                {/* Steps */}
                 { steps.map((step, index) => {
                     return (
                       <Card key={index}>
@@ -104,12 +107,24 @@ export default class ArticleScreen extends React.Component {
                             <Text>Step: {index + 1} - {step.title}</Text>
                             <Text style={{fontStyle: 'italic', color: '#787878'}}>{step.address}</Text>
                           </Body>
+                          {step.url &&
+                            <TouchableOpacity onPress={async () => await WebBrowser.openBrowserAsync(step.url)}>
+                              <Icon style={{color: "#787878", fontSize: 20}} name="ios-link"/>
+                            </TouchableOpacity>
+                          }
                         </CardItem>
+                        {step.img &&
+                          <CardItem>
+                            <Image source={{uri: step.img}} style={{flex: 1, height: 125}}/>
+                          </CardItem>
+                        }
+                        {step.text &&
                         <CardItem>
                           <Body>
                             <Text>{step.text}</Text>
                           </Body>
                         </CardItem>
+                      }
                       </Card>
                     )
                   })

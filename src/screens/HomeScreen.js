@@ -38,7 +38,7 @@ const featuredContent = {
           "address": "120 Essex St.",
           "location": "Shopsin’s",
           "text": "Part of the reason you come to New York is for everything it has to offer, the same can be said about Shopsin’s. With 900 items on the menu, you’re bound to find something you’re going to love. Just remember, as a start to the day – don’t over do it! We recommend the slutty pancakes, yes, you heard us right slutty pancakes. (P.S – You’re in the Lower East Side, AKA the post-college nightlife center of NY. This area is completely different at night, and never not a good time).",
-          "title": "Breakfast"
+          "title": "Breakfast",
         },
         {
           "address": "120 Rivington St.",

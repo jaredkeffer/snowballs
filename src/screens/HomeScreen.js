@@ -5,6 +5,7 @@ import { H2, Content, Container, Button, Tab, Tabs, TabHeading, View, Text, Spin
 import { Analytics, Auth } from 'aws-amplify';
 import SearchBar from 'react-native-searchbar'
 import Features from '../util/features';
+import CityPreview from '../components/CityPreview';
 import ContentPreview from '../components/ContentPreview';
 import { CarouselWrapper } from '../components/CarouselWrapper';
 import { colors, wp, viewportHeight, viewportWidth } from '../styles/index.style';
@@ -163,8 +164,29 @@ const featuredContent = {
     // {subtitle: 'This is an unbelievably simple and great subtitle for the ages about this city', title:'New York City, NY', key:'1', source:'https://cdn.shopify.com/s/files/1/1629/2509/products/1304_NYC_Skyline_2048x@2x.jpg?v=1488902880'},
   ],
   cities: [
-    {subtitle: 'This is an unbelievably simple and great subtitle for the ages about this city, This is an unbelievably simple and great subtitle for the ages about this city', title:'Tokyo, Japan', key:'113', img:'https://cdn.cnn.com/cnnnext/dam/assets/170606110126-tokyo-skyline.jpg'},
-  ]
+    {
+      subtitle: 'This is an unbelievably simple and great subtitle for the ages about this city, This is an unbelievably simple and great subtitle for the ages about this city',
+      city: 'Tokyo, Japan',
+      key:'113',
+      img:'https://cdn.cnn.com/cnnnext/dam/assets/170606110126-tokyo-skyline.jpg',
+      experience_id: 'asdf',
+    },
+    {
+      subtitle: 'This is an unbelievably simple and great subtitle for the ages about this city, This is an unbelievably simple and great subtitle for the ages about this city',
+      city:'Some Mountains',
+      key:'111233',
+      img:'https://images.unsplash.com/photo-1555985202-12975b0235dc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1049&q=80',
+      experience_id: 'qwerASDFasdf',
+    },
+  ],
+  experiences: [
+    {
+      experience_id: 'test-feature-exp-1',
+      'img': 'https://www.sftravel.com/sites/sftraveldev.prod.acquia-sites.com/files/SanFrancisco_0.jpg',
+      title: 'Some Experience',
+
+    }
+  ],
 };
 
 export default class HomeScreen extends React.Component {
@@ -172,7 +194,9 @@ export default class HomeScreen extends React.Component {
     super(props);
     this.state = {
       showSearchBar: false,
-      featuredContent: featuredContent,
+      articles: featuredContent.articles,
+      cities: featuredContent.cities,
+      experiences: featuredContent.experiences,
       refreshing: false,
     };
     this.toggleSearch = this.toggleSearch.bind(this);
@@ -218,14 +242,14 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
-    let { featuredContent, refreshing } = this.state;
-    console.log(featuredContent.cities);
+    let { articles, cities, experiences, refreshing } = this.state;
+
     return (
       <View style={styles.container}>
         {/* Search Bar */}
         <SearchBar
           ref={(ref) => this.searchBar = ref}
-          data={featuredContent.cities}
+          data={cities}
           onSubmitEditing={this._handleResults}
           hideBack
           iOSPadding={false}
@@ -251,36 +275,29 @@ export default class HomeScreen extends React.Component {
                 />
               }>
                 {/* Featured Content */}
-                {/* option 1 */}
-                {featuredContent &&
-                  <View style={styles.container}>
-                    <CarouselWrapper data={featuredContent.cities} title="Featured Articles"
-                      paginate={true} navigate={this.props.navigation.navigate} />
-                  </View>
-                }
-                {/* option 2 */}
-                {/* {featuredContent &&
+                { cities &&
                   <View style={{paddingBottom: 10}}>
-                    <H2 style={{ color: '#383838', fontWeight: '500', paddingVertical: 10, textAlign: 'center', }}>Featured Cities</H2>
-                    {featuredContent.articles.map((content) => {
-                      console.log(content);
-                      return <ContentPreview
-                        key={content.key}
-                        title={content.title}
-                        img={content.source}
-                        subtitle={content.subtitle}
-                        content={content}
+                    <H2 style={{ color: '#383838', fontWeight: '500', paddingVertical: 10, paddingTop: 20, textAlign: 'center', }}>Featured Cities</H2>
+                    {cities.map((city) => {
+                      console.log(city);
+                      return <CityPreview
+                        key={city.experience_id}
+                        img={city.img}
+                        data={city}
+                        city={city.city}
                         onPress={this.props.navigation.navigate}
                       />
                     })}
                   </View>
-                } */}
-                <View style={styles.container}>
-                  <CarouselWrapper data={featuredContent.articles} title="Eat, Drink, & Explore" isDark={true}
-                    paginate={true} navigate={this.props.navigation.navigate}
-                    subtitle="Articles featuring different activites and 'tours' in cities from around the world"/>
-                </View>
-                <View style={{padding: 16, backgroundColor: '#383838'}}>
+                }
+                {articles &&
+                  <View style={styles.container}>
+                    <CarouselWrapper data={articles} title="Eat, Drink, & Explore" isDark={false}
+                      paginate={true} navigate={this.props.navigation.navigate}
+                      subtitle="Articles featuring different activites and 'tours' in cities from around the world"/>
+                  </View>
+                }
+                <View style={{padding: 16,}}>
                   <Text style={{color: '#787878', textAlign: 'center'}}>Thanks for using Odyssey!</Text>
                 </View>
               </Content>
@@ -292,10 +309,14 @@ export default class HomeScreen extends React.Component {
                 </TabHeading>
               }
             >
-              {/* <View style={styles.container}>
-              <CarouselWrapper data={photos2} title={'Featured Experiences'}
-              paginate={true} navigate={this.props.navigation.navigate}/>
-            </View> */}
+              {experiences.map((content) => {
+                console.log(content);
+                return <ContentPreview
+                  key={content.title}
+                  title={content.title}
+                  img={content.source}
+                />
+              })}
             </Tab>
           </Tabs>
         </Container>

@@ -59,7 +59,7 @@ export class CarouselWrapper extends React.Component {
     const whiteText = isDark ? {color: 'white'} : {};
 
     return (<View style={[styles.container, darkBg]}>
-      <H2 style={[{fontWeight: '500', paddingVertical: 10, textAlign: 'center', fontStyle: 'italic'}, whiteText]}>
+      <H2 style={[{fontWeight: '500', paddingVertical: 10, textAlign: 'center',}, whiteText]}>
         {title}
       </H2>
       {subtitle &&

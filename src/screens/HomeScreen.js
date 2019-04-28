@@ -181,10 +181,10 @@ const featuredContent = {
   ],
   experiences: [
     {
-      experience_id: 'test-feature-exp-1',
-      'img': 'https://www.sftravel.com/sites/sftraveldev.prod.acquia-sites.com/files/SanFrancisco_0.jpg',
+      experience_id: 'test-exp-1',
+      img: 'https://www.sftravel.com/sites/sftraveldev.prod.acquia-sites.com/files/SanFrancisco_0.jpg',
       title: 'Some Experience',
-
+      subtitle: 'a great fancy subtitle',
     }
   ],
 };
@@ -309,14 +309,24 @@ export default class HomeScreen extends React.Component {
                 </TabHeading>
               }
             >
-              {experiences.map((content) => {
-                console.log(content);
-                return <ContentPreview
-                  key={content.title}
-                  title={content.title}
-                  img={content.source}
+              <Content refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={this._onRefresh}
                 />
-              })}
+              }>
+                {experiences.map((content) => {
+                  console.log(content);
+                  return <ContentPreview
+                    key={content.title}
+                    title={content.title}
+                    img={content.img}
+                    content={content}
+                    subtitle={content.subtitle}
+                    onPress={this.props.navigation.navigate}
+                  />
+                })}
+              </Content>
             </Tab>
           </Tabs>
         </Container>

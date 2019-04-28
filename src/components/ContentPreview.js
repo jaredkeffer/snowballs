@@ -13,7 +13,7 @@ export default class ContentPreview extends React.PureComponent {
     return (
       <Card style={{width: '100%',}}>
           <View>
-            <CardItem button onPress={() => this.props.onPress('Article', {content})} style={{backgroundColor, color}}>
+            <CardItem button onPress={() => this.props.onPress('Experience', {experienceId: content.experience_id})} style={{backgroundColor, color}}>
               {img &&
                 <Left style={{flex: 2}}>
                   <Thumbnail square large source={{uri: img}}/>

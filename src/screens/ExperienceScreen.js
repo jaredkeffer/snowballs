@@ -32,6 +32,7 @@ export default class ExperienceScreen extends React.Component {
   }
 
   componentDidMount() {
+    console.log('this.id: ', this.id);
     this._loadData(this.id);
   }
 

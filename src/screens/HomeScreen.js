@@ -166,18 +166,28 @@ const featuredContent = {
   cities: [
     {
       subtitle: 'This is an unbelievably simple and great subtitle for the ages about this city, This is an unbelievably simple and great subtitle for the ages about this city',
-      city: 'Tokyo, Japan',
-      key:'113',
-      img:'https://cdn.cnn.com/cnnnext/dam/assets/170606110126-tokyo-skyline.jpg',
-      experience_id: 'asdf',
-    },
-    {
-      subtitle: 'This is an unbelievably simple and great subtitle for the ages about this city, This is an unbelievably simple and great subtitle for the ages about this city',
       city:'Some Mountains',
       key:'111233',
       img:'https://images.unsplash.com/photo-1555985202-12975b0235dc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1049&q=80',
       experience_id: 'qwerASDFasdf',
+      overview: [
+        'Part of the reason you come to New York is for everything it has to offer, the same can be said about Shopsin’s. With 900 items on the menu, you’re bound to find something you’re going to love. Just remember, as a start to the day – don’t over do it! We recommend the slutty pancakes, yes, you heard us right slutty pancakes. (P.S – You’re in the Lower East Side, AKA the post-college nightlife center of NY. This area is completely different at night, and never not a good time).',
+        'Second breakfast is basically religion on Unofficial Food Tours, and Supermoon Bakehouse, or just Bakehouse is one of the best bakeries in New York. These guys and gals serve up some the most original, tasty, inventive baked goods we’ve ever come across. Exhibit A, as of our posting this article, they’re currently whipping up a HOT APPLE PIE TWICE-BAKED CROISSSANT. DO YOU LOVE, OR DO YOU LOVE? Go be a weirdough at Bakehouse, you won’t regret it.',
+        'Still sharing? Still caring? We hope so. You’re more than halfway through the day and we’ve only now made it to the West side of the city. Chelsea Market may be the pinnacle of urban food halls, but don’t get intimidated once you’re there.  A couple of our favorites are: Los Tacos No. 1 (Great for sharing), Dougnuttery (For those of you who didn’t get enough sweets at Dominique Ansel Bakery), and Num Pang (Fantastic Banh Mi’s)',
+        'Part of the reason you come to New York is for everything it has to offer, the same can be said about Shopsin’s. With 900 items on the menu, you’re bound to find something you’re going to love. Just remember, as a start to the day – don’t over do it! We recommend the slutty pancakes, yes, you heard us right slutty pancakes. (P.S – You’re in the Lower East Side, AKA the post-college nightlife center of NY. This area is completely different at night, and never not a good time).',
+        'Second breakfast is basically religion on Unofficial Food Tours, and Supermoon Bakehouse, or just Bakehouse is one of the best bakeries in New York. These guys and gals serve up some the most original, tasty, inventive baked goods we’ve ever come across. Exhibit A, as of our posting this article, they’re currently whipping up a HOT APPLE PIE TWICE-BAKED CROISSSANT. DO YOU LOVE, OR DO YOU LOVE? Go be a weirdough at Bakehouse, you won’t regret it.',
+        'Still sharing? Still caring? We hope so. You’re more than halfway through the day and we’ve only now made it to the West side of the city. Chelsea Market may be the pinnacle of urban food halls, but don’t get intimidated once you’re there.  A couple of our favorites are: Los Tacos No. 1 (Great for sharing), Dougnuttery (For those of you who didn’t get enough sweets at Dominique Ansel Bakery), and Num Pang (Fantastic Banh Mi’s)',
+      ]
+    }, {
+      subtitle: 'This is an unbelievably simple and great subtitle for the ages about this city, This is an unbelievably simple and great subtitle for the ages about this city',
+      city: 'Tokyo, Japan',
+      key:'113',
+      img:'https://cdn.cnn.com/cnnnext/dam/assets/170606110126-tokyo-skyline.jpg',
+      experience_id: 'asdf',
+      overview: 'Second breakfast is basically religion on Unofficial Food Tours, and Supermoon Bakehouse, or just Bakehouse is one of the best bakeries in New York. These guys and gals serve up some the most original, tasty, inventive baked goods we’ve ever come across. Exhibit A, as of our posting this article, they’re currently whipping up a HOT APPLE PIE TWICE-BAKED CROISSSANT. DO YOU LOVE, OR DO YOU LOVE? Go be a weirdough at Bakehouse, you won’t regret it.'+
+        'Part of the reason you come to New York is for everything it has to offer, the same can be said about Shopsin’s. With 900 items on the menu, you’re bound to find something you’re going to love. Just remember, as a start to the day – don’t over do it! We recommend the slutty pancakes, yes, you heard us right slutty pancakes. (P.S – You’re in the Lower East Side, AKA the post-college nightlife center of NY. This area is completely different at night, and never not a good time).'
     },
+
   ],
   experiences: [
     {
@@ -279,7 +289,6 @@ export default class HomeScreen extends React.Component {
                   <View style={{paddingBottom: 10}}>
                     <H2 style={{ color: '#383838', fontWeight: '500', paddingVertical: 10, paddingTop: 20, textAlign: 'center', }}>Featured Cities</H2>
                     {cities.map((city) => {
-                      console.log(city);
                       return <CityPreview
                         key={city.experience_id}
                         img={city.img}
@@ -290,7 +299,7 @@ export default class HomeScreen extends React.Component {
                     })}
                   </View>
                 }
-                {articles &&
+                { articles &&
                   <View style={styles.container}>
                     <CarouselWrapper data={articles} title="Eat, Drink, & Explore" isDark={false}
                       paginate={true} navigate={this.props.navigation.navigate}
@@ -316,7 +325,6 @@ export default class HomeScreen extends React.Component {
                 />
               }>
                 {experiences.map((content) => {
-                  console.log(content);
                   return <ContentPreview
                     key={content.title}
                     title={content.title}

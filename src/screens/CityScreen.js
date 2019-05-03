@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, RefreshControl, Image } from 'react-native';
-import { Button, Container, Content, View, Text, Card, CardItem, Body, Icon, Right, Left, Spinner } from 'native-base';
+import { Button, Container, Content, View, Tab, Tabs, TabHeading, Text, Card, CardItem, Body, Icon, Right, Left, Spinner, ScrollableTab } from 'native-base';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
 import { WebBrowser } from 'expo';
+import CityOverview from '../components/CityOverview';
 
 import * as Animatable from 'react-native-animatable';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -14,12 +15,12 @@ export default class CityScreen extends React.Component {
     super(props);
     this.state = {};
     if (props.navigation.state.params.data) {
-      this.state.data = {...props.navigation.state.params.data};
-      this.id = this.state.data.experience_id
+      this.state.city = {...props.navigation.state.params.data};
+      this.id = this.state.city.experience_id
     }
     else if (props.navigation.state.params.experience_id) {
       this.id = props.navigation.state.params.experience_id;
-      this.loadData();
+      this.loadCityInfo();
     }
   }
 
@@ -31,67 +32,91 @@ export default class CityScreen extends React.Component {
   };
 
   _onRefresh = () => {
-    this.loadData(this.id, true);
+    this.loadCityInfo(this.id, true);
   }
 
-  loadData = async (id) => {
+  loadCityInfo = async (id) => {
     this.setState({loading: true});
-    console.log(`loading article with id ${id}`);
+    console.log(`loading city overview with id ${id}`);
     let city = await api.getExperienceDetails(id, true);
     this.setState({city, loading: false});
-    return city;
+  }
+
+  _onRefreshExperiences = () => {
+    this.loadExperiencesForCity(this.id, this.state.city.city, true);
+  }
+
+  loadExperiencesForCity = async (id, city) => {
+    this.setState({expLoading: true});
+    console.log(`loading ${city} experiences with id ${id}`);
+    let experiences = await api.getFeaturedExperiencesForCity(id, city, true);
+    this.setState({experiences, loading: false});
   }
 
   render() {
-    const { data: { title, subtitle, img, city, type, overview, steps, details }, loading } = this.state;
-    // const { duration, location } = details;
+    const { city, loading, expLoading, experiences } = this.state;
+    const { title, subtitle, img, city, type, overview, steps, details, country } = city;
+    if (loading) return <Spinner color="#383838" />;
     return (
-      <HeaderImageScrollView
-        maxHeight={150}
-        minHeight={50}
-        maxOverlayOpacity={0.6}
-        minOverlayOpacity={0.35}
-        headerImage={{uri: img}}
-        refreshControl={
-          <RefreshControl
-            refreshing={loading}
-            onRefresh={this._onRefresh}
-          />
-        }
-        fadeOutForeground
-        renderForeground={() => (
-          <View style={{ height: 150, justifyContent: "center", alignItems: "center" }} >
-            <Text style={{textAlign: 'center', color: 'white', fontSize: 34, fontWeight: '800'}}>
-              {title}
-            </Text>
-            <Text style={{textAlign: 'center', color: 'white', fontSize: 30, fontWeight: '700'}}>
-              {city}
-            </Text>
-            {/* // TODO: We can put a map here like in the zillow app so that when you spwipe right then you see where it is */}
-          </View>
-        )}
-        renderFixedForeground={() => (
-          <Animatable.View
-            style={{opacity: 0, paddingTop: 16,}}
-            ref={navTitleView => {this.navTitleView = navTitleView;}}
-          >
-            <Text style={{color: 'white', fontSize: 20, fontWeight: '500', textAlign: 'center',}}>
-            {title}
-            </Text>
-          </Animatable.View>
-      )}>
-        <TriggeringView
-          onBeginHidden={() => this.navTitleView.fadeIn(200)}
-          onDisplay={() => this.navTitleView.fadeOut(100)}
-        >
-          {loading && <Spinner color="#383838" />}
-          {!loading &&
-            <View>
-              <Text>{title}</Text>
-            </View>
+      <Tabs tabBarUnderlineStyle={{backgroundColor: '#383838'}} renderTabBar={()=> <ScrollableTab />} >
+        <Tab heading={
+            <TabHeading>
+              <Icon name="ios-book" style={styles.tabIcon} />
+              <Text style={styles.tabText}>Overview</Text>
+            </TabHeading>
           }
-      </TriggeringView>
-      </HeaderImageScrollView>
+        >
+          <Content refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={this._onRefresh}
+            />
+          }>
+            <CityOverview title={title || `${city}, ${country}`} overview={overview} details={details} img={img}/>
+          </Content>
+        </Tab>
+        {/* <Tab heading={
+            <TabHeading>
+              <Icon name="ios-map" style={styles.tabIcon} />
+              <Text style={styles.tabText}>Map</Text>
+            </TabHeading>
+          }
+        >
+          <View>
+            <Text>{subtitle}</Text>
+          </View>
+        </Tab> */}
+        <Tab heading={
+            <TabHeading>
+              <Icon name="md-compass" style={styles.tabIcon} />
+              <Text style={styles.tabText}>Experiences</Text>
+            </TabHeading>
+          }
+        >
+          <Content refreshControl={
+            <RefreshControl
+              refreshing={expLoading}
+              onRefresh={this._onRefreshExperiences}
+            />
+          }>
+            {experiences.map((content) => {
+              return <ContentPreview
+                key={content.title}
+                title={content.title}
+                img={content.img}
+                content={content}
+                subtitle={content.subtitle}
+                onPress={this.props.navigation.navigate}
+              />
+            })}
+          </Content>
+        </Tab>
+      </Tabs>
     );
   }
 }
+
+const styles = StyleSheet.create({
+tabIcon: {color: '#383838', fontSize: 22},
+tabText: {color: '#383838',},
+});

@@ -134,7 +134,7 @@ export default class ExperienceScreen extends React.Component {
                           return (
                             <TouchableOpacity key={type} onPress={() => console.log(`pressed ${type} tag`)}>
                               {/* <Text style={{color: '#0099ff'}}>#{type.toLowerCase()}</Text> */}
-                              <Text>{type}</Text>
+                              <Text>{type} </Text>
                             </TouchableOpacity>
                           )
                         })}

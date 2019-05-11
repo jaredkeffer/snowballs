@@ -15,8 +15,8 @@ export default class CityScreen extends React.Component {
     super(props);
     this.state = {};
     if (props.navigation.state.params.data) {
-      this.state.city = {...props.navigation.state.params.data};
-      this.id = this.state.city.experience_id
+      this.state.data = {...props.navigation.state.params.data};
+      this.id = this.state.data.experience_id
     }
     else if (props.navigation.state.params.experience_id) {
       this.id = props.navigation.state.params.experience_id;
@@ -36,14 +36,14 @@ export default class CityScreen extends React.Component {
   }
 
   loadCityInfo = async (id) => {
-    this.setState({loading: true});
-    console.log(`loading city overview with id ${id}`);
-    let city = await api.getExperienceDetails(id, true);
-    this.setState({city, loading: false});
+    // this.setState({loading: true});
+    // console.log(`loading city overview with id ${id}`);
+    // let data = await api.getExperienceDetails(id, true);
+    // this.setState({data, loading: false});
   }
 
   _onRefreshExperiences = () => {
-    this.loadExperiencesForCity(this.id, this.state.city.city, true);
+    this.loadExperiencesForCity(this.id, this.state.data.city, true);
   }
 
   loadExperiencesForCity = async (id, city) => {
@@ -54,8 +54,8 @@ export default class CityScreen extends React.Component {
   }
 
   render() {
-    const { city, loading, expLoading, experiences } = this.state;
-    const { title, subtitle, img, city, type, overview, steps, details, country } = city;
+    const { data, loading, expLoading, experiences } = this.state;
+    const { title, subtitle, img, city, type, overview, steps, details, country } = data;
     if (loading) return <Spinner color="#383838" />;
     return (
       <Tabs tabBarUnderlineStyle={{backgroundColor: '#383838'}} renderTabBar={()=> <ScrollableTab />} >
@@ -99,7 +99,7 @@ export default class CityScreen extends React.Component {
               onRefresh={this._onRefreshExperiences}
             />
           }>
-            {experiences.map((content) => {
+            {experiences && experiences.map((content) => {
               return <ContentPreview
                 key={content.title}
                 title={content.title}
@@ -109,6 +109,17 @@ export default class CityScreen extends React.Component {
                 onPress={this.props.navigation.navigate}
               />
             })}
+            {!experiences &&
+              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={{padding: 20, textAlign: 'center', fontSize: 18}}>
+                  We could not get any experiences for {city} right now.
+                </Text>
+                <Icon name="md-arrow-down" />
+                <Text style={{paddingHorizontal: 20, textAlign: 'center', fontSize: 18}}>
+                  Please pull down to refresh
+                </Text>
+              </View>
+            }
           </Content>
         </Tab>
       </Tabs>

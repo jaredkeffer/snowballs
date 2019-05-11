@@ -7,9 +7,9 @@ import api from '../api/index'
 
 export default class CityOverview extends React.PureComponent {
   render() {
-    const { overview, title } = this.props;
+    const { overview, title, img } = this.props;
     const imgHeader = (
-      <View style={{flex: 1, height: height: 150}}>
+      <View style={{flex: 1, height: 150}}>
         <ImageBackground source={{uri: img}} style={{height: '100%', flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <Text style={{color: '#fff', fontSize: 32, fontWeight: '700'}}>{title}</Text>
         </ImageBackground>

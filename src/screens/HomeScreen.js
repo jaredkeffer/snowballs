@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, RefreshControl } from 'react-native';
-import { H2, Content, Container, Button, Tab, Tabs, TabHeading, View, Text, Spinner, Icon } from 'native-base';
+import { H2, H3, Content, Container, Button, Tab, Tabs, TabHeading, View, Text, Spinner, Icon } from 'native-base';
 
 import { Analytics, Auth } from 'aws-amplify';
 import SearchBar from 'react-native-searchbar'
@@ -167,6 +167,7 @@ const featuredContent = {
     {
       subtitle: 'This is an unbelievably simple and great subtitle for the ages about this city, This is an unbelievably simple and great subtitle for the ages about this city',
       city:'Some Mountains',
+      country: 'USA',
       key:'111233',
       img:'https://images.unsplash.com/photo-1555985202-12975b0235dc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1049&q=80',
       experience_id: 'qwerASDFasdf',
@@ -180,7 +181,8 @@ const featuredContent = {
       ]
     }, {
       subtitle: 'This is an unbelievably simple and great subtitle for the ages about this city, This is an unbelievably simple and great subtitle for the ages about this city',
-      city: 'Tokyo, Japan',
+      city: 'Tokyo',
+      country: 'Japan',
       key:'113',
       img:'https://cdn.cnn.com/cnnnext/dam/assets/170606110126-tokyo-skyline.jpg',
       experience_id: 'asdf',
@@ -294,6 +296,7 @@ export default class HomeScreen extends React.Component {
                         img={city.img}
                         data={city}
                         city={city.city}
+                        country={city.country}
                         onPress={this.props.navigation.navigate}
                       />
                     })}
@@ -324,7 +327,8 @@ export default class HomeScreen extends React.Component {
                   onRefresh={this._onRefresh}
                 />
               }>
-                {experiences.map((content) => {
+              {/* TODO: Make this its own component something like ContentPreviewList or something */}
+                {experiences && experiences.map((content) => {
                   return <ContentPreview
                     key={content.title}
                     title={content.title}
@@ -334,6 +338,17 @@ export default class HomeScreen extends React.Component {
                     onPress={this.props.navigation.navigate}
                   />
                 })}
+                {!experiences &&
+                  <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{padding: 20, textAlign: 'center', fontSize: 18}}>
+                      We could not get featured experiences
+                    </Text>
+                    <Icon name="md-arrow-down" />
+                    <Text style={{paddingHorizontal: 20, textAlign: 'center', fontSize: 18}}>
+                      Please pull down to refresh
+                    </Text>
+                  </View>
+                }
               </Content>
             </Tab>
           </Tabs>
@@ -350,6 +365,7 @@ const styles = StyleSheet.create({
   },
   tabIcon: {color: '#383838', fontSize: 22},
   tabText: {color: '#383838',},
+  majorIcon: {color: '#383838', fontSize: 55},
   containerDark: {
     flex: 1,
     backgroundColor: '#303844',

@@ -7,6 +7,7 @@ import CityOverview from '../components/CityOverview';
 
 import * as Animatable from 'react-native-animatable';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ContentPreview from '../components/ContentPreview';
 
 import api from '../api/index';
 
@@ -20,7 +21,8 @@ export default class CityScreen extends React.Component {
     }
     else if (props.navigation.state.params.experience_id) {
       this.id = props.navigation.state.params.experience_id;
-      this.loadCityInfo();
+      this.loadCity();
+      this.loadExperiencesForCity(this.id, this.state.data.city);
     }
   }
 
@@ -32,18 +34,19 @@ export default class CityScreen extends React.Component {
   };
 
   _onRefresh = () => {
-    this.loadCityInfo(this.id, true);
+    this.loadCity(this.id, true);
   }
 
-  loadCityInfo = async (id) => {
-    // this.setState({loading: true});
-    // console.log(`loading city overview with id ${id}`);
-    // let data = await api.getExperienceDetails(id, true);
-    // this.setState({data, loading: false});
+  loadCity = async (id) => {
+    this.setState({loading: true});
+    console.log(`loading city overview with id ${id}`);
+    let data = await api.getExperienceDetails(id, true);
+    console.log('data,', data);
+    this.setState({data, loading: false});
   }
 
   _onRefreshExperiences = () => {
-    this.loadExperiencesForCity(this.id, this.state.data.city, true);
+    this.loadExperiencesForCity(this.id, this.state.data.city);
   }
 
   loadExperiencesForCity = async (id, city) => {

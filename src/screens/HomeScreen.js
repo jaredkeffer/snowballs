@@ -58,8 +58,8 @@ export default class HomeScreen extends React.Component {
   }
 
   loadContent = () => {
-    this._onRefreshExperiences();
     this._onRefreshPlaces();
+    this._onRefreshExperiences();
   }
 
   _onRefreshExperiences = async () => {

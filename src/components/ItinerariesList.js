@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { FlatList } from 'react-native';
 import { Container, Content, ListItem, Thumbnail, Text, Left, Body, Right, View, Icon, } from 'native-base';
 import LoadingSpinner from './LoadingSpinner';

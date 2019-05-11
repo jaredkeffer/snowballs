@@ -3,7 +3,6 @@ import { TouchableOpacity, Image, ImageBackground } from 'react-native';
 import { View, Footer, Thumbnail, Text, Card, CardItem, Body, Icon, Left, Right, Spinner } from 'native-base';
 import {ParallaxImage} from 'react-native-snap-carousel';
 import styles from '../styles/SliderEntry.style';
-import api from '../api/index'
 
 export default class CityPreview extends React.PureComponent {
   render() {

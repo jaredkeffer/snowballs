@@ -6,6 +6,22 @@ or in the "license" file accompanying this file. This file is distributed on an 
 See the License for the specific language governing permissions and limitations under the License.
 */
 
+// NOTE: This is where the first part of our algorithm will live.
+//       Displaying content that a user will enjoy is part of our value proposition, and
+//       this will return the content for the home page of the app. Including but not limited to:
+//   1. Blog posts
+//   2. Food Tours
+//   3. Expereinces
+
+const AWS = require('aws-sdk')
+AWS.config.update({ region: process.env.TABLE_REGION });
+const dynamodb = new AWS.DynamoDB.DocumentClient();
+
+let tableName = "experiences";
+if(process.env.ENV && process.env.ENV !== "NONE") {
+  tableName = tableName + '-' + process.env.ENV;
+}
+
 var express = require('express')
 var bodyParser = require('body-parser')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
@@ -29,6 +45,19 @@ app.use(function(req, res, next) {
 
 app.get('/content', function(req, res) {
   // Add your code here
+  let provider = req.apiGateway.requestContext.identity.cognitoAuthenticationProvider;
+  provider = provider.split(':CognitoSignIn:')
+  let userId = provider[provider.length - 1];
+
+  // TODO: Use userId to get user preferences
+  // TODO: Get some expereinces and content based on those preferences and return
+
+  // NOTE: we will need to add descriptions to all of the experiences we already have
+  // For now just return any content we have and 10 experiences from NYC
+  // NOTE: the "give me experiences for this type of person" API does not exist
+
+
+
   res.json({success: 'get call succeed!', url: req.url});
 });
 

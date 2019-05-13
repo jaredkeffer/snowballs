@@ -12,6 +12,59 @@
                     "/GET"
                 ]
             }
+        },
+        {
+            "name": "/content/articles",
+            "lambdaFunction": "content",
+            "privacy": {
+                "protected": true,
+                "auth": [
+                    "/GET"
+                ],
+                "unauth": [
+                    "/GET"
+                ]
+            }
+        },
+        {
+            "name": "/content/cities",
+            "lambdaFunction": "content",
+            "privacy": {
+                "protected": true,
+                "auth": [
+                    "/GET"
+                ],
+                "unauth": [
+                    "/GET"
+                ]
+            }
+        },
+        {
+            "name": "/content/experiences",
+            "lambdaFunction": "content",
+            "privacy": {
+                "protected": true,
+                "auth": [
+                    "/GET"
+                ],
+                "unauth": [
+                    "/GET"
+                ]
+            }
+        },
+        {
+            "name": "/content/test",
+            "lambdaFunction": "content",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            }
         }
     ],
     "resourceName": "content",
@@ -22,8 +75,8 @@
         }
     ],
     "privacy": {
-        "auth": 1,
-        "unauth": 1,
+        "auth": 5,
+        "unauth": 4,
         "authRoleName": "dyssey-20190202111147-authRole",
         "unAuthRoleName": "dyssey-20190202111147-unauthRole"
     },
@@ -36,5 +89,6 @@
                 "Arn"
             ]
         }
-    ]
+    ],
+    "uuid": "a62d582e"
 }

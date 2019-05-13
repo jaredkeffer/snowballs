@@ -38,6 +38,11 @@ app.use(function(req, res, next) {
   next()
 });
 
+function extractUserId(req) {
+  let provider = req.apiGateway.requestContext.identity.cognitoAuthenticationProvider;
+  provider = provider.split(':CognitoSignIn:')
+  return provider[provider.length - 1];
+}
 
 /**********************
  * Example get method *
@@ -45,9 +50,7 @@ app.use(function(req, res, next) {
 
 app.get('/content', function(req, res) {
   // Add your code here
-  let provider = req.apiGateway.requestContext.identity.cognitoAuthenticationProvider;
-  provider = provider.split(':CognitoSignIn:')
-  let userId = provider[provider.length - 1];
+  const userId = extractUserId(req);
 
   // TODO: Use userId to get user preferences
   // TODO: Get some expereinces and content based on those preferences and return
@@ -56,14 +59,37 @@ app.get('/content', function(req, res) {
   // For now just return any content we have and 10 experiences from NYC
   // NOTE: the "give me experiences for this type of person" API does not exist
 
-
-
-  res.json({success: 'get call succeed!', url: req.url});
+  res.json({success: `get ALL featured content call succeed for user ${userId}`, url: req.url});
 });
 
-app.get('/content/*', function(req, res) {
+app.get('/content/cities', function(req, res) {
   // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
+  res.json({success: 'get featured CITIES call succeed!', url: req.url});
+});
+
+app.get('/content/cities/:experienceId', function(req, res) {
+  // Add your code here
+  res.json({success: `get featured cities call succeed for experience: ${req.params.experienceId}!`, url: req.url});
+});
+
+app.get('/content/articles', function(req, res) {
+  // Add your code here
+  res.json({success: 'get featured ARTICLES call succeed!', url: req.url});
+});
+
+app.get('/content/articles/:experienceId', function(req, res) {
+  // Add your code here
+  res.json({success: `get featured article for experience: ${req.params.experienceId} call succeed!`, url: req.url});
+});
+
+app.get('/content/experiences', function(req, res) {
+  // Add your code here
+  res.json({success: 'get featured EXPERIENCES call succeed!', url: req.url});
+});
+
+app.get('/content/experiences/:experienceId', function(req, res) {
+  // Add your code here
+  res.json({success: `get featured experience for experience: ${req.params.experienceId} call succeed!`, url: req.url});
 });
 
 /****************************

@@ -48,10 +48,11 @@ export default class ViewItineraryScreen extends React.Component {
 
   _loadData = async (id, refreshCache) => {
     console.log('loading view itinerary data aka experiences');
+    this.setState({loading: true});
 
     let data = await api.getUserItineraries(refreshCache);
     let itinerary = this._findItinerary(id, data);
-    console.log(itinerary);
+
     this.setState({itinerary});
     this.setState({loading: false});
   }
@@ -68,13 +69,13 @@ export default class ViewItineraryScreen extends React.Component {
   }
 
   _onRefresh = () => {
-    this.setState({loading: true});
+    this.setState({hasRefreshed: true});
     let id = (this.props.navigation.state.params.itinerary.itinerary_id)
     this._loadData(id, true);
   }
 
   render() {
-    let { itinerary, loading } = this.state;
+    let { itinerary, loading, hasRefreshed } = this.state;
 
     if (!itinerary) return <Spinner color="#ccc" style={{marginTop: 20}} />
 
@@ -151,7 +152,11 @@ export default class ViewItineraryScreen extends React.Component {
                 <CardItem>
                   <Body>
                     {day.experiences.map((exp, index) =>
-                      <MetaExperienceView key={`${exp}-${index}`} experienceId={exp} onPress={this.props.navigation.navigate}/>)}
+                      <MetaExperienceView
+                        key={`${exp}-${index}`}
+                        experienceId={exp}
+                        refreshCache={hasRefreshed}
+                        onPress={this.props.navigation.navigate} />)}
                   </Body>
                 </CardItem>
               }

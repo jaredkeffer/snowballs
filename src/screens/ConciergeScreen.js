@@ -102,7 +102,7 @@ export default class ConciergeScreen extends React.Component {
               data={upcoming}
               onPressItem={this._onPressItem}
               refreshing={this.state.refreshing}
-              onRefresh={this._loadData}/>
+              onRefresh={() => this._loadData(true, true)}/>
           </Tab>
           {/* <Tab heading="Recommended" activeTextStyle={{color: '#383838'}}>
             <ItinerariesList
@@ -122,7 +122,7 @@ export default class ConciergeScreen extends React.Component {
               data={past}
               onPressItem={this._onPressItem}
               refreshing={this.state.refreshing}
-              onRefresh={this._loadData}/>
+              onRefresh={() => this._loadData(true, true)}/>
           </Tab>
         </Tabs>
         <ActionButton

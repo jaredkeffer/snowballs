@@ -60,7 +60,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "dyssey-20190202111147-deployment",
-					"S3Key": "amplify-builds/content-1557788575-latest-build.zip"
+					"S3Key": "amplify-builds/content-1557894035-latest-build.zip"
 				}
 			}
 		},
@@ -137,6 +137,46 @@
 										},
 										"lambda": {
 											"Ref": "LambdaFunction"
+										}
+									}
+								]
+							}
+						},
+						{
+							"Effect": "Allow",
+							"Action": [
+								"dynamodb:GetItem",
+								"dynamodb:Query"
+							],
+							"Resource": {
+								"Fn::Sub": [
+									"arn:aws:dynamodb:${region}:${account}:table/experiences/index/type-featured-index",
+									{
+										"region": {
+											"Ref": "AWS::Region"
+										},
+										"account": {
+											"Ref": "AWS::AccountId"
+										}
+									}
+								]
+							}
+						},
+						{
+							"Effect": "Allow",
+							"Action": [
+								"dynamodb:GetItem",
+								"dynamodb:Query"
+							],
+							"Resource": {
+								"Fn::Sub": [
+									"arn:aws:dynamodb:${region}:${account}:table/users",
+									{
+										"region": {
+											"Ref": "AWS::Region"
+										},
+										"account": {
+											"Ref": "AWS::AccountId"
 										}
 									}
 								]

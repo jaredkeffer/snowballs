@@ -66,6 +66,7 @@ export default class HomeScreen extends React.Component {
     this.setState({refreshingExperiences: true});
 
     const experiences = await api.getFeaturedExperiences(true);
+    console.log(experiences);
     this.setState({experiences});
 
     this.setState({refreshingExperiences: false});
@@ -75,6 +76,7 @@ export default class HomeScreen extends React.Component {
     this.setState({refreshingPlaces: true});
 
     const featuredContent = await api.getFeaturedContent(true);
+    console.log(featuredContent);
     this.setState({articles: featuredContent.articles, cities: featuredContent.cities});
 
     this.setState({refreshingPlaces: false});

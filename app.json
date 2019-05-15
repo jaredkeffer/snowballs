@@ -23,7 +23,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.odyssey-expereinces.odyssey"
+      "bundleIdentifier": "com.odyssey-experiences.odyssey"
     }
   }
 }

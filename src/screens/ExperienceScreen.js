@@ -121,7 +121,7 @@ export default class ExperienceScreen extends React.Component {
                   </Text>
                 </CardItem>
                 <CardItem>
-                  <Text>{experience.description}</Text>
+                  <Text style={{lineHeight:22}}>{experience.description}</Text>
                 </CardItem>
                 <CardItem>
                   <Body style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -133,8 +133,8 @@ export default class ExperienceScreen extends React.Component {
                         {experience.category.map((type) => {
                           return (
                             <TouchableOpacity key={type} onPress={() => console.log(`pressed ${type} tag`)}>
-                              {/* <Text style={{color: '#0099ff'}}>#{type.toLowerCase()}</Text> */}
-                              <Text>{type} </Text>
+                              <Text style={{color: '#787878'}}>#{type.toLowerCase()} </Text>
+                              {/* <Text>{type} </Text> */}
                             </TouchableOpacity>
                           )
                         })}

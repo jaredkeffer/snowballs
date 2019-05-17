@@ -81,7 +81,6 @@ async function getFeaturedContent(refreshCache) {
     .catch((error) => {
       console.warn('Error getting featured content', error);
     });
-    console.log('featured content', response);
   return response.data;
 }
 

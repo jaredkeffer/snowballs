@@ -12,14 +12,11 @@ export class EmptyScreen extends React.Component {
     return (
       <Content>
         <View>
-          <Text note style={styles.textStyle}>
-            Looks like you do not have any itineraries in this section yet.
+          <Text style={styles.textStyle}>
+            Looks like you do not have any itineraries to show here.
           </Text>
-          <Text note style={styles.textStyle}>
-            Click the + button below to start creating one!
-          </Text>
-          <Text note style={styles.textStyle}>
-            Or you can pull down to refresh your itineraries.
+          <Text style={styles.textStyle}>
+            Click the + button below to start creating your new itinerary!
           </Text>
         </View>
       </Content>

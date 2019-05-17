@@ -22,7 +22,7 @@ export default class CityOverview extends React.PureComponent {
           <Card transparent>
             {overview.map((paragaph, i) => (
               <CardItem key={i}>
-                <Text>{paragaph}</Text>
+                <Text style={{lineHeight:22}}>{paragaph}</Text>
               </CardItem>
             ))}
           </Card>
@@ -34,7 +34,7 @@ export default class CityOverview extends React.PureComponent {
         {imgHeader}
         <Card transparent>
           <CardItem>
-            <Text>{overview}</Text>
+            <Text style={{lineHeight:22}}>{overview}</Text>
           </CardItem>
         </Card>
       </View>

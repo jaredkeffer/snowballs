@@ -66,7 +66,6 @@ export default class HomeScreen extends React.Component {
     this.setState({refreshingExperiences: true});
 
     const experiences = await api.getFeaturedExperiences(true);
-    console.log(experiences);
     this.setState({experiences});
 
     this.setState({refreshingExperiences: false});
@@ -76,7 +75,6 @@ export default class HomeScreen extends React.Component {
     this.setState({refreshingPlaces: true});
 
     const featuredContent = await api.getFeaturedContent(true);
-    console.log(featuredContent);
     this.setState({articles: featuredContent.articles, cities: featuredContent.cities});
 
     this.setState({refreshingPlaces: false});
@@ -84,7 +82,6 @@ export default class HomeScreen extends React.Component {
 
   render() {
     let { articles, cities, experiences, refreshingExperiences, refreshingPlaces } = this.state;
-
     return (
       <View style={styles.container}>
         {/* Search Bar */}
@@ -157,17 +154,22 @@ export default class HomeScreen extends React.Component {
                 />
               }>
               {/* TODO: Make this its own component something like ContentPreviewList or something */}
-                {experiences && experiences.map((content) => {
+                {experiences && experiences.length > 0  && experiences.map((content) => {
                   return <ContentPreview
-                    key={content.title}
-                    title={content.title}
+                    key={content.experience_id}
+                    title={content.name}
+                    city={content.city}
                     img={content.img}
-                    content={content}
-                    subtitle={content.subtitle}
+                    name={content.name}
+                    slot={content.slot}
+                    category={content.category}
+                    duration={content.duration}
+                    id={content.experience_id}
+                    description={content.description}
                     onPress={this.props.navigation.navigate}
                   />
                 })}
-                {!experiences &&
+                {(!experiences || experiences.length === 0) &&
                   <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                     <Text style={{padding: 20, textAlign: 'center', fontSize: 18}}>
                       We could not get featured experiences

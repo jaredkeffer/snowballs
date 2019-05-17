@@ -22,8 +22,10 @@ export default class CityScreen extends React.Component {
     else if (props.navigation.state.params.experience_id) {
       this.id = props.navigation.state.params.experience_id;
       this.loadCity();
-      this.loadExperiencesForCity(this.id, this.state.data.city);
     }
+  }
+  componentDidMount() {
+    this.loadExperiencesForCity(this.id, this.state.data.city);
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -53,7 +55,8 @@ export default class CityScreen extends React.Component {
     this.setState({expLoading: true});
     console.log(`loading ${city} experiences with id ${id}`);
     let experiences = await api.getFeaturedExperiencesForCity(id, city, true);
-    this.setState({experiences, loading: false});
+    console.log('experiences', experiences);
+    this.setState({experiences, expLoading: false});
   }
 
   render() {
@@ -102,24 +105,28 @@ export default class CityScreen extends React.Component {
               onRefresh={this._onRefreshExperiences}
             />
           }>
-            {experiences && experiences.map((content) => {
+            {experiences && experiences.length > 0 && experiences.map((content) => {
               return <ContentPreview
-                key={content.title}
-                title={content.title}
+                key={content.experience_id}
+                title={content.name}
                 img={content.img}
-                content={content}
-                subtitle={content.subtitle}
+                name={content.name}
+                slot={content.slot}
+                category={content.category}
+                duration={content.duration}
+                id={content.experience_id}
+                description={content.description}
                 onPress={this.props.navigation.navigate}
               />
             })}
-            {!experiences &&
+            {(!experiences || experiences.length === 0) &&
               <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                 <Text style={{padding: 20, textAlign: 'center', fontSize: 18}}>
-                  We could not get any experiences for {city} right now.
+                  We could not get featured experiences for {city} right now.
                 </Text>
                 <Icon name="md-arrow-down" />
                 <Text style={{paddingHorizontal: 20, textAlign: 'center', fontSize: 18}}>
-                  Please pull down to refresh
+                  Please pull down to refresh or try back later.
                 </Text>
               </View>
             }

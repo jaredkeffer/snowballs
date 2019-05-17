@@ -11,8 +11,8 @@ let path = '/content';
  */
 async function getFeaturedExperiencesForCity(id, city, refreshCache) {
   let cachedCityExperiences,
-      cityId = (city) ? city.toLowerCase().replace(' ', '_') : id + 'cityExp',
-      cacheId = `content-city-experiences-${cityId}`;
+      cityId = (city) ? city.toLowerCase() : id + 'cityExp',
+      cacheId = `content-city-experiences-${id}`;
 
   if (refreshCache) await Cache.removeItem(cacheId);
   else cachedCityExperiences = await Cache.getItem(cacheId);
@@ -23,7 +23,7 @@ async function getFeaturedExperiencesForCity(id, city, refreshCache) {
   }
 
   // Create API path to call API GW
-  let cityFeatuerdExperiences = `${path}/cities/${id}/experiences`;
+  let cityFeatuerdExperiences = `${path}/experiences?type=city&city=${city}`;
 
   // get experience from dynamo
   console.debug('calling api ', cityFeatuerdExperiences);
@@ -31,14 +31,12 @@ async function getFeaturedExperiencesForCity(id, city, refreshCache) {
     .catch((error) => {
       console.warn('Error getting experience: ', id, error);
     });
-
-  response = response[0];
+  console.log(response.data);
 
   // Cache the response
-  if (response) await Cache.setItem(cacheId, response, {priority: 4});
+  if (response.data) await Cache.setItem(cacheId, response.data, {priority: 4});
 
-  // return response;
-  return fakeExperiences;
+  return response.data;
 }
 
 /*
@@ -74,12 +72,26 @@ async function getFeaturedExperiences(refreshCache) {
 
 /*
  * @param id {string} the experience id you're looking for
- * @param city {string} the city name you're looking for
  * @returns {*} response from Lambda (aka Dynamo)
  */
 async function getFeaturedContent(refreshCache) {
+  console.debug('calling api', path);
+  // call api to get featured content
+  let response = await API.get(apiName, path)
+    .catch((error) => {
+      console.warn('Error getting featured content', error);
+    });
+    console.log('featured content', response);
+  return response.data;
+}
+
+/*
+ * @param id {string} the experience id you're looking for
+ * @returns {*} response from Lambda (aka Dynamo)
+ */
+async function getFeaturedArticles(refreshCache) {
   let cachedFeaturedContent,
-      cacheId = `featured-content`;
+      cacheId = `featured-articles`;
 
   if (refreshCache) await Cache.removeItem(cacheId);
   else cachedFeaturedContent = await Cache.getItem(cacheId);
@@ -88,12 +100,42 @@ async function getFeaturedContent(refreshCache) {
     console.log('got from cache', cachedFeaturedContent);
     return cachedFeaturedContent;
   }
-
-  console.debug('calling api', path);
+  const apiPath = `${path}/articles`
+  console.debug('calling api', apiPath);
   // call api to get featured content
-  let response = await API.get(apiName, path)
+  let response = await API.get(apiName, apiPath)
     .catch((error) => {
-      console.warn('Error getting featured content', error);
+      console.warn('Error getting featured articles', error);
+    });
+
+  // Cache the response
+  if (response.data) await Cache.setItem(cacheId, response.data, {priority: 5});
+
+  return response.data;
+}
+
+/*
+ * @param id {string} the experience id you're looking for
+ * @param city {string} the city name you're looking for
+ * @returns {*} response from Lambda (aka Dynamo)
+ */
+async function getFeaturedCities(refreshCache) {
+  let cachedFeaturedContent,
+      cacheId = `featured-cities`;
+
+  if (refreshCache) await Cache.removeItem(cacheId);
+  else cachedFeaturedContent = await Cache.getItem(cacheId);
+
+  if (cachedFeaturedContent) {
+    console.log('got from cache', cachedFeaturedContent);
+    return cachedFeaturedContent;
+  }
+  const apiPath = `${path}/cities`
+  console.debug('calling api', apiPath);
+  // call api to get featured content
+  let response = await API.get(apiName, apiPath)
+    .catch((error) => {
+      console.warn('Error getting featured cities', error);
     });
 
   // Cache the response
@@ -105,7 +147,9 @@ async function getFeaturedContent(refreshCache) {
 const ExperiencesAPI = {
   getFeaturedExperiencesForCity,
   getFeaturedExperiences,
+  getFeaturedArticles,
   getFeaturedContent,
+  getFeaturedCities
 };
 
 export default ExperiencesAPI;

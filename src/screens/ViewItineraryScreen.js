@@ -122,7 +122,7 @@ export default class ViewItineraryScreen extends React.Component {
         >
         {loading && <Spinner color="#383838" />}
         {/* Itinerary Overview */}
-        {!loading && <Card transparent>
+        {!loading && overview && <Card transparent>
           <CardItem header>
             <Text>Overview</Text>
           </CardItem>

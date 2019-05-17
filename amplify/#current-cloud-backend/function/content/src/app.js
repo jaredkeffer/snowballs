@@ -56,23 +56,30 @@ app.use(function(req, res, next) {
 
 const getFeaturedArticles = async (userId) => {
   let queryParams = featuredQuery('article', 'cohort_1');
-  let something = await dynamodb.query(queryParams).promise();
-  console.log('getFeaturedArticles', something);
-  return something
+  let response = await dynamodb.query(queryParams).promise();
+  console.log('getFeaturedArticles', response);
+  return response
 }
 
 const getFeaturedExperiences = async (userId) => {
   let queryParams = featuredQuery('experience', 'cohort_1');
-  let something = await dynamodb.query(queryParams).promise();
-  console.log('getFeaturedExperiences', something);
-  return something
+  let response = await dynamodb.query(queryParams).promise();
+  console.log('getFeaturedExperiences', response);
+  return response
+}
+
+const getFeaturedExperiencesForCity = async (userId, city) => {
+  let queryParams = featuredQuery('experience', 'cohort_1');
+  let response = await dynamodb.query(queryParams).promise();
+  console.log('getFeaturedExperiencesForCity', response);
+  return response
 }
 
 const getFeaturedCities = async (userId) => {
   let queryParams = featuredQuery('city', 'cohort_1');
-  let something = await dynamodb.query(queryParams).promise();
-  console.log('getFeaturedCities', something);
-  return something
+  let response = await dynamodb.query(queryParams).promise();
+  console.log('getFeaturedCities', response);
+  return response
 }
 
 /**********************
@@ -109,11 +116,6 @@ app.get('/content/cities', async function(req, res) {
   res.json({data: cities.Items, success: 'get featured CITIES call succeed!', url: req.url});
 });
 
-app.get('/content/cities/:experienceId', function(req, res) {
-  // Add your code here
-  res.json({success: `get featured cities call succeed for experience: ${req.params.experienceId}!`, url: req.url});
-});
-
 app.get('/content/articles', async function(req, res) {
   const userId = extractUserId(req.apiGateway.event);
   const articles = await getFeaturedArticles(userId);
@@ -129,10 +131,24 @@ app.get('/content/articles/:experienceId', function(req, res) {
 
 app.get('/content/experiences', async function(req, res) {
   const userId = extractUserId(req.apiGateway.event);
-  const experiences = await getFeaturedExperiences(userId);
-  console.log('/content/experiences returns:', experiences.Items);
+  const queryParams = req.apiGateway.event.queryStringParameters;
+  console.log('queryParams: ', queryParams);
 
-  res.json({data: experiences.Items, success: 'get featured EXPERIENCES call succeed!', url: req.url});
+  let data;
+  if (queryParams) {
+    if (queryParams.type === 'city' && queryParams.city) {
+      const cities = await getFeaturedExperiencesForCity(userId);
+      data = cities.Items.filter(city => {
+        return city.city === queryParams.city;
+      });
+    }
+  }
+  if (!data){
+    const experiences = await getFeaturedExperiences(userId);
+    data = experiences.Items
+  }
+  console.log('/content/experiences returns:', data);
+  res.json({data: data, success: 'get featured EXPERIENCES call succeed!', url: req.url});
 });
 
 app.get('/content/experiences/:experienceId', function(req, res) {

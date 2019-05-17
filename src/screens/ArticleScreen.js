@@ -95,7 +95,7 @@ export default class ArticleScreen extends React.Component {
                   </Body>
                 </CardItem>
                 { (typeof(overview) !== String) && overview.map((ov) =>
-                    <CardItem transparent style={{paddingHorizontal: 6}} key={ov}><Text>{ov}</Text></CardItem>)}
+                    <CardItem transparent style={{paddingHorizontal: 6}} key={ov}><Text style={{lineHeight:22}}>{ov}</Text></CardItem>)}
                 { (typeof(overview) === String) && <Text>{overview}</Text> }
 
                 {/* Steps */}
@@ -104,7 +104,7 @@ export default class ArticleScreen extends React.Component {
                       <Card key={index}>
                         <CardItem header style={{justifyContent: 'space-between'}}>
                           <Body>
-                            <Text>Step: {index + 1} - {step.title}</Text>
+                            <Text style={{fontWeight: 'bold'}}>{step.title}</Text>
                             <Text style={{fontStyle: 'italic', color: '#787878'}}>{step.address}</Text>
                           </Body>
                           {step.url &&
@@ -121,7 +121,7 @@ export default class ArticleScreen extends React.Component {
                         {step.text &&
                         <CardItem>
                           <Body>
-                            <Text>{step.text}</Text>
+                            <Text style={{lineHeight:22}}>{step.text}</Text>
                           </Body>
                         </CardItem>
                       }

@@ -132,30 +132,35 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 /*****************************************
  * HTTP Post method for get single object *
  *****************************************/
-
-app.post(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
+ function extractUserId(event) {
+   let provider = event.requestContext.identity.cognitoAuthenticationProvider;
+   provider = provider.split(':CognitoSignIn:');
+   return provider[provider.length - 1];
+ }
+app.post(path + '/itineraries', function(req, res) {
   console.log('req.apiGateway.event:');
   console.log(req.apiGateway.event);
+
+  let userId = extractUserId(req.apiGateway.event);
+  console.log('got user id', userId);
 
   var params = {
     TableName: tableName,
     Key: {
-      [sortKeyName]: convertUrlType(req.params[sortKeyName], sortKeyType),
-      [partitionKeyName]: (userIdPresent && req.apiGateway)
-        ? req.apiGateway.event.requestContext.identity.cognitoIdentityId
-        : req.params[partitionKeyName],
+      [sortKeyName]: 'itineraries',
+      [partitionKeyName]: userId,
     },
     UpdateExpression: "SET #c = list_append(#c, :vals)",
     ExpressionAttributeNames: {
        "#c": "itineraries"
     },
     ExpressionAttributeValues: {
-      ":vals": req.body,
+      ":vals": [req.body],
     },
     ReturnValues: "UPDATED_NEW"
   };
 
-  dynamodb.update(params,(err, data) => {
+  dynamodb.update(params, (err, data) => {
     if(err) {
       res.json({error: 'Could not load items: ' + err.message});
     } else {

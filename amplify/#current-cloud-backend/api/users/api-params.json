@@ -13,6 +13,27 @@
                     "/DELETE"
                 ]
             }
+        },
+        {
+            "name": "/users/itineraries",
+            "lambdaFunction": "users",
+            "privacy": {
+                "protected": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ],
+                "unauth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            }
         }
     ],
     "resourceName": "users",
@@ -23,8 +44,8 @@
         }
     ],
     "privacy": {
-        "auth": 1,
-        "unauth": 0,
+        "auth": 2,
+        "unauth": 1,
         "authRoleName": "dyssey-20190202111147-authRole",
         "unAuthRoleName": "dyssey-20190202111147-unauthRole"
     },
@@ -37,5 +58,6 @@
                 "Arn"
             ]
         }
-    ]
+    ],
+    "uuid": "bb1f3517"
 }

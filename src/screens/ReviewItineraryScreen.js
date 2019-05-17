@@ -34,12 +34,18 @@ export default class CreateItineraryScreen extends Component {
     console.log('submitting new itinerary');
     const { steps } = navigation.state.params;
     let qAndA = {};
-    steps.forEach(val => { qAndA[val.id] = this.state[val.id] });
+    steps.forEach(val => { qAndA[val.id] = this.state[val.id] || steps.message });
     console.log('questions and answers here:', qAndA);
     // TODO: add api call here to send email to Dez and create an new itinerary in the db.
     //       before I get to creating an itinerary in the db I have to rework the security to be iam role-row specific.
-    const response = await api.createNewItinerary(qAndA);
-    navigation.navigate('ThankYou', thankyouObj);
+    const response = await api.createNewItinerary(qAndA).catch(error => {
+      console.log(error);
+    });
+    if (response.error) {
+      this.setState({loading: false});
+    } else {
+      navigation.navigate('ThankYou', thankyouObj);
+    }
   }
 
   textChange = (text, step) => {

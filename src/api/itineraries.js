@@ -4,15 +4,10 @@ import UsersAPI from './users';
 let apiName = 'users';
 let path = '/users/itineraries';
 
-let buildPath = (sub, dataType) => {
-  return path + ['/object', sub, dataType].join('/');
-}
-
 async function createNewItinerary(questionsAndAnswers) {
 
   // get current user token
   let user = await UsersAPI.getUser();
-  path = buildPath(user.sub, 'itineraries');
 
   let myInit = {
     body: { ...questionsAndAnswers }

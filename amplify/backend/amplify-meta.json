@@ -19,7 +19,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/auth/users-cloudformation-template.yml",
 				"logicalId": "authusers"
 			},
-			"lastPushTimeStamp": "2019-05-17T08:55:59.215Z",
+			"lastPushTimeStamp": "2019-05-17T09:29:42.747Z",
 			"output": {
 				"AppClientSecret": "1epman2qitpimfm45kjhme3oboou6tolsg42ssd6khg2b5lnjr58",
 				"UserPoolId": "us-east-1_QcNFpa6Z2",
@@ -40,7 +40,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/experiences-cloudformation-template.json",
 				"logicalId": "storageexperiences"
 			},
-			"lastPushTimeStamp": "2019-05-17T08:55:59.216Z",
+			"lastPushTimeStamp": "2019-05-17T09:29:42.749Z",
 			"output": {
 				"PartitionKeyName": "experience_id",
 				"Region": "us-east-1",
@@ -57,7 +57,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/users-cloudformation-template.json",
 				"logicalId": "storageusers"
 			},
-			"lastPushTimeStamp": "2019-05-17T08:55:59.218Z",
+			"lastPushTimeStamp": "2019-05-17T09:29:42.750Z",
 			"output": {
 				"PartitionKeyName": "user_id",
 				"SortKeyName": "data_type",
@@ -86,19 +86,19 @@
 				}
 			],
 			"lastBuildTimeStamp": "2019-04-06T04:15:44.031Z",
-			"lastPackageTimeStamp": "2019-05-17T08:54:11.765Z",
-			"distZipFilename": "users-1558083246-latest-build.zip",
+			"lastPackageTimeStamp": "2019-05-17T09:27:53.032Z",
+			"distZipFilename": "users-1558085268-latest-build.zip",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/users-cloudformation-template.json",
 				"logicalId": "functionusers"
 			},
-			"lastPushTimeStamp": "2019-05-17T08:55:59.228Z",
+			"lastPushTimeStamp": "2019-05-17T09:29:42.757Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:users",
 				"Name": "users"
 			},
-			"lastPushDirHash": "bI2PMFMTQVxzC+qtDK8DpuASZB8="
+			"lastPushDirHash": "U9LD2fvtdxF0hbaBr0eQul2GKXo="
 		},
 		"experiences": {
 			"service": "Lambda",
@@ -121,7 +121,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/experiences-cloudformation-template.json",
 				"logicalId": "functionexperiences"
 			},
-			"lastPushTimeStamp": "2019-05-17T08:55:59.219Z",
+			"lastPushTimeStamp": "2019-05-17T09:29:42.753Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:experiences",
@@ -141,7 +141,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/content-cloudformation-template.json",
 				"logicalId": "functioncontent"
 			},
-			"lastPushTimeStamp": "2019-05-17T08:55:59.220Z",
+			"lastPushTimeStamp": "2019-05-17T09:29:42.754Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:content",
@@ -168,12 +168,12 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/users-cloudformation-template.json",
 				"logicalId": "apiusers"
 			},
-			"lastPushTimeStamp": "2019-05-17T08:55:59.224Z",
+			"lastPushTimeStamp": "2019-05-17T09:29:42.754Z",
 			"output": {
 				"ApiName": "users",
 				"RootUrl": "https://tmpumi0dn6.execute-api.us-east-1.amazonaws.com/Prod"
 			},
-			"lastPushDirHash": "O1EDfNk6scvtO8jMy2ABVLATzOs="
+			"lastPushDirHash": "peUVWBP0/APq8a30asItNzuSpF8="
 		},
 		"experiences": {
 			"service": "API Gateway",
@@ -192,7 +192,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/experiences-cloudformation-template.json",
 				"logicalId": "apiexperiences"
 			},
-			"lastPushTimeStamp": "2019-05-17T08:55:59.225Z",
+			"lastPushTimeStamp": "2019-05-17T09:29:42.755Z",
 			"output": {
 				"ApiName": "experiences",
 				"RootUrl": "https://2jgbb32fvi.execute-api.us-east-1.amazonaws.com/Prod"
@@ -216,7 +216,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/content-cloudformation-template.json",
 				"logicalId": "apicontent"
 			},
-			"lastPushTimeStamp": "2019-05-17T08:55:59.226Z",
+			"lastPushTimeStamp": "2019-05-17T09:29:42.756Z",
 			"output": {
 				"ApiName": "content",
 				"RootUrl": "https://vaesb9usg1.execute-api.us-east-1.amazonaws.com/Prod"

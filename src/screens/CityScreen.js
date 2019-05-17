@@ -43,7 +43,6 @@ export default class CityScreen extends React.Component {
     this.setState({loading: true});
     console.log(`loading city overview with id ${id}`);
     let data = await api.getExperienceDetails(id, true);
-    console.log('data,', data);
     this.setState({data, loading: false});
   }
 
@@ -55,7 +54,6 @@ export default class CityScreen extends React.Component {
     this.setState({expLoading: true});
     console.log(`loading ${city} experiences with id ${id}`);
     let experiences = await api.getFeaturedExperiencesForCity(id, city, true);
-    console.log('experiences', experiences);
     this.setState({experiences, expLoading: false});
   }
 

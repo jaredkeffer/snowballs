@@ -62,7 +62,7 @@ export default Questions = [
     component: <WhenAndWhere />
   },
   {
-    question:'How many times have you been to <city>?',
+    question:'How many times have you been there?',
     options:[
       'Never',
       'Once',
@@ -102,7 +102,7 @@ export default Questions = [
     open: true,
   },
   {
-    question:'Is there anything that you cannot miss in <city>? \n(For example: If you were traveling to Paris and you absolutely had to go the Eiffel Tower, you would put Eiffel Tower)',
+    question:'Is there anything that you cannot miss on this trip? \n(For example: If you were traveling to Paris and you absolutely had to go the Eiffel Tower, you would put Eiffel Tower)',
     open: true,
   },
   {

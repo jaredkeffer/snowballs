@@ -129,6 +129,45 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
   });
 });
 
+/*****************************************
+ * HTTP Post method for get single object *
+ *****************************************/
+
+app.post(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
+  console.log('req.apiGateway.event:');
+  console.log(req.apiGateway.event);
+
+  var params = {
+    TableName: tableName,
+    Key: {
+      [sortKeyName]: convertUrlType(req.params[sortKeyName], sortKeyType),
+      [partitionKeyName]: (userIdPresent && req.apiGateway)
+        ? req.apiGateway.event.requestContext.identity.cognitoIdentityId
+        : req.params[partitionKeyName],
+    },
+    UpdateExpression: "SET #c = list_append(#c, :vals)",
+    ExpressionAttributeNames: {
+       "#c": "itineraries"
+    },
+    ExpressionAttributeValues: {
+      ":vals": req.body,
+    },
+    ReturnValues: "UPDATED_NEW"
+  };
+
+  dynamodb.update(params,(err, data) => {
+    if(err) {
+      res.json({error: 'Could not load items: ' + err.message});
+    } else {
+      if (data.Item) {
+        res.json(data.Item);
+      } else {
+        res.json(data) ;
+      }
+    }
+  });
+});
+
 
 /************************************
 * HTTP put method for insert object *

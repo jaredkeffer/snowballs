@@ -68,7 +68,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "dyssey-20190202111147-deployment",
-					"S3Key": "amplify-builds/users-1554524144-latest-build.zip"
+					"S3Key": "amplify-builds/users-1558083246-latest-build.zip"
 				}
 			}
 		},

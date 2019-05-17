@@ -1,42 +1,31 @@
 import { Auth, API, Analytics, Cache } from 'aws-amplify';
 import UsersAPI from './users';
 
-let apiName = 'itineraries';
-let path = '/itineraries';
+let apiName = 'users';
+let path = '/users/itineraries';
 
-/*
-  @param {Date} startDate
-  @param {Date} endDate
-  @returns {*} itinerary object
+let buildPath = (sub, dataType) => {
+  return path + ['/object', sub, dataType].join('/');
+}
 
-  Note: We will eventually need to support multi city + travel time between them
-  aka Em's Road trip idea
-
-*/
-async function createNewItinerary(start, end, city) {
-  let newPath = `${path}/new`;
+async function createNewItinerary(questionsAndAnswers) {
 
   // get current user token
   let user = await UsersAPI.getUser();
-
-  // TODO: parse activity slots
-  let activitySlots = ["Morning"];
+  path = buildPath(user.sub, 'itineraries');
 
   let myInit = {
-    body:{
-      email: user.email,
-      sub: user.sub,
-      city,
-      activitySlots,
-      start, end,
-    }
+    body: { ...questionsAndAnswers }
   };
 
-  let response = await API.post(apiName, newPath, myInit)
+  console.log('got user', user, 'using path', path, 'with request params ', myInit);
+
+  let response = await API.post(apiName, path, myInit)
     .catch((error) => {
-      console.error('Error getting experience: ', apiName, error);
+      console.error('Error creating itinerary: ', apiName, error);
     });
-  console.log('post response', response);
+  console.log('create itinerary response', response);
+  return response;
 }
 
 const ItinerariesAPI = {

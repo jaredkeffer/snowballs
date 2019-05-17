@@ -1,30 +1,29 @@
 import React, { Component } from 'react';
-import { Button, Container, Content, H1, H2, H3, View, Text } from 'native-base';
-import { Alert, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { Button, Container, Content, H1, H2, H3, View, Text, Card, CardItem, Textarea } from 'native-base';
+import { Alert, SafeAreaView, StatusBar, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 import { I18n } from 'aws-amplify';
 import DateRangePicker from '../components/DateRangePicker';
+import Questions from '../constants/Questions';
+import api from '../api/index';
 
 import layout from '../constants/Layout';
 
 export default class CreateItineraryScreen extends Component {
-  state = {};
 
   constructor(props){
-    super(props)
+    super(props);
+    const { steps, values } = this.props.navigation.state.params;
+    this.state = {};
+    steps.forEach(val => { this.state[val.id] = val.value });
   }
 
   static navigationOptions = {
     title: "Review Itinerary",
   };
 
-  edit = (e) => {
-    console.log(e);
-    console.log('edit');
-  }
-  submit = () => {
+  submit = async () => {
     this.setState({loading: true});
     const { navigation } = this.props;
-    const { steps } = navigation.state.params;
     let thankyouObj = {
       subtitle: 'We’re hard at work building your itinerary. We’ll send you a notification once we’re done.  In the meantime, check out our home screen.',
       title: 'Itinerary Processing',
@@ -33,13 +32,22 @@ export default class CreateItineraryScreen extends Component {
       refreshCache: true,
     }
     console.log('submitting new itinerary');
+    const { steps } = navigation.state.params;
+    let qAndA = {};
+    steps.forEach(val => { qAndA[val.id] = this.state[val.id] });
+    console.log('questions and answers here:', qAndA);
     // TODO: add api call here to send email to Dez and create an new itinerary in the db.
     //       before I get to creating an itinerary in the db I have to rework the security to be iam role-row specific.
+    const response = await api.createNewItinerary(qAndA);
     navigation.navigate('ThankYou', thankyouObj);
   }
 
+  textChange = (text, step) => {
+    this.setState({[step]: text});
+  }
+
   render() {
-    const { steps, values } = this.props.navigation.state.params;
+    const { steps } = this.props.navigation.state.params;
     return (
       <SafeAreaView style={styles.container}>
         <Container>
@@ -47,13 +55,50 @@ export default class CreateItineraryScreen extends Component {
             <View style={{flex:10}}>
               <Content style={[styles.container]}>
                 <Text style={styles.title}>Itinerary Summary</Text>
-                {steps.map((step, index) =>
-                  (index % 2 == 0)
-                  ? <View key={'itin'+index} style={[styles.hrView, {flex:1, flexDirection:'row'}]}>
-                      <Text style={styles.answer}>{step.message}</Text>
-                      <TouchableOpacity onPress={this.edit}><Text style={{color:'#0099ff'}}>Edit</Text></TouchableOpacity>
-                    </View>
-                  : <Text key={'itin'+index} style={styles.question}>{step.message}</Text>)}
+                {steps.map((step, index) => {
+
+                  const stepValueId = String(index);
+
+                  if (index <= 1 && step.message.includes('Hi! Thanks for using Odyssey!')){
+                    const splitUpMessage = step.message.split('\n');
+                    step.message = splitUpMessage[splitUpMessage.length - 1];
+                  }
+                  if (index % 2 == 0) {
+                    if (step.id === '4') {
+                      // TODO: make this the date picker
+                       return (
+                         <Card key={'itin'+index}>
+                           <CardItem>
+                             <Text>{(new Date(step.value.start)).toLocaleDateString()} - {(new Date(step.value.end)).toLocaleDateString()}</Text>
+                           </CardItem>
+                         </Card>
+                       );
+                    }
+                    return (
+                      <Card key={'itin'+index}>
+                        <CardItem>
+                          <Textarea
+                            style={{flex:1}}
+                            bordered
+                            keyboardAppearance="dark"
+                            returnKeyType="done"
+                            onSubmitEditing={() => Keyboard.dismiss()}
+                            rowSpan={3}
+                            value={this.state[stepValueId] || ''}
+                            onChangeText={(text) => this.textChange(text, stepValueId)}
+                          />
+                        </CardItem>
+                      </Card>
+                    );
+                  }
+                  return (
+                    <Card key={'itin'+index} transparent>
+                      <CardItem header>
+                        <Text>{step.message}</Text>
+                      </CardItem>
+                    </Card>
+                  );
+                })}
               </Content>
             </View>
             <View style={{flex: 0, padding: 4}}>
@@ -78,7 +123,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-
+    padding: 10,
   },
   answer: {
     padding: 12,

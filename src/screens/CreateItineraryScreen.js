@@ -23,7 +23,7 @@ export default class CreateItineraryScreen extends Component {
   };
 
   handleEnd = (result) => {
-    const {renderedSteps, steps, values} = result;
+    const {steps, values} = result;
     this.props.navigation.navigate('ReviewItinerary', {steps, values});
   }
 
@@ -50,7 +50,7 @@ export default class CreateItineraryScreen extends Component {
         <ChatBot
           steps={steps}
           avatarStyle={{display: 'none'}}
-          botDelay={300}
+          botDelay={250}
           userDelay={20}
           hideUserAvatar={true}
           keyboardVerticalOffset={(Platform.OS === 'ios') ? 62 : 0}

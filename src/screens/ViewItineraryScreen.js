@@ -1,10 +1,12 @@
 import React from 'react';
+import ActionButton from 'react-native-action-button';
 import { RefreshControl, StyleSheet, ImageBackground } from 'react-native';
-import { Container, Content, View, Text, Card, CardItem, Body, Icon, Right } from 'native-base';
+import { Container, Content, View, Text, Card, CardItem, Body, Icon, Right, Button } from 'native-base';
 import LoadingSpinner from '../components/LoadingSpinner';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
 
 import * as Animatable from 'react-native-animatable';
+import Tooltip from 'react-native-walkthrough-tooltip';
 
 import MetaExperienceView from '../components/MetaExperienceView';
 import api from '../api';
@@ -25,8 +27,9 @@ export default class ViewItineraryScreen extends React.Component {
       itinerary: (navigation.state.params)
         ? navigation.state.params.itinerary
         : {},
-      showNavTitle: false
+      showNavTitle: false,
     }
+    this._showTooltip();
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -37,6 +40,12 @@ export default class ViewItineraryScreen extends React.Component {
 
     };
   };
+
+  _showTooltip = () => {
+    // const that = this;
+    // setTimeout(() => that.setState({confirmToolTipVisible: true}), 1300);
+    setTimeout(() => this.setState({confirmToolTipVisible: true}), 1300);
+  }
 
   toggleDay = (day, index) => {
     let { itinerary } = this.state;
@@ -84,6 +93,7 @@ export default class ViewItineraryScreen extends React.Component {
         end = new Date(dates.end);
 
     return (
+      <View style={{flex: 1}}>
       <HeaderImageScrollView
         maxHeight={150}
         minHeight={50}
@@ -175,6 +185,49 @@ export default class ViewItineraryScreen extends React.Component {
         }
       </TriggeringView>
       </HeaderImageScrollView>
+      {!loading && (itinerary.status === 'Pending Approval') &&
+        <View>
+          <Tooltip
+            animated
+            placement="bottom"
+            childlessPlacementPadding={35}
+            isVisible={this.state.confirmToolTipVisible}
+            content={
+              <Text style={{width: 200, textAlign: 'center'}}>
+                Press the <Icon name="ios-checkmark" style={{paddingHorizontal: 6, color: '#5cb85c', fontWeight:'900'}} /> after looking over your itinerary to confirm it is what you were hoping for!
+              </Text>}
+            onClose={() => this.setState({ confirmToolTipVisible: false, feedbackToolTipVisible: true })}
+          />
+          <Tooltip
+            animated
+            placement="bottom"
+            childlessPlacementPadding={35}
+            isVisible={this.state.feedbackToolTipVisible}
+            content={
+              <Text style={{width: 250, textAlign: 'center'}}>
+                Press the <Icon name="md-hammer" style={{paddingHorizontal: 6, color: '#d9534f', fontWeight:'900'}} /> if you want something changed or want to ask a question about it!
+              </Text>}
+            onClose={() => this.setState({ feedbackToolTipVisible: false })}
+          />
+        </View>
+      }
+      {!loading && (itinerary.status === 'Pending Approval') &&
+        <ActionButton
+          position="right"
+          onPress={this.submit}
+          renderIcon={() => <Icon name="ios-checkmark" style={{fontSize: 54, fontWeight: 'bold', color: '#fff'}}/>}
+          buttonColor="#5cb85c"
+        />
+      }
+      {!loading && (itinerary.status === 'Pending Approval') &&
+        <ActionButton
+          position="left"
+          onPress={this.submit}
+          renderIcon={() => <Icon name="md-hammer" style={{fontSize: 34, fontWeight: 'bold', color: '#fff'}}/>}
+          buttonColor="#d9534f"
+        />
+      }
+      </View>
     );
   }
 }

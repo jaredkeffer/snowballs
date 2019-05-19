@@ -23,6 +23,7 @@ const HomeStack = createStackNavigator({
   Experience: ExperienceScreen,
   Article: ArticleScreen,
   City: CityScreen,
+  NewItinerary: CreateItineraryScreen,
 });
 
 HomeStack.navigationOptions = {

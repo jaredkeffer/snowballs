@@ -3,6 +3,7 @@ import { Image, StyleSheet, RefreshControl } from 'react-native';
 import { H2, H3, Content, Container, Button, Tab, Tabs, TabHeading, View, Text, Spinner, Icon } from 'native-base';
 
 import { Analytics, Auth } from 'aws-amplify';
+import ActionButton from 'react-native-action-button';
 import SearchBar from 'react-native-searchbar'
 import Features from '../util/features';
 import CityPreview from '../components/CityPreview';
@@ -78,6 +79,10 @@ export default class HomeScreen extends React.Component {
     this.setState({articles: featuredContent.articles, cities: featuredContent.cities});
 
     this.setState({refreshingPlaces: false});
+  }
+
+  _newItineraryBtnPressed = () => {
+    this.props.navigation.navigate('NewItinerary');
   }
 
   render() {
@@ -184,6 +189,9 @@ export default class HomeScreen extends React.Component {
             </Tab>
           </Tabs>
         </Container>
+        <ActionButton
+          buttonColor="#383838"
+          onPress={this._newItineraryBtnPressed} />
       </View>
     );
   }

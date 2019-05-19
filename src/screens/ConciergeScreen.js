@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, } from 'react-native';
-import { Container, Tab, Tabs, TabHeading, View, Text, Spinner, Icon, } from 'native-base';
+import { Container, Content, Tab, Tabs, TabHeading, View, Text, Spinner, Icon, } from 'native-base';
 
 import ActionButton from 'react-native-action-button';
 import { CarouselWrapper } from '../components/CarouselWrapper';
-import ItinerariesList from '../components/ItinerariesList';
+import ItinerariesList, { EmptyScreen } from '../components/ItinerariesList';
 import ItineraryAPI from '../api/itineraries';
 import api from '../api';
 
@@ -43,15 +43,18 @@ export default class ConciergeScreen extends React.Component {
 
     let data = {
       upcoming: [],
-      // saving for later
-      // recommended: [],
+      recommended: [],
       past: [],
     };
 
     let rawData = await api.getUserItineraries(refreshCache);
 
     if (rawData.itineraries && rawData.itineraries.length) {
-      rawData.itineraries.sort((a, b) => a.dates.start > b.dates.start);
+      rawData.itineraries.sort((a, b) => {
+        let realA = (a.dates && a.dates.start) ? a.dates.start : (a.body && a.body['4']) ? a.body['4'].start : undefined;
+        let realB = (b.dates && b.dates.start) ? b.dates.start : (b.body && b.body['4']) ? b.body['4'].start : undefined;
+        return realA > realB;
+      });
 
       let now = new Date();
 
@@ -65,13 +68,15 @@ export default class ConciergeScreen extends React.Component {
         // }),
         upcoming: rawData.itineraries
           .filter((itinerary) => {
+            if (!itinerary.dates || !itinerary.dates.end) return true;
             let endIsBeforeNow = now.getTime() > itinerary.dates.end;
             if (endIsBeforeNow) return false;
             return true;
           }),
-        recommended: rawData.itineraries,
+        recommended: rawData.recommended,
         past: rawData.itineraries
           .filter((itinerary) => {
+            if (!itinerary.dates || !itinerary.dates.end) return false;
             let endIsBeforeNow = now.getTime() > itinerary.dates.end;
             if (endIsBeforeNow) return true;
             return false;
@@ -93,7 +98,7 @@ export default class ConciergeScreen extends React.Component {
           <Tab heading={
               <TabHeading>
                 <Icon name="md-timer" style={styles.tabIcon} />
-                <Text style={styles.tabText}>Upcoming</Text>
+                <Text style={styles.tabText}>Itineraries</Text>
               </TabHeading>
             }
           >
@@ -104,13 +109,15 @@ export default class ConciergeScreen extends React.Component {
               refreshing={this.state.refreshing}
               onRefresh={() => this._loadData(true, true)}/>
           </Tab>
-          {/* <Tab heading="Recommended" activeTextStyle={{color: '#383838'}}>
-            <ItinerariesList
-              data={recommended}
-              onPressItem={this._onPressItem}
-              refreshing={this.state.refreshing}
-              onRefresh={this._loadData}/>
-          </Tab> */}
+          {recommended && recommended.length > 0 &&
+            <Tab heading="Recommended" activeTextStyle={{color: '#383838'}}>
+              <ItinerariesList
+                data={recommended}
+                onPressItem={this._onPressItem}
+                refreshing={this.state.refreshing}
+                onRefresh={this._loadData}/>
+            </Tab>
+          }
           <Tab heading={
               <TabHeading>
                 <Icon name="md-photos" style={styles.tabIcon} />
@@ -118,11 +125,19 @@ export default class ConciergeScreen extends React.Component {
               </TabHeading>
             }
           >
-            <ItinerariesList
-              data={past}
-              onPressItem={this._onPressItem}
-              refreshing={this.state.refreshing}
-              onRefresh={() => this._loadData(true, true)}/>
+            {past && past.length > 1 &&
+              <ItinerariesList
+                data={past}
+                onPressItem={this._onPressItem}
+                refreshing={this.state.refreshing}
+                onRefresh={() => this._loadData(true, true)}
+              />
+            }
+            {past && past.length === 0 &&
+              <Content>
+                <EmptyScreen msg="This is where you will find itineraries for trips that you have completed." />
+              </Content>
+            }
           </Tab>
         </Tabs>
         <ActionButton

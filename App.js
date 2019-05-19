@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import NativeBase from "native-base";
+import { Root } from "native-base";
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator, { FirstAppLogin } from './src/navigation/AppNavigator';
 import api from './src/api';
@@ -35,15 +35,17 @@ class App extends React.Component {
       );
     } else {
       return (
-        <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          {this.state.first && (
-            <FirstAppLogin screenProps={{...this.props}}/>
-          )}
-          {!this.state.first && (
-            <AppNavigator screenProps={{...this.props}}/>
-          )}
-        </View>
+        <Root>
+          <View style={styles.container}>
+            {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+            {this.state.first && (
+              <FirstAppLogin screenProps={{...this.props}}/>
+            )}
+            {!this.state.first && (
+              <AppNavigator screenProps={{...this.props}}/>
+            )}
+          </View>
+        </Root>
       );
     }
   }

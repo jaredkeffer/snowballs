@@ -3,7 +3,6 @@ import { Button, Container, Content, H1, H2, H3, View, Text, Card, CardItem, Tex
 import { Alert, SafeAreaView, StatusBar, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 import { I18n } from 'aws-amplify';
 import DateRangePicker from '../components/DateRangePicker';
-import Questions from '../constants/Questions';
 import api from '../api/index';
 
 import layout from '../constants/Layout';
@@ -19,34 +18,37 @@ export default class CreateItineraryScreen extends Component {
 
   static navigationOptions = {
     title: "Review Itinerary",
+    headerLeft: null,
   };
 
   submit = async () => {
+    console.log('submitting new itinerary');
     this.setState({loading: true});
     const { navigation } = this.props;
-    let thankyouObj = {
-      subtitle: 'We’re hard at work building your itinerary. We’ll send you a notification once we’re done.  In the meantime, check out our home screen.',
-      title: 'Itinerary Processing',
-      nextScreen: 'Concierge',
-      buttonText: 'Back to Itineraries',
-      refreshCache: true,
-    }
-    console.log('submitting new itinerary');
+
     const { steps } = navigation.state.params;
     let qAndA = {};
     steps.forEach(val => { qAndA[val.id] = this.state[val.id] || steps.message });
+
     const response = await api.createNewItinerary(qAndA).catch(error => {
       console.log(error);
     });
     if (response.error) {
       this.setState({loading: false});
     } else {
+      let thankyouObj = {
+        subtitle: 'We’re hard at work building your itinerary. We’ll send you a notification once we’re done.  In the meantime, check out our home screen.',
+        title: 'Itinerary Processing',
+        nextScreen: 'Concierge',
+        buttonText: 'Back to Itineraries',
+        refreshCache: true,
+      }
       navigation.navigate('ThankYou', thankyouObj);
     }
   }
 
-  textChange = (text, step) => {
-    this.setState({[step]: text});
+  textChange = (text, stepId) => {
+    this.setState({[stepId]: text});
   }
 
   render() {

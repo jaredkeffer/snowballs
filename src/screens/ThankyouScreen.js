@@ -10,6 +10,7 @@ export default class ThankYouScreen extends React.PureComponent {
 
   static navigationOptions = {
     title: "Thank You",
+    headerLeft: null,
   };
 
   render() {

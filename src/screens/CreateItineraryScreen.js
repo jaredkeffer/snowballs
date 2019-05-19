@@ -4,7 +4,9 @@ import { Button, Text, View} from 'native-base';
 import { Cache } from 'aws-amplify';
 import ChatBot from 'react-native-chatbot';
 import DateRangePicker from '../components/DateRangePicker';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { formattedSteps } from '../constants/Questions';
+import api from '../api/index';
 
 import layout from '../constants/Layout';
 
@@ -12,15 +14,24 @@ const XDate = require('xdate');
 const oneWeek =  (6.048 * 10**8) * (5/7);
 
 export default class CreateItineraryScreen extends Component {
-  state = {};
 
   constructor(props){
-    super(props)
+    super(props);
+    this.state = {
+      loading: true,
+    };
+
+    this._loadData();
   }
 
   static navigationOptions = {
     title: "Create Itinerary",
   };
+
+  _loadData = async () => {
+    const questions = await api.getItineraryQuestions();
+    this.setState({loading: false, questions});
+  }
 
   handleEnd = (result) => {
     const {steps, values} = result;
@@ -34,9 +45,11 @@ export default class CreateItineraryScreen extends Component {
   }
 
   render() {
-    const { botName, showChatBot, welcomeMessage } = this.state;
+    const { botName, showChatBot, welcomeMessage, loading, questions } = this.state;
+    if (loading) return <LoadingSpinner />;
+
     const { navigation } = this.props;
-    let steps = formattedSteps();
+    let steps = formattedSteps(questions);
 
     let allowSkip = (navigation.state && navigation.state.params) ? navigation.state.params.allowSkip : false;
 

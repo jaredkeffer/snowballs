@@ -86,7 +86,6 @@ ExploreLocalStack.navigationOptions = {
 
 const SettingsStack = createStackNavigator({
   Settings: SettingsScreen,
-  Preferences: PreferencesScreen,
 });
 
 SettingsStack.navigationOptions = {

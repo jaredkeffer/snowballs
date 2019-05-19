@@ -3,8 +3,8 @@ import { Cache } from 'aws-amplify';
 import { Button, H1, H2, H3 } from 'native-base';
 import { ActivityIndicator, ImageBackground, View, SafeAreaView, ScrollView, StyleSheet, Text, FlatList } from 'react-native';
 import layout from '../constants/Layout';
+import LoadingSpinner from '../components/LoadingSpinner';
 import Preference from '../components/Preference';
-import { PreferenceQuestions } from '../constants/Questions';
 import api from '../api';
 
 export default class PreferencesScreen extends React.PureComponent {
@@ -16,11 +16,12 @@ export default class PreferencesScreen extends React.PureComponent {
       saved: false,
       saveDisabled: true,
       pageIndex: 0,
+      loading: true,
     };
-    this._setSelected();
+    this._loadData();
   }
 
-  _setSelected = async () => {
+  _loadData = async () => {
     let userPreferences = await api.getUserPreferences();
     let preferences = (userPreferences && Object.keys(userPreferences).length )
       ? userPreferences.preferences
@@ -34,6 +35,8 @@ export default class PreferencesScreen extends React.PureComponent {
       this.setState({selected});
       this.setState({saveDisabled: false});
     }
+    const preferenceQuestions = await api.getPreferenceQuestions();
+    this.setState({loading: false, preferenceQuestions});
   }
 
   static navigationOptions = {
@@ -84,8 +87,8 @@ export default class PreferencesScreen extends React.PureComponent {
   }
 
   nextOrSave = () => {
-    const { pageIndex } = this.state;
-    if (pageIndex === PreferenceQuestions.length -1) return this.save();
+    const { pageIndex, preferenceQuestions } = this.state;
+    if (pageIndex === preferenceQuestions.length -1) return this.save();
     else return this.setState({pageIndex: pageIndex + 1});
   }
 
@@ -124,8 +127,8 @@ export default class PreferencesScreen extends React.PureComponent {
   }
 
   render() {
-    const { pageIndex, saveDisabled } = this.state;
-
+    const { loading, pageIndex, saveDisabled, preferenceQuestions } = this.state;
+    if (loading) return <LoadingSpinner />;
     return (
       <ImageBackground
         source={this.bgImage}
@@ -134,7 +137,7 @@ export default class PreferencesScreen extends React.PureComponent {
       >
         <SafeAreaView style={styles.container}>
           <ScrollView style={[styles.container, {paddingTop: 30}]}>
-            {this.createQuestion(PreferenceQuestions[pageIndex])}
+            {this.createQuestion(preferenceQuestions[pageIndex])}
           </ScrollView>
           <View>
             <View style={[styles.btnContainer]}>
@@ -151,11 +154,11 @@ export default class PreferencesScreen extends React.PureComponent {
                 disabled={saveDisabled}
                 style={[(saveDisabled) ? {backgroundColor: '#ccc'} : {backgroundColor: '#383838'}, styles.saveBtn]}
               >
-                <Text style={[(saveDisabled) ? {} : {color: 'white'}, {fontSize: 18,}]}>{(pageIndex === PreferenceQuestions.length - 1) ? 'Finish' : 'Next'}</Text>
+                <Text style={[(saveDisabled) ? {} : {color: 'white'}, {fontSize: 18,}]}>{(pageIndex === preferenceQuestions.length - 1) ? 'Finish' : 'Next'}</Text>
               </Button>
             </View>
             <View style={{flex: 1, flexDirection: 'row', height: 20, marginBottom: 36,}}>
-              {PreferenceQuestions.map((item, index) => {
+              {preferenceQuestions.map((item, index) => {
                 let styleProgressView = (pageIndex >= index) ? styles.progressFull : styles.progressEmpty;
                 return <View key={index} style={styleProgressView}/>;
               })}

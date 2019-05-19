@@ -1,6 +1,7 @@
 import React from 'react';
 import { RefreshControl, StyleSheet, ImageBackground } from 'react-native';
-import { Container, Content, View, Text, Card, CardItem, Body, Icon, Right, Spinner } from 'native-base';
+import { Container, Content, View, Text, Card, CardItem, Body, Icon, Right } from 'native-base';
+import LoadingSpinner from '../components/LoadingSpinner';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
 
 import * as Animatable from 'react-native-animatable';
@@ -14,7 +15,7 @@ export default class ViewItineraryScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    const { navigation } = this.props;
+    const { navigation, status } = this.props;
     this.refreshCache = (navigation.state.params)
       ? navigation.state.params.refreshCache
       : false;
@@ -26,7 +27,6 @@ export default class ViewItineraryScreen extends React.Component {
         : {},
       showNavTitle: false
     }
-    // if (!this.state.itinerary) this._loadData();
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -77,7 +77,7 @@ export default class ViewItineraryScreen extends React.Component {
   render() {
     let { itinerary, loading, hasRefreshed } = this.state;
 
-    if (!itinerary) return <Spinner color="#ccc" style={{marginTop: 20}} />
+    if (!itinerary) return <LoadingSpinner color="#ccc" style={{marginTop: 20}} />
 
     let {img, title, days, dates, overview, } = itinerary;
     let start = new Date(dates.start)
@@ -120,7 +120,7 @@ export default class ViewItineraryScreen extends React.Component {
           onBeginHidden={() => this.navTitleView.fadeIn(200)}
           onDisplay={() => this.navTitleView.fadeOut(100)}
         >
-        {loading && <Spinner color="#383838" />}
+        {loading && <LoadingSpinner color="#383838" />}
         {/* Itinerary Overview */}
         {!loading && overview && <Card transparent>
           <CardItem header>
@@ -128,7 +128,7 @@ export default class ViewItineraryScreen extends React.Component {
           </CardItem>
           <CardItem>
             <Body>
-              <Text>{overview}</Text>
+              <Text style={{lineHeight:22}}>{overview}</Text>
             </Body>
           </CardItem>
         </Card>}
@@ -167,8 +167,8 @@ export default class ViewItineraryScreen extends React.Component {
         {!loading && !days &&
           <Card>
             <CardItem>
-              <Text>
-                It looks like your itinerary is still in the creation process! We'll send you a notification when it is ready.
+              <Text style={{lineHeight:22}}>
+                We couldn't find any experiences for this itinerary. It looks like it might still be in the creation process. We'll send you a notification when it is ready!
               </Text>
             </CardItem>
           </Card>

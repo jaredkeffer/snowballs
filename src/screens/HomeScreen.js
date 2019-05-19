@@ -9,6 +9,7 @@ import Features from '../util/features';
 import CityPreview from '../components/CityPreview';
 import ContentPreview from '../components/ContentPreview';
 import { CarouselWrapper } from '../components/CarouselWrapper';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { colors, wp, viewportHeight, viewportWidth } from '../styles/index.style';
 import api from '../api/index'
 
@@ -87,6 +88,7 @@ export default class HomeScreen extends React.Component {
 
   render() {
     let { articles, cities, experiences, refreshingExperiences, refreshingPlaces } = this.state;
+    if (refreshingPlaces && refreshingExperiences) return <LoadingSpinner />
     return (
       <View style={styles.container}>
         {/* Search Bar */}

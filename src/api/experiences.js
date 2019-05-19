@@ -1,13 +1,33 @@
 import { API, Analytics, Cache } from 'aws-amplify';
 
-let apiName = 'experiences';
-let path = '/experiences';
+const apiName = 'experiences';
+const path = '/experiences';
+
+Date.prototype.addHours = function(h) {
+   this.setTime(this.getTime() + (h*60*60*1000));
+   return this;
+}
+
+const itineraryQuestionsId = 'itinerary-questions-id';
+const preferenceQuestionsId = 'preference-questions-id';
+
+async function getItineraryQuestions() {
+  const expiration = (new Date()).addHours(8);
+  const response = await getExperienceDetails(itineraryQuestionsId, false, { expires: expiration.getTime() });
+  return response.questions;
+}
+
+async function getPreferenceQuestions() {
+  const expiration = (new Date()).addHours(8);
+  const response = await getExperienceDetails(preferenceQuestionsId, false, { expires: expiration.getTime() });
+  return response.questions;
+}
 
 /*
  * @param id {string} the experience id you're looking for
  * @returns {*} response from Lambda (aka Dynamo)
  */
-async function getExperienceDetails(id, refreshCache) {
+async function getExperienceDetails(id, refreshCache, expires) {
   let cachedExperience,
       cacheId = `experience-${id}`;
 
@@ -29,11 +49,13 @@ async function getExperienceDetails(id, refreshCache) {
       console.warn('Error getting experience: ', id, error);
     });
 
+  response = response[0];
   // Cache the response
-  if (response) await Cache.setItem(cacheId, response[0], {priority: 4});
+  let expiration = expires || {priority: 4};
+  if (response) await Cache.setItem(cacheId, response, expiration);
 
   // console.debug(`getExperienceDetails(${id}):`, response);
-  return response[0];
+  return response;
 }
 
 /*
@@ -41,24 +63,26 @@ async function getExperienceDetails(id, refreshCache) {
  * @param preferences {Map}
  * @returns {*} response from Lambda (aka Dynamo)
  */
-async function putExperienceDetails(id, details) {
-  let myInit = {
-    body: {
-      experience_id: id,
-      ...details,
-    },
-    headers: {}
-  };
-
-  console.log('myinit: ', myInit);
-
-  let response = await API.put(apiName, path, myInit);
-  return Cache.setItem(id, myInit.body, {priority: 5});
-}
+// async function putExperienceDetails(id, details) {
+//   let myInit = {
+//     body: {
+//       experience_id: id,
+//       ...details,
+//     },
+//     headers: {}
+//   };
+//
+//   console.log('myinit: ', myInit);
+//
+//   let response = await API.put(apiName, path, myInit);
+//   return Cache.setItem(id, myInit.body, {priority: 5});
+// }
 
 const ExperiencesAPI = {
-  getExperienceDetails: getExperienceDetails,
-  putExperienceDetails: putExperienceDetails,
-}
+  getExperienceDetails,
+  getItineraryQuestions,
+  getPreferenceQuestions,
+  // putExperienceDetails: putExperienceDetails,
+};
 
 export default ExperiencesAPI;

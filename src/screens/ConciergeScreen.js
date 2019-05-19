@@ -5,7 +5,6 @@ import { Container, Content, Tab, Tabs, TabHeading, View, Text, Spinner, Icon, }
 import ActionButton from 'react-native-action-button';
 import { CarouselWrapper } from '../components/CarouselWrapper';
 import ItinerariesList, { EmptyScreen } from '../components/ItinerariesList';
-import ItineraryAPI from '../api/itineraries';
 import api from '../api';
 
 import layout from '../constants/Layout';

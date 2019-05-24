@@ -68,6 +68,10 @@
 				"Name": "users"
 			},
 			"lastPushDirHash": "XEtxdio2EImYfpVAFM9VbpDyXKE="
+		},
+		"itineraries": {
+			"service": "DynamoDB",
+			"providerPlugin": "awscloudformation"
 		}
 	},
 	"function": {
@@ -148,6 +152,21 @@
 				"Name": "content"
 			},
 			"lastPushDirHash": "S5XZlNdCB6JTT28TvvdrYIoAtQU="
+		},
+		"itineraries": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "itineraries",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			]
 		}
 	},
 	"api": {
@@ -222,6 +241,20 @@
 				"RootUrl": "https://vaesb9usg1.execute-api.us-east-1.amazonaws.com/Prod"
 			},
 			"lastPushDirHash": "ubYDb2O28E4t/Wt0xGF1M5a6VUE="
+		},
+		"itineraries": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "itineraries",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			]
 		}
 	},
 	"interactions": {}

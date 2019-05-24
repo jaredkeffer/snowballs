@@ -83,6 +83,16 @@ export default class ViewItineraryScreen extends React.Component {
     this._loadData(id, true);
   }
 
+  approve = () => {
+    const { itinerary: { itinerary_id } } = this.state;
+    console.log('approving itinerary ', itinerary_id);
+    api.approveItinerary(itinerary_id);
+  }
+
+  fix = () => {
+
+  }
+
   render() {
     let { itinerary, loading, hasRefreshed } = this.state;
 
@@ -214,7 +224,7 @@ export default class ViewItineraryScreen extends React.Component {
       {!loading && (itinerary.status === 'Pending Approval') &&
         <ActionButton
           position="right"
-          onPress={this.submit}
+          onPress={this.approve}
           renderIcon={() => <Icon name="ios-checkmark" style={{fontSize: 54, fontWeight: 'bold', color: '#fff'}}/>}
           buttonColor="#5cb85c"
         />
@@ -222,7 +232,7 @@ export default class ViewItineraryScreen extends React.Component {
       {!loading && (itinerary.status === 'Pending Approval') &&
         <ActionButton
           position="left"
-          onPress={this.submit}
+          onPress={this.fix}
           renderIcon={() => <Icon name="md-hammer" style={{fontSize: 34, fontWeight: 'bold', color: '#fff'}}/>}
           buttonColor="#428bca"
         />

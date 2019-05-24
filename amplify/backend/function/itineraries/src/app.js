@@ -14,7 +14,7 @@ AWS.config.update({ region: process.env.TABLE_REGION });
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-let tableName = "users";
+let tableName = "itineraries";
 if(process.env.ENV && process.env.ENV !== "NONE") {
   tableName = tableName + '-' + process.env.ENV;
 }
@@ -22,10 +22,10 @@ if(process.env.ENV && process.env.ENV !== "NONE") {
 const userIdPresent = false; // TODO: update in case is required to use that definition
 const partitionKeyName = "user_id";
 const partitionKeyType = "S";
-const sortKeyName = "data_type";
+const sortKeyName = "itinerary_id";
 const sortKeyType = "S";
 const hasSortKey = sortKeyName !== "";
-const path = "/users";
+const path = "/itineraries";
 const UNAUTH = 'UNAUTH';
 const hashKeyPath = '/:' + partitionKeyName;
 const sortKeyPath = hasSortKey ? '/:' + sortKeyName : '';
@@ -60,7 +60,7 @@ app.get(path + hashKeyPath, function(req, res) {
   condition[partitionKeyName] = {
     ComparisonOperator: 'EQ'
   }
-
+  
   if (userIdPresent && req.apiGateway) {
     condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
   } else {
@@ -74,7 +74,7 @@ app.get(path + hashKeyPath, function(req, res) {
   let queryParams = {
     TableName: tableName,
     KeyConditions: condition
-  }
+  } 
 
   dynamodb.query(queryParams, (err, data) => {
     if (err) {
@@ -90,8 +90,6 @@ app.get(path + hashKeyPath, function(req, res) {
  *****************************************/
 
 app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
-  console.log('req.apiGateway.event:');
-  console.log(req.apiGateway.event);
   var params = {};
   if (userIdPresent && req.apiGateway) {
     params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
@@ -129,57 +127,13 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
   });
 });
 
-/*****************************************
- * HTTP Post method for get single object *
- *****************************************/
-function extractUserId(event) {
-  let provider = event.requestContext.identity.cognitoAuthenticationProvider;
-  provider = provider.split(':CognitoSignIn:');
-  return provider[provider.length - 1];
-}
-app.post(path + '/itineraries', function(req, res) {
-  console.log('req.apiGateway.event:');
-  console.log(req.apiGateway.event);
-
-  let userId = extractUserId(req.apiGateway.event);
-  console.log('got user id', userId);
-
-  var params = {
-    TableName: tableName,
-    Key: {
-      [sortKeyName]: 'itineraries',
-      [partitionKeyName]: userId,
-    },
-    UpdateExpression: "SET #c = list_append(#c, :vals)",
-    ExpressionAttributeNames: {
-       "#c": "itineraries"
-    },
-    ExpressionAttributeValues: {
-      ":vals": [req.body],
-    },
-    ReturnValues: "UPDATED_NEW"
-  };
-
-  dynamodb.update(params, (err, data) => {
-    if(err) {
-      res.json({error: 'Could not load items: ' + err.message});
-    } else {
-      if (data.Item) {
-        res.json(data.Item);
-      } else {
-        res.json(data) ;
-      }
-    }
-  });
-});
-
 
 /************************************
 * HTTP put method for insert object *
 *************************************/
 
 app.put(path, function(req, res) {
-
+  
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
@@ -202,7 +156,7 @@ app.put(path, function(req, res) {
 *************************************/
 
 app.post(path, function(req, res) {
-
+  
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }

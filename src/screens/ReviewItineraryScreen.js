@@ -28,7 +28,11 @@ export default class CreateItineraryScreen extends Component {
 
     const { steps } = navigation.state.params;
     let qAndA = {};
-    steps.forEach(val => { qAndA[val.id] = this.state[val.id] || steps.message });
+    steps.forEach(val => {
+      console.log(val);
+      qAndA[val.id] = this.state[val.id] || val.message;
+      if (qAndA[val.id] === "") delete qAndA[val.id];
+    });
 
     const response = await api.createNewItinerary(qAndA).catch(error => {
       console.log(error);

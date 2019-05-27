@@ -180,14 +180,18 @@ app.post(path + '/itineraries', function(req, res) {
       dynamodb.update(params, (err, data) => {
         if(err) {
           console.error(err);
-          res.json({error: 'could not save itinerary in users: ' + err.message});
+          console.log('cleaning up itinerary in itineraries dynamodb');
+          dynamo.delete(params, (error1, data) => {
+            if (error1) console.error(error1);
+            res.json({error: 'could not save itinerary in users: ' + err.message});
+          })
         } else {
           if (data.Item) {
             console.log('success data.Item: ', data.Item);
             res.json(data.Item);
           } else {
             console.log('success data: ', data);
-            res.json(data) ;
+            res.json(data);
           }
         }
       });

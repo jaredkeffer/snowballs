@@ -1,0 +1,7 @@
+{
+    "tableName": "itineraries",
+    "partitionKeyName": "user_id",
+    "partitionKeyType": "S",
+    "sortKeyName": "itinerary_id",
+    "sortKeyType": "S"
+}

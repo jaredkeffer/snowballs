@@ -9,14 +9,17 @@ const AWS = require('aws-sdk')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 var bodyParser = require('body-parser')
 var express = require('express')
+const uuidv4 = require('uuid/v4');
 
 AWS.config.update({ region: process.env.TABLE_REGION });
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 let tableName = "users";
+let itineraryTableName = "itineraries";
 if(process.env.ENV && process.env.ENV !== "NONE") {
   tableName = tableName + '-' + process.env.ENV;
+  itineraryTableName = itineraryTableName + '-' + process.env.ENV;
 }
 
 const userIdPresent = false; // TODO: update in case is required to use that definition
@@ -132,11 +135,11 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 /*****************************************
  * HTTP Post method for get single object *
  *****************************************/
- function extractUserId(event) {
-   let provider = event.requestContext.identity.cognitoAuthenticationProvider;
-   provider = provider.split(':CognitoSignIn:');
-   return provider[provider.length - 1];
- }
+function extractUserId(event) {
+  let provider = event.requestContext.identity.cognitoAuthenticationProvider;
+  provider = provider.split(':CognitoSignIn:');
+  return provider[provider.length - 1];
+}
 app.post(path + '/itineraries', function(req, res) {
   console.log('req.apiGateway.event:');
   console.log(req.apiGateway.event);
@@ -144,31 +147,45 @@ app.post(path + '/itineraries', function(req, res) {
   let userId = extractUserId(req.apiGateway.event);
   console.log('got user id', userId);
 
-  var params = {
+  let itineraryId = uuidv4();
+  req.body.itinerary_id = itineraryId;
+
+  let putItemParams = {
+    TableName: itineraryTableName,
+    Item: req.body,
+  };
+  let params = {
     TableName: tableName,
     Key: {
       [sortKeyName]: 'itineraries',
       [partitionKeyName]: userId,
     },
-    UpdateExpression: "SET #c = list_append(#c, :vals)",
+    UpdateExpression: "SET #c = list_append(if_not_exists(#c, :empty_list), :vals)",
     ExpressionAttributeNames: {
-       "#c": "itineraries"
+       "#c": "itineraries",
     },
     ExpressionAttributeValues: {
-      ":vals": [req.body],
+      ":vals": [itineraryId],
+      "empty_list": [],
     },
     ReturnValues: "UPDATED_NEW"
   };
 
-  dynamodb.update(params, (err, data) => {
+  dynamodb.put(putItemParams, (err, data) => {
     if(err) {
-      res.json({error: 'Could not load items: ' + err.message});
+      res.json({error: err, url: req.url, body: req.body});
     } else {
-      if (data.Item) {
-        res.json(data.Item);
-      } else {
-        res.json(data) ;
-      }
+      dynamodb.update(params, (err, data) => {
+        if(err) {
+          res.json({error: 'could not save itinerary in users: ' + err.message});
+        } else {
+          if (data.Item) {
+            res.json(data.Item);
+          } else {
+            res.json(data) ;
+          }
+        }
+      });
     }
   });
 });

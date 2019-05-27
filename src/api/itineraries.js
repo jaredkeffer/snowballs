@@ -12,7 +12,7 @@ async function createNewItinerary(questionsAndAnswers) {
   let myInit = {
     body: {
       user_id: user.sub,
-      ...questionsAndAnswers,
+      qAndA: { ...questionsAndAnswers },
     }
   };
 

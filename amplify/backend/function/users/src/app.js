@@ -149,6 +149,7 @@ app.post(path + '/itineraries', function(req, res) {
 
   let itineraryId = uuidv4();
   req.body.itinerary_id = itineraryId;
+  req.body.user_id = userId;
 
   let putItemParams = {
     TableName: itineraryTableName,
@@ -166,22 +167,26 @@ app.post(path + '/itineraries', function(req, res) {
     },
     ExpressionAttributeValues: {
       ":vals": [itineraryId],
-      "empty_list": [],
+      ":empty_list": [],
     },
     ReturnValues: "UPDATED_NEW"
   };
 
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {
+      console.error(err);
       res.json({error: err, url: req.url, body: req.body});
     } else {
       dynamodb.update(params, (err, data) => {
         if(err) {
+          console.error(err);
           res.json({error: 'could not save itinerary in users: ' + err.message});
         } else {
           if (data.Item) {
+            console.log('success data.Item: ', data.Item);
             res.json(data.Item);
           } else {
+            console.log('success data: ', data);
             res.json(data) ;
           }
         }

@@ -1,8 +1,8 @@
 import { Auth, API, Analytics, Cache } from 'aws-amplify';
 import UsersAPI from './users';
 
-let apiName = 'itineraries';
-let path = '/itineraries';
+let apiName = 'users';
+let path = '/users/itineraries';
 
 async function createNewItinerary(questionsAndAnswers) {
 
@@ -11,7 +11,6 @@ async function createNewItinerary(questionsAndAnswers) {
 
   let myInit = {
     body: {
-      user_id: user.sub,
       qAndA: { ...questionsAndAnswers },
     }
   };

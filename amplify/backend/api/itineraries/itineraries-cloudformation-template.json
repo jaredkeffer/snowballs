@@ -1282,7 +1282,7 @@
         
         
         
-      "DeploymentAPIGWitineraries": {
+      "DeploymentAPIGWitinerariesbe463bae": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",

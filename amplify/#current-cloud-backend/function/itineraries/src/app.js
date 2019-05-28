@@ -34,6 +34,12 @@ var app = express()
 app.use(bodyParser.json())
 app.use(awsServerlessExpressMiddleware.eventContext())
 
+function extractUserId(event) {
+  let provider = event.requestContext.identity.cognitoAuthenticationProvider;
+  provider = provider.split(':CognitoSignIn:');
+  return provider[provider.length - 1];
+}
+
 // Enable CORS for all methods
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*")
@@ -60,7 +66,7 @@ app.get(path + hashKeyPath, function(req, res) {
   condition[partitionKeyName] = {
     ComparisonOperator: 'EQ'
   }
-  
+
   if (userIdPresent && req.apiGateway) {
     condition[partitionKeyName]['AttributeValueList'] = [req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH ];
   } else {
@@ -74,7 +80,7 @@ app.get(path + hashKeyPath, function(req, res) {
   let queryParams = {
     TableName: tableName,
     KeyConditions: condition
-  } 
+  }
 
   dynamodb.query(queryParams, (err, data) => {
     if (err) {
@@ -133,7 +139,7 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 *************************************/
 
 app.put(path, function(req, res) {
-  
+
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
@@ -156,7 +162,7 @@ app.put(path, function(req, res) {
 *************************************/
 
 app.post(path, function(req, res) {
-  
+
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }
@@ -170,6 +176,37 @@ app.post(path, function(req, res) {
       res.json({error: err, url: req.url, body: req.body});
     } else{
       res.json({success: 'post call succeed!', url: req.url, data: data})
+    }
+  });
+});
+
+app.post(path + '/approve', function(req, res) {
+  const userId = extractUserId(req.apiGateway.event);
+
+  const queryParams = req.apiGateway.event.queryStringParameters;
+  if (!queryParams) res.json({error: 'invalid approval parameters'});
+
+  let params = {
+    TableName: tableName,
+    Key: {
+      [partitionKeyName]: userId,
+      [sortKeyName]: queryParams.itinerary_id,
+    },
+    UpdateExpression: "SET #c = :val",
+    ExpressionAttributeNames: {
+       "#c": "status",
+    },
+    ExpressionAttributeValues: {
+      ":vals": 'Approved',
+    },
+    ReturnValues: "UPDATED_NEW"
+  };
+
+  dynamodb.update(params, (err, data) => {
+    if(err) {
+      res.json({error: err, url: req.url, body: req.body});
+    } else{
+      res.json({success: 'approval call succeed!', url: req.url, data: data})
     }
   });
 });

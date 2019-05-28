@@ -1,5 +1,6 @@
 import { Auth, API, Analytics, Cache } from 'aws-amplify';
 import UsersAPI from './users';
+import { addQueryParamsToPath } from '../util/helper';
 
 let apiName = 'itineraries';
 let path = '/itineraries';
@@ -25,12 +26,11 @@ async function createNewItinerary(questionsAndAnswers) {
 }
 
 async function approveItinerary(itinerary_id) {
-  path += '/approve';
-  let myInit = { itinerary_id };
+  path = addQueryParamsToPath(path + '/approve', {itinerary_id})
 
-  console.log('using path ', path, 'with request params ', myInit);
+  console.log('using path ', path);
 
-  let response = await API.post(apiName, path, myInit)
+  let response = await API.post(apiName, path, {})
     .catch((error) => {
       console.error('Error creating itinerary: ', apiName, error);
     });

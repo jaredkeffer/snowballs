@@ -84,7 +84,6 @@ export default class ConciergeScreen extends React.Component {
       this.setState({itineraries: data});
     }
     this.setState({refreshing: false});
-    console.log(data)
     return data;
   }
 

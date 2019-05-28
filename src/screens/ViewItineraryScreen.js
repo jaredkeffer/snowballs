@@ -60,22 +60,10 @@ export default class ViewItineraryScreen extends React.Component {
     this.setState({loading: true});
 
     // TODO: get individual itinerary here
-    let data = await api.getItinerariesWithDetails(refreshCache);
-    let itinerary = this._findItinerary(id, data);
+    let itinerary = await api.getItinerary(refreshCache, id);
 
     this.setState({itinerary});
     this.setState({loading: false});
-  }
-
-  _findItinerary = (id, data) => {
-    let theItinerary;
-    data.itineraries.some((itin) => {
-      if (itin.itinerary_id == id) {
-        theItinerary = itin;
-        return true;
-      }
-    });
-    return theItinerary;
   }
 
   _onRefresh = () => {
@@ -87,11 +75,17 @@ export default class ViewItineraryScreen extends React.Component {
   approve = () => {
     const { itinerary: { itinerary_id } } = this.state;
     console.log('approving itinerary ', itinerary_id);
-    api.approveItinerary(itinerary_id);
+    // let result = api.approveItinerary(itinerary_id);
+    let result = 'asdf';
+    if (result && !result.error) {
+      this.props.navigation.navigate('Feedback', {itinerary_id});
+    }
   }
 
   fix = () => {
-
+    // TODO: show fix it screen -- probably want to add this to the actual app
+    // FeedbackScreen - with some hidden variables to tell if it is an itinerary that needs to be changed or what.
+    // Can save it to the itinerary under 'feedback' column
   }
 
   render() {

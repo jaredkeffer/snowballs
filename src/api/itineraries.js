@@ -43,6 +43,37 @@ async function approveItinerary(id) {
   return response;
 }
 
+async function getItinerary(refreshCache, itineraryId) {
+  let cachedItinerary;
+
+  if (refreshCache) await Cache.removeItem(itineraryId);
+  else cachedItinerary = await Cache.getItem(itineraryId);
+
+  if (cachedItinerary) {
+    console.log('return itineraries from cache');
+    return cachedItinerary
+  }
+
+  let user = await UsersAPI.getUser();
+  let apiPath = buildPath(user.sub, itineraryId);
+
+  console.debug('getting itinerary with details from dynamo ', itineraryId, ' with path: ', apiPath);
+
+  let response = await API.get(apiName, apiPath)
+    .catch((error) => {
+      console.warn('Error getting itinerary from dynamo', error);
+      // TODO: need to handle network errors in catch statements
+    });
+
+  if (!response) return undefined;
+
+  // Cache the response
+  let cachingItineraries = await Cache.setItem(itineraryId, response, {priority: 2});
+
+  console.debug(`getItinerary() ${response}`);
+  return response;
+}
+
 async function getItinerariesWithDetails(refreshCache) {
   let cachedItineraries;
 
@@ -75,6 +106,7 @@ async function getItinerariesWithDetails(refreshCache) {
 }
 
 const ItinerariesAPI = {
+  getItinerary,
   getItinerariesWithDetails,
   createNewItinerary,
   approveItinerary,

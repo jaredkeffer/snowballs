@@ -202,18 +202,6 @@
 							"Outputs.Arn"
 						]
 					},
-					"storageitinerariesName": {
-						"Fn::GetAtt": [
-							"storageitineraries",
-							"Outputs.Name"
-						]
-					},
-					"storageitinerariesArn": {
-						"Fn::GetAtt": [
-							"storageitineraries",
-							"Outputs.Arn"
-						]
-					},
 					"env": "NONE"
 				}
 			}

@@ -4,8 +4,15 @@
             "name": "/itineraries",
             "lambdaFunction": "itineraries",
             "privacy": {
-                "private": true,
+                "protected": true,
                 "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ],
+                "unauth": [
                     "/POST",
                     "/GET",
                     "/PUT",
@@ -15,11 +22,18 @@
             }
         },
         {
-            "name": "/itineraries/approve",
+            "name": "/itineraries/status",
             "lambdaFunction": "itineraries",
             "privacy": {
-                "private": true,
+                "protected": true,
                 "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ],
+                "unauth": [
                     "/POST",
                     "/GET",
                     "/PUT",
@@ -38,7 +52,7 @@
     ],
     "privacy": {
         "auth": 2,
-        "unauth": 0,
+        "unauth": 2,
         "authRoleName": "dyssey-20190202111147-authRole",
         "unAuthRoleName": "dyssey-20190202111147-unauthRole"
     },
@@ -52,5 +66,5 @@
             ]
         }
     ],
-    "uuid": "be463bae"
+    "uuid": "a5cd27f6"
 }

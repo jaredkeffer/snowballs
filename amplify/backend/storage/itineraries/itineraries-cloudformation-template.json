@@ -40,12 +40,12 @@
                 "AttributeDefinitions": [
                   
                   {
-                      "AttributeName": "itinerary_id",
+                      "AttributeName": "user_id",
                       "AttributeType": "S"
                   }  , 
                   
                   {
-                      "AttributeName": "user_id",
+                      "AttributeName": "itinerary_id",
                       "AttributeType": "S"
                   } 
                   

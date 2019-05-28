@@ -68,7 +68,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "dyssey-20190202111147-deployment",
-					"S3Key": "amplify-builds/itineraries-1559008504-latest-build.zip"
+					"S3Key": "amplify-builds/itineraries-1559017666-latest-build.zip"
 				}
 			}
 		},
@@ -78,12 +78,12 @@
 				"RoleName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"odysseyLambdaRole908627bb",
+						"odysseyLambdaRole25c75439",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"odysseyLambdaRole908627bb",
+									"odysseyLambdaRole25c75439",
 									"-",
 									{
 										"Ref": "env"

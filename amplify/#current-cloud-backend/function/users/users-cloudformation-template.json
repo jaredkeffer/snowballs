@@ -9,17 +9,9 @@
 			"Type": "String",
 			"Default": "storageusersName"
 		},
-		"storageitinerariesName": {
-			"Type": "String",
-			"Default": "storageitinerariesName"
-		},
 		"storageusersArn": {
 			"Type": "String",
 			"Default": "storageusersArn"
-		},
-		"storageitinerariesArn": {
-			"Type": "String",
-			"Default": "arn:aws:dynamodb:us-east-1:846380405817:table/itineraries"
 		}
 	},
 	"Conditions": {
@@ -169,20 +161,6 @@
 							"Resource": [
 								{
 									"Ref": "storageusersArn"
-								}
-							]
-						},
-						{
-							"Effect": "Allow",
-							"Action": [
-								"dynamodb:GetItem",
-								"dynamodb:Query",
-								"dynamodb:PutItem",
-								"dynamodb:UpdateItem"
-							],
-							"Resource": [
-								{
-									"Ref": "storageitinerariesArn"
 								}
 							]
 						}

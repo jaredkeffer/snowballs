@@ -19,7 +19,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/auth/users-cloudformation-template.yml",
 				"logicalId": "authusers"
 			},
-			"lastPushTimeStamp": "2019-05-28T02:10:54.684Z",
+			"lastPushTimeStamp": "2019-05-28T04:29:11.732Z",
 			"output": {
 				"AppClientSecret": "1epman2qitpimfm45kjhme3oboou6tolsg42ssd6khg2b5lnjr58",
 				"UserPoolId": "us-east-1_QcNFpa6Z2",
@@ -40,7 +40,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/experiences-cloudformation-template.json",
 				"logicalId": "storageexperiences"
 			},
-			"lastPushTimeStamp": "2019-05-28T02:10:54.685Z",
+			"lastPushTimeStamp": "2019-05-28T04:29:11.733Z",
 			"output": {
 				"PartitionKeyName": "experience_id",
 				"Region": "us-east-1",
@@ -57,7 +57,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/users-cloudformation-template.json",
 				"logicalId": "storageusers"
 			},
-			"lastPushTimeStamp": "2019-05-28T02:10:54.686Z",
+			"lastPushTimeStamp": "2019-05-28T04:29:11.735Z",
 			"output": {
 				"PartitionKeyName": "user_id",
 				"SortKeyName": "data_type",
@@ -76,7 +76,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/itineraries-cloudformation-template.json",
 				"logicalId": "storageitineraries"
 			},
-			"lastPushTimeStamp": "2019-05-28T02:10:54.686Z",
+			"lastPushTimeStamp": "2019-05-28T04:29:11.736Z",
 			"output": {
 				"PartitionKeyName": "user_id",
 				"SortKeyName": "itinerary_id",
@@ -86,7 +86,7 @@
 				"PartitionKeyType": "S",
 				"Name": "itineraries"
 			},
-			"lastPushDirHash": "j2YO5xViI6/XtC0BYL6FmpkvrEY="
+			"lastPushDirHash": "5DHe2gpsoBRCsFzPr8goqepz680="
 		}
 	},
 	"function": {
@@ -102,14 +102,6 @@
 						"Name",
 						"Arn"
 					]
-				},
-				{
-					"category": "storage",
-					"resourceName": "itineraries",
-					"attributes": [
-						"Name",
-						"Arn"
-					]
 				}
 			],
 			"lastBuildTimeStamp": "2019-05-25T19:47:28.213Z",
@@ -119,13 +111,13 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/users-cloudformation-template.json",
 				"logicalId": "functionusers"
 			},
-			"lastPushTimeStamp": "2019-05-28T02:10:54.687Z",
+			"lastPushTimeStamp": "2019-05-28T04:29:11.736Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:users",
 				"Name": "users"
 			},
-			"lastPushDirHash": "KjfMJ7FqqXSz4nCQvMnKQNz3ytU="
+			"lastPushDirHash": "KlNfQrDo3rc2P32Bn/JRs1xhN8A="
 		},
 		"experiences": {
 			"service": "Lambda",
@@ -148,7 +140,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/experiences-cloudformation-template.json",
 				"logicalId": "functionexperiences"
 			},
-			"lastPushTimeStamp": "2019-05-28T02:10:54.688Z",
+			"lastPushTimeStamp": "2019-05-28T04:29:11.737Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:experiences",
@@ -168,7 +160,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/content-cloudformation-template.json",
 				"logicalId": "functioncontent"
 			},
-			"lastPushTimeStamp": "2019-05-28T02:10:54.688Z",
+			"lastPushTimeStamp": "2019-05-28T04:29:11.737Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:content",
@@ -190,20 +182,20 @@
 					]
 				}
 			],
-			"lastBuildTimeStamp": "2019-05-27T22:15:38.732Z",
-			"lastPackageTimeStamp": "2019-05-28T01:55:08.308Z",
-			"distZipFilename": "itineraries-1559008504-latest-build.zip",
+			"lastBuildTimeStamp": "2019-05-28T03:38:47.850Z",
+			"lastPackageTimeStamp": "2019-05-28T04:27:51.029Z",
+			"distZipFilename": "itineraries-1559017666-latest-build.zip",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/itineraries-cloudformation-template.json",
 				"logicalId": "functionitineraries"
 			},
-			"lastPushTimeStamp": "2019-05-28T02:10:54.688Z",
+			"lastPushTimeStamp": "2019-05-28T04:29:11.741Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:itineraries",
 				"Name": "itineraries"
 			},
-			"lastPushDirHash": "K1lxvp+h3IY1q0Sz0oA0OZdRaY4="
+			"lastPushDirHash": "0bt6U7xBOOowu9tPxRA3waALeVU="
 		}
 	},
 	"api": {
@@ -224,7 +216,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/users-cloudformation-template.json",
 				"logicalId": "apiusers"
 			},
-			"lastPushTimeStamp": "2019-05-28T02:10:54.689Z",
+			"lastPushTimeStamp": "2019-05-28T04:29:11.738Z",
 			"output": {
 				"ApiName": "users",
 				"RootUrl": "https://tmpumi0dn6.execute-api.us-east-1.amazonaws.com/Prod"
@@ -248,7 +240,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/experiences-cloudformation-template.json",
 				"logicalId": "apiexperiences"
 			},
-			"lastPushTimeStamp": "2019-05-28T02:10:54.689Z",
+			"lastPushTimeStamp": "2019-05-28T04:29:11.739Z",
 			"output": {
 				"ApiName": "experiences",
 				"RootUrl": "https://2jgbb32fvi.execute-api.us-east-1.amazonaws.com/Prod"
@@ -272,7 +264,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/content-cloudformation-template.json",
 				"logicalId": "apicontent"
 			},
-			"lastPushTimeStamp": "2019-05-28T02:10:54.690Z",
+			"lastPushTimeStamp": "2019-05-28T04:29:11.740Z",
 			"output": {
 				"ApiName": "content",
 				"RootUrl": "https://vaesb9usg1.execute-api.us-east-1.amazonaws.com/Prod"
@@ -296,12 +288,12 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/itineraries-cloudformation-template.json",
 				"logicalId": "apiitineraries"
 			},
-			"lastPushTimeStamp": "2019-05-28T02:10:54.692Z",
+			"lastPushTimeStamp": "2019-05-28T04:29:11.740Z",
 			"output": {
 				"ApiName": "itineraries",
-				"RootUrl": "https://oe28zyowx8.execute-api.us-east-1.amazonaws.com/Prod"
+				"RootUrl": "https://1vdgypxv5k.execute-api.us-east-1.amazonaws.com/Prod"
 			},
-			"lastPushDirHash": "RZ77TgfzxiWmwxtmF+QFe05+Ruk="
+			"lastPushDirHash": "wUVk8ymsaogl4KUtO8kSWPg6AUc="
 		}
 	},
 	"interactions": {}

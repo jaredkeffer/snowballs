@@ -180,24 +180,23 @@ app.post(path, function(req, res) {
   });
 });
 
-app.post(path + '/approve', function(req, res) {
+app.post(path + '/status', function(req, res) {
   const userId = extractUserId(req.apiGateway.event);
+  console.log('Started: ', path + '/status', ' request for user: ', userId);
 
-  const queryParams = req.apiGateway.event.queryStringParameters;
-  if (!queryParams) res.json({error: 'invalid approval parameters'});
-
+  // TODO: update last edited param and others as well
   let params = {
     TableName: tableName,
     Key: {
       [partitionKeyName]: userId,
-      [sortKeyName]: queryParams.itinerary_id,
+      [sortKeyName]: req.body.itinerary_id,
     },
     UpdateExpression: "SET #c = :val",
     ExpressionAttributeNames: {
        "#c": "status",
     },
     ExpressionAttributeValues: {
-      ":vals": 'Approved',
+      ":val": req.body.status,
     },
     ReturnValues: "UPDATED_NEW"
   };

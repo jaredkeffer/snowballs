@@ -40,7 +40,7 @@ const awsmobile = {
         },
         {
             "name": "itineraries",
-            "endpoint": "https://oe28zyowx8.execute-api.us-east-1.amazonaws.com/Prod",
+            "endpoint": "https://1vdgypxv5k.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
         }
     ]

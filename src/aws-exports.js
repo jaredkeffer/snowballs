@@ -37,6 +37,11 @@ const awsmobile = {
             "name": "content",
             "endpoint": "https://vaesb9usg1.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
+        },
+        {
+            "name": "itineraries",
+            "endpoint": "https://oe28zyowx8.execute-api.us-east-1.amazonaws.com/Prod",
+            "region": "us-east-1"
         }
     ]
 };

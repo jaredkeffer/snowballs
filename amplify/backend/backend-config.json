@@ -63,6 +63,21 @@
 			"providerPlugin": "awscloudformation",
 			"build": true,
 			"dependsOn": []
+		},
+		"itineraries": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "itineraries",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			]
 		}
 	},
 	"api": {
@@ -101,6 +116,20 @@
 				{
 					"category": "function",
 					"resourceName": "content",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			]
+		},
+		"itineraries": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "itineraries",
 					"attributes": [
 						"Name",
 						"Arn"

@@ -1,0 +1,55 @@
+{
+    "paths": [
+        {
+            "name": "/itineraries",
+            "lambdaFunction": "itineraries",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            }
+        },
+        {
+            "name": "/itineraries/approve",
+            "lambdaFunction": "itineraries",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            }
+        }
+    ],
+    "resourceName": "itineraries",
+    "apiName": "itineraries",
+    "functionArns": [
+        {
+            "lambdaFunction": "itineraries"
+        }
+    ],
+    "privacy": {
+        "auth": 2,
+        "unauth": 0,
+        "authRoleName": "dyssey-20190202111147-authRole",
+        "unAuthRoleName": "dyssey-20190202111147-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "itineraries",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}

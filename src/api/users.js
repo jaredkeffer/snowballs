@@ -138,9 +138,6 @@ const users = {
   getUser,
   getUserPreferences,
   putUserPreferences,
-
-  getUserItineraries,
-
 }
 
 export default users;

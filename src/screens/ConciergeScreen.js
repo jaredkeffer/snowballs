@@ -46,10 +46,10 @@ export default class ConciergeScreen extends React.Component {
       past: [],
     };
 
-    let rawData = await api.getUserItineraries(refreshCache);
+    let rawData = await api.getItinerariesWithDetails(refreshCache);
 
-    if (rawData.itineraries && rawData.itineraries.length) {
-      rawData.itineraries.sort((a, b) => {
+    if (rawData && rawData.length) {
+      rawData.sort((a, b) => {
         let realA = (a.dates && a.dates.start) ? a.dates.start : (a.body && a.body['4']) ? a.body['4'].start : undefined;
         let realB = (b.dates && b.dates.start) ? b.dates.start : (b.body && b.body['4']) ? b.body['4'].start : undefined;
         return realA > realB;
@@ -65,16 +65,14 @@ export default class ConciergeScreen extends React.Component {
         //   if (endIsBeforeNow) return false;
         //   return true;
         // }),
-        upcoming: rawData.itineraries
-          .filter((itinerary) => {
+        upcoming: rawData.filter((itinerary) => {
             if (!itinerary.dates || !itinerary.dates.end) return true;
             let endIsBeforeNow = now.getTime() > itinerary.dates.end;
             if (endIsBeforeNow) return false;
             return true;
           }),
         recommended: rawData.recommended,
-        past: rawData.itineraries
-          .filter((itinerary) => {
+        past: rawData.filter((itinerary) => {
             if (!itinerary.dates || !itinerary.dates.end) return false;
             let endIsBeforeNow = now.getTime() > itinerary.dates.end;
             if (endIsBeforeNow) return true;
@@ -86,6 +84,7 @@ export default class ConciergeScreen extends React.Component {
       this.setState({itineraries: data});
     }
     this.setState({refreshing: false});
+    console.log(data)
     return data;
   }
 
@@ -124,7 +123,7 @@ export default class ConciergeScreen extends React.Component {
               </TabHeading>
             }
           >
-            {past && past.length > 1 &&
+            {past && past.length > 0 &&
               <ItinerariesList
                 data={past}
                 onPressItem={this._onPressItem}

@@ -1,50 +1,78 @@
 import { Auth, API, Analytics, Cache } from 'aws-amplify';
 import UsersAPI from './users';
 
-let apiName = 'users';
-let path = '/users/itineraries';
+let apiName = 'itineraries';
+let path = '/itineraries';
+
+let buildPath = (sub, rangeKey) => {
+  return path + ['/object', sub, rangeKey].join('/');
+}
 
 async function createNewItinerary(questionsAndAnswers) {
-
-  // get current user token
-  let user = await UsersAPI.getUser();
-
   let myInit = {
     body: {
       qAndA: { ...questionsAndAnswers },
     }
   };
 
-  console.log('got user', user, 'using path', path, 'with request params ', myInit);
+  console.log('using path ', path, 'with request params ', myInit);
 
   let response = await API.post(apiName, path, myInit)
     .catch((error) => {
       console.error('Error creating itinerary: ', apiName, error);
     });
-  console.log('create itinerary response', response);
   return response;
 }
 
 async function approveItinerary(itinerary_id) {
-  // get current user token
-  let user = await UsersAPI.getUser();
+  path += '/approve';
+  let myInit = { itinerary_id };
 
-  let myInit = {
-    body: { ...questionsAndAnswers }
-  };
-
-  console.log('got user', user, 'using path', path, 'with request params ', myInit);
+  console.log('using path ', path, 'with request params ', myInit);
 
   let response = await API.post(apiName, path, myInit)
     .catch((error) => {
       console.error('Error creating itinerary: ', apiName, error);
     });
-  console.log('create itinerary response', response);
+  console.log('approve itinerary response', response);
+  return response;
+}
+
+async function getItinerariesWithDetails(refreshCache) {
+  let cachedItineraries;
+
+  if (refreshCache) await Cache.removeItem('itineraries');
+  else cachedItineraries = await Cache.getItem('itineraries');
+
+  if (cachedItineraries) {
+    console.log('return itineraries from cache');
+    return cachedItineraries
+  }
+
+  console.debug('getting itineraries with details from dynamo');
+
+  let user = await UsersAPI.getUser();
+  let apiPath = `${path}/${user.sub}`;
+
+  let response = await API.get(apiName, apiPath)
+    .catch((error) => {
+      console.warn('Error getting itineraries from dynamo', error);
+      // TODO: need to handle network errors in catch statements
+    });
+
+  if (!response) return undefined;
+
+  // Cache the response
+  let cachingItineraries = await Cache.setItem('itineraries', response, {priority: 2});
+
+  console.debug(`getItinerariesWithDetails() # items: ${response.length}`);
   return response;
 }
 
 const ItinerariesAPI = {
-  createNewItinerary
+  getItinerariesWithDetails,
+  createNewItinerary,
+  approveItinerary,
 }
 
 export default ItinerariesAPI;

@@ -59,7 +59,8 @@ export default class ViewItineraryScreen extends React.Component {
     console.log('loading view itinerary data aka experiences');
     this.setState({loading: true});
 
-    let data = await api.getUserItineraries(refreshCache);
+    // TODO: get individual itinerary here
+    let data = await api.getItinerariesWithDetails(refreshCache);
     let itinerary = this._findItinerary(id, data);
 
     this.setState({itinerary});

@@ -73,12 +73,12 @@ export default class ViewItineraryScreen extends React.Component {
   }
 
   approve = () => {
-    const { itinerary: { itinerary_id } } = this.state;
+    const { itinerary: { itinerary_id, dayCount } } = this.state;
     console.log('approving itinerary ', itinerary_id);
-    // let result = api.approveItinerary(itinerary_id);
-    let result = 'asdf';
+
+    let result = api.approveItinerary(itinerary_id);
     if (result && !result.error) {
-      this.props.navigation.navigate('Feedback', {itinerary_id});
+      this.props.navigation.navigate('Feedback', {itinerary_id, dayCount});
     }
   }
 

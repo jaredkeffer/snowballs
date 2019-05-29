@@ -70,7 +70,7 @@ async function getItinerary(refreshCache, itineraryId) {
   // Cache the response
   let cachingItineraries = await Cache.setItem(itineraryId, response, {priority: 2});
 
-  console.debug(`getItinerary() ${response}`);
+  console.debug(`getItinerary()`, response);
   return response;
 }
 
@@ -105,11 +105,32 @@ async function getItinerariesWithDetails(refreshCache) {
   return response;
 }
 
+async function submitItineraryFeedback(itineraryId, feedback) {
+  let user = await UsersAPI.getUser();
+  let apiPath = path + '/feedback'
+
+  let myInit = {
+    body: {
+      itinerary_id: itineraryId,
+      feedback: feedback,
+    }
+  };
+
+  console.log('submitItineraryFeedback using path ', apiPath, 'with request params ', myInit);
+
+  let response = await API.post(apiName, apiPath, myInit)
+    .catch((error) => {
+      console.warn('Error setting feedback', error);
+    });
+  return response;
+}
+
 const ItinerariesAPI = {
   getItinerary,
   getItinerariesWithDetails,
   createNewItinerary,
   approveItinerary,
+  submitItineraryFeedback,
 }
 
 export default ItinerariesAPI;

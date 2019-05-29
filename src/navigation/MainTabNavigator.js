@@ -17,6 +17,7 @@ import ThankyouScreen from '../screens/ThankyouScreen';
 import ExperienceScreen from '../screens/ExperienceScreen';
 import ArticleScreen from '../screens/ArticleScreen';
 import CityScreen from '../screens/CityScreen';
+import FeedbackScreen from '../screens/FeedbackScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -43,6 +44,7 @@ const ConciergeStack = createStackNavigator({
   NewItinerary: CreateItineraryScreen,
   ReviewItinerary: ReviewItineraryScreen,
   ThankYou: ThankyouScreen,
+  Feedback: FeedbackScreen,
 });
 
 ConciergeStack.navigationOptions = {

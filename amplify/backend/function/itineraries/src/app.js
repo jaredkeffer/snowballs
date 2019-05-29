@@ -210,6 +210,36 @@ app.post(path + '/status', function(req, res) {
   });
 });
 
+app.post(path + '/feedback', function(req, res) {
+  const userId = extractUserId(req.apiGateway.event);
+  console.log('Started: ', path + '/feedback', ' request for user: ', userId);
+
+  // TODO: update last edited param and others as well
+  let params = {
+    TableName: tableName,
+    Key: {
+      [partitionKeyName]: userId,
+      [sortKeyName]: req.body.itinerary_id,
+    },
+    UpdateExpression: "SET #c = :val",
+    ExpressionAttributeNames: {
+       "#c": "feedback",
+    },
+    ExpressionAttributeValues: {
+      ":val": req.body.feedback,
+    },
+    ReturnValues: "UPDATED_NEW"
+  };
+
+  dynamodb.update(params, (err, data) => {
+    if(err) {
+      res.json({error: err, url: req.url, body: req.body});
+    } else{
+      res.json({success: 'approval call succeed!', url: req.url, data: data})
+    }
+  });
+});
+
 /**************************************
 * HTTP remove method to delete object *
 ***************************************/

@@ -41,6 +41,27 @@
                     "/DELETE"
                 ]
             }
+        },
+        {
+            "name": "/itineraries/feedback",
+            "lambdaFunction": "itineraries",
+            "privacy": {
+                "protected": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ],
+                "unauth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            }
         }
     ],
     "resourceName": "itineraries",
@@ -51,8 +72,8 @@
         }
     ],
     "privacy": {
-        "auth": 2,
-        "unauth": 2,
+        "auth": 3,
+        "unauth": 3,
         "authRoleName": "dyssey-20190202111147-authRole",
         "unAuthRoleName": "dyssey-20190202111147-unauthRole"
     },
@@ -66,5 +87,5 @@
             ]
         }
     ],
-    "uuid": "a5cd27f6"
+    "uuid": "b6c7cba9"
 }

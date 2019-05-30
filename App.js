@@ -54,8 +54,8 @@ class App extends React.Component {
   _loadResourcesAsync = async () => {
     return Promise.all([
       // uncomment for production to add refresh on app load
-      // this.firstLogin(true),
-      this.firstLogin(),
+      this.firstLogin(true),
+      // this.firstLogin(),
       Asset.loadAsync([
         require('./src/assets/images/icon.png'),
       ]),

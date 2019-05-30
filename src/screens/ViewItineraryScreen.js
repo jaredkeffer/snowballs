@@ -198,7 +198,7 @@ export default class ViewItineraryScreen extends React.Component {
             childlessPlacementPadding={35}
             isVisible={this.state.confirmToolTipVisible}
             content={
-              <Text style={{width: 200, textAlign: 'center'}}>
+              <Text style={{width: 300, textAlign: 'center'}}>
                 Press the <Icon name="ios-checkmark" style={{paddingHorizontal: 6, color: '#5cb85c', fontWeight:'900'}} /> after looking over your itinerary to confirm it is what you were hoping for!
               </Text>}
             onClose={() => this.setState({ confirmToolTipVisible: false, feedbackToolTipVisible: true })}
@@ -209,7 +209,7 @@ export default class ViewItineraryScreen extends React.Component {
             childlessPlacementPadding={35}
             isVisible={this.state.feedbackToolTipVisible}
             content={
-              <Text style={{width: 250, textAlign: 'center'}}>
+              <Text style={{width: 300, textAlign: 'center'}}>
                 Press the <Icon name="md-hammer" style={{paddingHorizontal: 6, color: '#428bca', fontWeight:'900'}} /> if you want something changed or want to ask a question about it!
               </Text>}
             onClose={() => this.setState({ feedbackToolTipVisible: false })}

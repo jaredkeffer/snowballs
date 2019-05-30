@@ -59,6 +59,7 @@ async function getUserPreferences(refreshCache) {
   let userPath = buildPath(authUser.sub, DATA_TYPE.PREFERENCES);
 
   // get user from dynamo
+  // TODO: handle failures and retry
   console.debug('fetching user info from dynamo');
   let response = await API.get(apiName, userPath)
     .catch((error) => {

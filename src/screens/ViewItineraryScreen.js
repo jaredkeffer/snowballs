@@ -1,7 +1,7 @@
 import React from 'react';
 import ActionButton from 'react-native-action-button';
-import { RefreshControl, StyleSheet, ImageBackground } from 'react-native';
-import { Container, Content, View, Text, Card, CardItem, Body, Icon, Right, Button } from 'native-base';
+import { SafeAreaView, RefreshControl, StyleSheet, Modal, Image } from 'react-native';
+import { H1, Container, Content, View, Text, Toast, Card, CardItem, Body, Icon, Right, Button, Textarea, Form } from 'native-base';
 import LoadingSpinner from '../components/LoadingSpinner';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
 
@@ -12,6 +12,9 @@ import MetaExperienceView from '../components/MetaExperienceView';
 import api from '../api';
 
 import layout from '../constants/Layout';
+import { PENDING_APPROVAL, FEEDBACK_SUBMITTED } from '../util/Status';
+
+const TOOLTIP_DELAY = 500;
 
 export default class ViewItineraryScreen extends React.Component {
 
@@ -27,7 +30,7 @@ export default class ViewItineraryScreen extends React.Component {
       itinerary: (navigation.state.params)
         ? navigation.state.params.itinerary
         : {},
-      showNavTitle: false,
+      modalVisible: false,
     }
     this._showTooltip();
   }
@@ -42,9 +45,7 @@ export default class ViewItineraryScreen extends React.Component {
   };
 
   _showTooltip = () => {
-    // const that = this;
-    // setTimeout(() => that.setState({confirmToolTipVisible: true}), 1300);
-    setTimeout(() => this.setState({confirmToolTipVisible: true}), 1300);
+    setTimeout(() => this.setState({confirmToolTipVisible: true}), TOOLTIP_DELAY);
   }
 
   toggleDay = (day, index) => {
@@ -59,7 +60,6 @@ export default class ViewItineraryScreen extends React.Component {
     console.log('loading view itinerary data aka experiences');
     this.setState({loading: true});
 
-    // TODO: get individual itinerary here
     let itinerary = await api.getItinerary(refreshCache, id);
 
     this.setState({itinerary});
@@ -76,29 +76,103 @@ export default class ViewItineraryScreen extends React.Component {
     const { itinerary: { itinerary_id, dayCount } } = this.state;
     console.log('approving itinerary ', itinerary_id);
 
-    let result = api.approveItinerary(itinerary_id);
+    let result = api.setItineraryStatus(itinerary_id);
     if (result && !result.error) {
       this.props.navigation.navigate('Feedback', {itinerary_id, dayCount});
     }
   }
 
   fix = () => {
-    // TODO: show fix it screen -- probably want to add this to the actual app
-    // FeedbackScreen - with some hidden variables to tell if it is an itinerary that needs to be changed or what.
-    // Can save it to the itinerary under 'feedback' column
+    this.setState({modalVisible: true});
   }
+
+  clearFeedbackText = () => {
+    this.setState({feedbackText: ''});
+  }
+
+  setModalVisible = (modalVisible) => {
+    if (!modalVisible) this.clearFeedbackText();
+    this.setState({modalVisible});
+  }
+
+  submitHammerFeedback = async () => {
+    const { itinerary: { feedback, itinerary_id }, feedbackText } = this.state;
+    let now = (new Date()).getTime();
+    let response = await api.submitItineraryFeedback(itinerary_id, {current: feedbackText, timestamp: now});
+    if (response && !response.error) {
+      this.setModalVisible(!this.state.modalVisible);
+      this.clearFeedbackText();
+      Toast.show({
+        text: "Your feedback was submitted. We'll notify you when an update is ready!",
+        buttonText: 'Close',
+        duration: 10000,
+        type: 'info',
+      });
+      let responseStatus = await api.setItineraryStatus(itinerary_id, FEEDBACK_SUBMITTED);
+      this._loadData(itinerary_id, true);
+    }
+  }
+
+  modal = () => (
+    <Modal
+      animationType="slide"
+      transparent={false}
+      visible={this.state.modalVisible}
+    >
+      <SafeAreaView style={{flex:1}}>
+      <Container>
+        <Content>
+          <View style={{flex:1, flexDirection: 'row', padding: 8, marginTop: 10}}>
+            <View style={{flex:1, justifyContent:'center'}}>
+              <Image style={{resizeMode:'contain', width: 45, height: 45}} source={require('../assets/images/icon.png')}/>
+            </View>
+            <View style={{flex:6, justifyContent:'center'}}>
+              <H1 style={{textAlign: 'center'}}>Submit Itinerary Feedback</H1>
+            </View>
+          </View>
+
+          <Form style={{padding:10, marginTop:30}}>
+            <Textarea
+              bordered
+              rowSpan={5}
+              value={this.state.feedbackText}
+              placeholder='Ask questions about or give feedback on your itinerary here'
+              keyboardAppearance="dark"
+              onChangeText={(feedbackText) => this.setState({feedbackText})}
+            />
+            <View style={{flex:1, flexDirection: 'row', marginTop: 12}}>
+              <View style={{flex:1, padding: 4}}>
+                <Button dark bordered block
+                  onPress={() => this.setModalVisible(false)}>
+                  <Text>Cancel</Text>
+                </Button>
+              </View>
+              <View style={{flex:2, padding: 4}}>
+                <Button success bordered block
+                  onPress={this.submitHammerFeedback}>
+                  <Text>Submit Feedback</Text>
+                </Button>
+              </View>
+            </View>
+          </Form>
+        </Content>
+      </Container>
+      </SafeAreaView>
+    </Modal>
+  );
 
   render() {
     let { itinerary, loading, hasRefreshed } = this.state;
 
     if (!itinerary) return <LoadingSpinner color="#ccc" style={{marginTop: 20}} />
 
-    let {img, title, days, dates, overview, } = itinerary;
+    let {img, title, days, dates, overview, status} = itinerary;
     let start = new Date(dates.start)
         end = new Date(dates.end);
-
+    // TODO: add menu to undo approval of itinerary? and edit things like dates etc.
     return (
       <View style={{flex: 1}}>
+      {this.modal()}
       <HeaderImageScrollView
         maxHeight={150}
         minHeight={50}
@@ -138,8 +212,9 @@ export default class ViewItineraryScreen extends React.Component {
         {loading && <LoadingSpinner color="#383838" />}
         {/* Itinerary Overview */}
         {!loading && overview && <Card transparent>
-          <CardItem header>
+          <CardItem header style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Text>Overview</Text>
+            {status && <Text style={{color: '#383838'}}>{status}</Text>}
           </CardItem>
           <CardItem>
             <Body>
@@ -190,7 +265,7 @@ export default class ViewItineraryScreen extends React.Component {
         }
       </TriggeringView>
       </HeaderImageScrollView>
-      {!loading && (itinerary.status === 'Pending Approval') &&
+      {!loading && (itinerary.status === PENDING_APPROVAL) &&
         <View>
           <Tooltip
             animated
@@ -216,7 +291,7 @@ export default class ViewItineraryScreen extends React.Component {
           />
         </View>
       }
-      {!loading && (itinerary.status === 'Pending Approval') &&
+      {!loading && (itinerary.status === PENDING_APPROVAL) &&
         <ActionButton
           position="right"
           onPress={this.approve}
@@ -224,7 +299,7 @@ export default class ViewItineraryScreen extends React.Component {
           buttonColor="#5cb85c"
         />
       }
-      {!loading && (itinerary.status === 'Pending Approval') &&
+      {!loading && (itinerary.status === PENDING_APPROVAL) &&
         <ActionButton
           position="left"
           onPress={this.fix}

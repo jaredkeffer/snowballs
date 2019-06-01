@@ -24,15 +24,12 @@ async function createNewItinerary(questionsAndAnswers) {
   return response;
 }
 
-async function approveItinerary(id) {
+async function setItineraryStatus(itinerary_id, status) {
   let apiPath = path + '/status'
 
   console.log(`using path ${apiPath}`);
   let myInit = {
-    body: {
-      itinerary_id: id,
-      status: 'Approved',
-    }
+    body: { itinerary_id, status },
   };
 
   let response = await API.post(apiName, apiPath, myInit)
@@ -129,7 +126,7 @@ const ItinerariesAPI = {
   getItinerary,
   getItinerariesWithDetails,
   createNewItinerary,
-  approveItinerary,
+  setItineraryStatus,
   submitItineraryFeedback,
 }
 

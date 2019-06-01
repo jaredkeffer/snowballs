@@ -94,7 +94,7 @@ export default class ConciergeScreen extends React.Component {
         <Tabs tabBarUnderlineStyle={{backgroundColor: '#383838'}}>
           <Tab heading={
               <TabHeading>
-                <Icon name="md-timer" style={styles.tabIcon} />
+                <Icon name="md-map" style={styles.tabIcon} />
                 <Text style={styles.tabText}>Itineraries</Text>
               </TabHeading>
             }

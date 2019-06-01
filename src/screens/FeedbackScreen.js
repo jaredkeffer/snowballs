@@ -1,7 +1,6 @@
 import React from 'react';
-import { Picker, Image } from 'react-native';
-import { H1, H3, Container, Content, Button, View, Text, Radio, Left, Right, ListItem } from 'native-base';
-import { Toast } from 'native-base';
+import { Alert, Picker, Image } from 'react-native';
+import { H1, H3, Container, Content, Button, View, Text, Radio, Left, Right, ListItem, Toast } from 'native-base';
 import { WebBrowser } from 'expo';
 import api from '../api';
 
@@ -39,7 +38,7 @@ export default class FeedbackScreen extends React.Component {
     // in the future allow for different surveys
     // let user = await api.getUser();
     let response = await api.submitItineraryFeedback(itineraryId, {willingToPayPerDay: this.state.selectedPrice});
-    alert('When you finish the survey close the window by pressing "Done" in the top left corner.');
+    Alert.alert('Helpful Hint:', 'When you finish the survey close the window by pressing "Done" in the top left corner.');
     // if (!user.surveyComplete) await this._showWeb(user.surveyURL || SURVEY_MONKEY_URL);
     await this._showWeb(SURVEY_MONKEY_URL);
     this.props.navigation.navigate('Concierge', {refreshCache: true});

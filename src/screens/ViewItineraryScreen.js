@@ -100,6 +100,7 @@ export default class ViewItineraryScreen extends React.Component {
     let now = (new Date()).getTime();
     let response = await api.submitItineraryFeedback(itinerary_id, {current: feedbackText, timestamp: now});
     if (response && !response.error) {
+      let responseStatus = await api.setItineraryStatus(itinerary_id, FEEDBACK_SUBMITTED);
       this.setModalVisible(!this.state.modalVisible);
       this.clearFeedbackText();
       Toast.show({
@@ -108,7 +109,6 @@ export default class ViewItineraryScreen extends React.Component {
         duration: 10000,
         type: 'info',
       });
-      let responseStatus = await api.setItineraryStatus(itinerary_id, FEEDBACK_SUBMITTED);
       this._loadData(itinerary_id, true);
     }
   }

@@ -109,7 +109,7 @@ async function submitItineraryFeedback(itineraryId, feedback) {
   let myInit = {
     body: {
       itinerary_id: itineraryId,
-      feedback: feedback,
+      feedback,
     }
   };
 

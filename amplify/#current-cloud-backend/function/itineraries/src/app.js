@@ -214,6 +214,10 @@ app.post(path + '/feedback', function(req, res) {
   const userId = extractUserId(req.apiGateway.event);
   console.log('Started: ', path + '/feedback', ' request for user: ', userId);
 
+  if (!req.body.feedback.timestamp) {
+    let now = (new Date()).getTime();
+    req.body.feedback.timestamp = now;
+  }
   // TODO: update last edited param and others as well
   let params = {
     TableName: tableName,
@@ -221,12 +225,13 @@ app.post(path + '/feedback', function(req, res) {
       [partitionKeyName]: userId,
       [sortKeyName]: req.body.itinerary_id,
     },
-    UpdateExpression: "SET #c = :val",
+    UpdateExpression: "SET #c = list_append(if_not_exists(#c, :empty_list), :vals)",
     ExpressionAttributeNames: {
        "#c": "feedback",
     },
     ExpressionAttributeValues: {
-      ":val": req.body.feedback,
+      ":vals": [req.body.feedback],
+      ":empty_list": [],
     },
     ReturnValues: "UPDATED_NEW"
   };

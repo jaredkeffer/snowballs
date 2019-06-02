@@ -41,7 +41,8 @@ export default class FeedbackScreen extends React.Component {
     Alert.alert('Helpful Hint:', 'When you finish the survey close the window by pressing "Done" in the top left corner.');
     // if (!user.surveyComplete) await this._showWeb(user.surveyURL || SURVEY_MONKEY_URL);
     await this._showWeb(SURVEY_MONKEY_URL);
-    this.props.navigation.navigate('Concierge', {refreshCache: true});
+    this.props.navigation.state.params.onGoBack(true, true);
+    this.props.navigation.navigate('Concierge');
   }
 
   _showWeb = async (url) => {

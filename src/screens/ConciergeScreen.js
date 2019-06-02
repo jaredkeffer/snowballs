@@ -30,7 +30,7 @@ export default class ConciergeScreen extends React.Component {
 
   _onPressItem = (itineraryItem) => {
     console.log('navigating to', itineraryItem.title);
-    this.props.navigation.navigate('ViewItinerary', {itinerary: itineraryItem});
+    this.props.navigation.navigate('ViewItinerary', {itinerary: itineraryItem, onGoBack: this._loadData});
   };
 
   _newItineraryBtnPressed = () => {

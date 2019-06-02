@@ -1,9 +1,12 @@
 import React from 'react';
 import ActionButton from 'react-native-action-button';
 import { SafeAreaView, RefreshControl, StyleSheet, Modal, Image } from 'react-native';
+import { Button as Btn } from 'react-native';
 import { H1, Container, Content, View, Text, Toast, Card, CardItem, Body, Icon, Right, Button, Textarea, Form } from 'native-base';
 import LoadingSpinner from '../components/LoadingSpinner';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
+
+import { HeaderBackButton } from 'react-navigation';
 
 import * as Animatable from 'react-native-animatable';
 import Tooltip from 'react-native-walkthrough-tooltip';
@@ -12,7 +15,7 @@ import MetaExperienceView from '../components/MetaExperienceView';
 import api from '../api';
 
 import layout from '../constants/Layout';
-import { PENDING_APPROVAL, FEEDBACK_SUBMITTED } from '../util/Status';
+import { APPROVED, PENDING_APPROVAL, FEEDBACK_SUBMITTED } from '../util/Status';
 
 const TOOLTIP_DELAY = 500;
 
@@ -40,7 +43,11 @@ export default class ViewItineraryScreen extends React.Component {
       title: (navigation.state.params.itinerary.title)
         ? navigation.state.params.itinerary.title
         : 'Itinerary',
-
+        headerLeft: <HeaderBackButton title="< Back" onPress={() => {
+          if (navigation.state.params.hasRefreshed) navigation.state.params.onGoBack(true, true);
+          console.log('hello');
+          navigation.goBack();
+        }} />
     };
   };
 
@@ -68,17 +75,30 @@ export default class ViewItineraryScreen extends React.Component {
 
   _onRefresh = () => {
     this.setState({hasRefreshed: true});
-    let id = (this.props.navigation.state.params.itinerary.itinerary_id)
+    this.props.navigation.setParams({ hasRefreshed: true });
+    let id = (this.props.navigation.state.params.itinerary.itinerary_id);
     this._loadData(id, true);
   }
 
-  approve = () => {
+  approve = async () => {
     const { itinerary: { itinerary_id, dayCount } } = this.state;
     console.log('approving itinerary ', itinerary_id);
 
-    let result = api.setItineraryStatus(itinerary_id);
+    let result = await api.setItineraryStatus(itinerary_id, APPROVED);
     if (result && !result.error) {
-      this.props.navigation.navigate('Feedback', {itinerary_id, dayCount});
+      this.props.navigation.navigate('Feedback', {
+        itinerary_id,
+        dayCount,
+        onGoBack: this.props.navigation.state.params.onGoBack,
+      });
+    }
+    else {
+      Toast.show({
+        text: "There was an error appriving your itinerary. Please try again!",
+        buttonText: 'Close',
+        duration: 10000,
+        type: 'error',
+      })
     }
   }
 
@@ -223,36 +243,44 @@ export default class ViewItineraryScreen extends React.Component {
           </CardItem>
         </Card>}
         {/* Days: Apple Wallet Inspired */}
-        { !loading && days && days.map((day, index) => {
-          return (
-            <Card key={day.day}>
-              <CardItem button onPress={() => this.toggleDay(day, index)} style={{backgroundColor: '#f8f8f8',}}>
-                <Body style={{justifyContent: 'center', flex: 1, flexDirection: 'row', paddingVertical: 2, }}>
-                  <Text>Day {day.day + 1} :</Text><Text style={{color: '#383838'}}> {day.date}</Text>
-                </Body>
-                <Right>
-                  <Icon style={{color: '#bbb'}} name={(day.show) ? 'md-close' : 'ios-arrow-down'}/>
-                </Right>
-              </CardItem>
-              { day.show && day.description &&
-                <CardItem>
-                  <Text>{day.description}</Text>
-                </CardItem>}
-              { day.show &&
-                <CardItem>
-                  <Body>
-                    {day.experiences.map((exp, index) =>
-                      <MetaExperienceView
-                        key={`${exp}-${index}`}
-                        experienceId={exp}
-                        refreshCache={hasRefreshed}
-                        onPress={this.props.navigation.navigate} />)}
-                  </Body>
-                </CardItem>
-              }
-           </Card>
-          )
-        })}
+        { !loading && days &&
+          <View style={{paddingBottom: 60}}>
+            { !loading && days && days.map((day, index) => {
+              return (
+                <Card key={day.day}>
+                  <CardItem button onPress={() => this.toggleDay(day, index)} style={{backgroundColor: '#f8f8f8',}}>
+                    <Body style={{justifyContent: 'space-between', flex: 1, flexDirection: 'row', paddingVertical: 2, }}>
+                      <Text>
+                        {day.title && <Text style={{fontWeight: 'bold'}}>{day.title} : </Text>}
+                        {!day.title && <Text style={{fontWeight: 'bold'}}>Day {day.day} : </Text>}
+                        <Text style={{color: '#383838'}}> {day.date}</Text>
+                      </Text>
+                    </Body>
+                    <Right>
+                      <Icon style={{color: '#bbb'}} name={(day.show) ? 'md-close' : 'ios-arrow-down'}/>
+                    </Right>
+                  </CardItem>
+                  { day.show && day.description &&
+                    <CardItem>
+                      <Text>{day.description}</Text>
+                    </CardItem>}
+                    { day.show &&
+                      <CardItem>
+                        <Body>
+                          {day.experiences.map((exp, index) =>
+                            <MetaExperienceView
+                              key={`${exp}-${index}`}
+                              experienceId={exp}
+                              refreshCache={hasRefreshed}
+                              onPress={this.props.navigation.navigate} />)}
+                            </Body>
+                          </CardItem>
+                        }
+                      </Card>
+                    )
+                  })}
+          </View>
+        }
 
         {!loading && !days &&
           <Card>

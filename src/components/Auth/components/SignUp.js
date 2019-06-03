@@ -97,7 +97,10 @@ export default class SignUp extends AuthPiece {
     Keyboard.dismiss();
     this.setState({loading: true});
 
-    if (!this.isValid()) return;
+    if (!this.isValid()) {
+      this.setState({loading: false});
+      return;
+    }
 
     let { name, email, password, phoneNumber, } = this.state;
 
@@ -113,7 +116,10 @@ export default class SignUp extends AuthPiece {
     };
 
     Auth.signUp(signupInfo).then(data => {
-      this.changeState('confirmSignUp', data.user.email);
+      this.changeState('confirmSignUp', {
+        emailOrPhone: data.user.username,
+         password:this.state.password
+       });
     }).catch(err => {
       this.error(err)
       this.setState({loading: false});
@@ -175,7 +181,7 @@ export default class SignUp extends AuthPiece {
                     onPress={this.signUp}
                     disabled={!name || !email || !confirmEmail || !password || !confirmPassword || !phoneNumber || loading}
                   >
-                    {loading && <Spinner color="white" />}
+                    {loading && <Spinner color="black" />}
                     <Text>{I18n.get('Sign Up').toUpperCase()}</Text>
                   </Button>
                 </View>

@@ -25,10 +25,34 @@ export default class ConfirmSignUp extends AuthPiece {
   confirm() {
     Keyboard.dismiss();
     this.setState({loading: true});
-    const { emailOrPhone, code } = this.state;
+    const { emailOrPhone, code, password } = this.state;
     logger.debug('Confirm Sign Up for ' + emailOrPhone);
     Auth.confirmSignUp(emailOrPhone, code)
-      .then(data => this.changeState('signedUp'))
+      .then(data => {
+        // TODO: try and sign them in again with their username and password from before
+        // if not set in state, then redirect (below), or if it fails
+        Auth.signIn(emailOrPhone, password).then(user => {
+          logger.debug(user);
+          const requireMFA = user.Session !== null;
+          if (user.challengeName === 'SMS_MFA') {
+            this.changeState('confirmSignIn', user);
+          } else if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
+            logger.debug('require new password', user.challengeParam);
+            this.changeState('requireNewPassword', user);
+          } else {
+            this.checkContact(user);
+          }
+        }).catch(err => {
+          this.setState({loading: false});
+          if (err.name === 'UserNotConfirmedException') {
+            this.changeState('confirmSignUp', emailOrPhone);
+          }
+          else {
+            this.error(err);
+            this.changeState('signedUp');
+          }
+        });
+      })
       .catch(err => {
         this.setState({loading: false});
         this.error(err);
@@ -49,8 +73,10 @@ export default class ConfirmSignUp extends AuthPiece {
   }
 
   componentWillReceiveProps(nextProps) {
-    const emailOrPhone = nextProps.authData;
-    this.setState({ emailOrPhone });
+    if (nextProps.authData) {
+      const { emailOrPhone, password } = nextProps.authData;
+      this.setState({ emailOrPhone, password });
+    }
   }
 
   nextInput = () => {

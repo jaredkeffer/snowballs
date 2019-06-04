@@ -19,7 +19,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/auth/users-cloudformation-template.yml",
 				"logicalId": "authusers"
 			},
-			"lastPushTimeStamp": "2019-06-02T02:01:12.537Z",
+			"lastPushTimeStamp": "2019-06-04T05:03:23.171Z",
 			"output": {
 				"AppClientSecret": "1epman2qitpimfm45kjhme3oboou6tolsg42ssd6khg2b5lnjr58",
 				"UserPoolId": "us-east-1_QcNFpa6Z2",
@@ -40,7 +40,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/experiences-cloudformation-template.json",
 				"logicalId": "storageexperiences"
 			},
-			"lastPushTimeStamp": "2019-06-02T02:01:12.538Z",
+			"lastPushTimeStamp": "2019-06-04T05:03:23.173Z",
 			"output": {
 				"PartitionKeyName": "experience_id",
 				"Region": "us-east-1",
@@ -57,7 +57,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/users-cloudformation-template.json",
 				"logicalId": "storageusers"
 			},
-			"lastPushTimeStamp": "2019-06-02T02:01:12.540Z",
+			"lastPushTimeStamp": "2019-06-04T05:03:23.174Z",
 			"output": {
 				"PartitionKeyName": "user_id",
 				"SortKeyName": "data_type",
@@ -76,7 +76,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/itineraries-cloudformation-template.json",
 				"logicalId": "storageitineraries"
 			},
-			"lastPushTimeStamp": "2019-06-02T02:01:12.540Z",
+			"lastPushTimeStamp": "2019-06-04T05:03:23.175Z",
 			"output": {
 				"PartitionKeyName": "user_id",
 				"SortKeyName": "itinerary_id",
@@ -111,7 +111,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/users-cloudformation-template.json",
 				"logicalId": "functionusers"
 			},
-			"lastPushTimeStamp": "2019-06-02T02:01:12.541Z",
+			"lastPushTimeStamp": "2019-06-04T05:03:23.176Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:users",
@@ -140,7 +140,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/experiences-cloudformation-template.json",
 				"logicalId": "functionexperiences"
 			},
-			"lastPushTimeStamp": "2019-06-02T02:01:12.542Z",
+			"lastPushTimeStamp": "2019-06-04T05:03:23.177Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:experiences",
@@ -160,7 +160,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/content-cloudformation-template.json",
 				"logicalId": "functioncontent"
 			},
-			"lastPushTimeStamp": "2019-06-02T02:01:12.543Z",
+			"lastPushTimeStamp": "2019-06-04T05:03:23.177Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:content",
@@ -182,20 +182,20 @@
 					]
 				}
 			],
-			"lastBuildTimeStamp": "2019-05-28T03:38:47.850Z",
-			"lastPackageTimeStamp": "2019-06-02T01:59:51.045Z",
-			"distZipFilename": "itineraries-1559440787-latest-build.zip",
+			"lastBuildTimeStamp": "2019-06-04T02:58:02.283Z",
+			"lastPackageTimeStamp": "2019-06-04T05:01:32.287Z",
+			"distZipFilename": "itineraries-1559624488-latest-build.zip",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/itineraries-cloudformation-template.json",
 				"logicalId": "functionitineraries"
 			},
-			"lastPushTimeStamp": "2019-06-02T02:01:12.549Z",
+			"lastPushTimeStamp": "2019-06-04T05:03:23.181Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:846380405817:function:itineraries",
 				"Name": "itineraries"
 			},
-			"lastPushDirHash": "DKW3jsHqzDMewa1OzlAJXCrwGfA="
+			"lastPushDirHash": "68/xhPZWBJX+wSl5NC4CeX5/8mg="
 		}
 	},
 	"api": {
@@ -216,7 +216,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/users-cloudformation-template.json",
 				"logicalId": "apiusers"
 			},
-			"lastPushTimeStamp": "2019-06-02T02:01:12.545Z",
+			"lastPushTimeStamp": "2019-06-04T05:03:23.178Z",
 			"output": {
 				"ApiName": "users",
 				"RootUrl": "https://tmpumi0dn6.execute-api.us-east-1.amazonaws.com/Prod"
@@ -240,7 +240,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/experiences-cloudformation-template.json",
 				"logicalId": "apiexperiences"
 			},
-			"lastPushTimeStamp": "2019-06-02T02:01:12.546Z",
+			"lastPushTimeStamp": "2019-06-04T05:03:23.179Z",
 			"output": {
 				"ApiName": "experiences",
 				"RootUrl": "https://2jgbb32fvi.execute-api.us-east-1.amazonaws.com/Prod"
@@ -264,7 +264,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/content-cloudformation-template.json",
 				"logicalId": "apicontent"
 			},
-			"lastPushTimeStamp": "2019-06-02T02:01:12.547Z",
+			"lastPushTimeStamp": "2019-06-04T05:03:23.179Z",
 			"output": {
 				"ApiName": "content",
 				"RootUrl": "https://vaesb9usg1.execute-api.us-east-1.amazonaws.com/Prod"
@@ -288,7 +288,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/itineraries-cloudformation-template.json",
 				"logicalId": "apiitineraries"
 			},
-			"lastPushTimeStamp": "2019-06-02T02:01:12.548Z",
+			"lastPushTimeStamp": "2019-06-04T05:03:23.180Z",
 			"output": {
 				"ApiName": "itineraries",
 				"RootUrl": "https://1vdgypxv5k.execute-api.us-east-1.amazonaws.com/Prod"

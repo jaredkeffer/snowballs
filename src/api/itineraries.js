@@ -15,12 +15,13 @@ async function createNewItinerary(questionsAndAnswers) {
     }
   };
 
-  console.log('using path ', path, 'with request params ', myInit);
+  console.log('api: ', apiName, ' using path ', path, ' with request params ', myInit);
 
-  let response = await API.post(apiName, path, myInit)
+  let response = await API.put(apiName, path, myInit)
     .catch((error) => {
       console.error('Error creating itinerary: ', apiName, error);
     });
+  console.log(response);
   return response;
 }
 

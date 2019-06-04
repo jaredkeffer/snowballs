@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Container, Content, H1, H2, H3, View, Text, Card, CardItem, Textarea } from 'native-base';
+import { Button, Container, Content, H1, H2, H3, View, Text, Card, CardItem, Textarea, Toast } from 'native-base';
 import { Alert, SafeAreaView, StatusBar, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 import { I18n } from 'aws-amplify';
 import DateRangePicker from '../components/DateRangePicker';
@@ -38,6 +38,12 @@ export default class CreateItineraryScreen extends Component {
     });
     if (response.error) {
       this.setState({loading: false});
+      Toast.show({
+        text: 'There was an error creating your itinerary.',
+        buttonText: 'Close',
+        duration: 8000,
+        type: 'danger',
+      });
     } else {
       let thankyouObj = {
         subtitle: 'We’re hard at work building your itinerary. We’ll send you a notification once we’re done.  In the meantime, check out our home screen.',

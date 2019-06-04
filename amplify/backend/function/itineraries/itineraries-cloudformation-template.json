@@ -68,7 +68,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "dyssey-20190202111147-deployment",
-					"S3Key": "amplify-builds/itineraries-1559440787-latest-build.zip"
+					"S3Key": "amplify-builds/itineraries-1559624488-latest-build.zip"
 				}
 			}
 		},
@@ -165,6 +165,17 @@
 									"Ref": "storageitinerariesArn"
 								}
 							]
+						},
+						{
+							"Effect": "Allow",
+							"Action": [
+								"dynamodb:GetItem",
+								"dynamodb:Query",
+								"dynamodb:PutItem",
+								"dynamodb:UpdateItem",
+								"dynamodb:DeleteItem"
+							],
+							"Resource": "arn:aws:dynamodb:us-east-1:846380405817:table/users"
 						}
 					]
 				}

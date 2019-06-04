@@ -15,14 +15,18 @@ AWS.config.update({ region: process.env.TABLE_REGION });
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 let tableName = "itineraries";
+let userTableName = 'users'
 if(process.env.ENV && process.env.ENV !== "NONE") {
   tableName = tableName + '-' + process.env.ENV;
 }
+
+const uuidv4 = require('uuid/v4');
 
 const userIdPresent = false; // TODO: update in case is required to use that definition
 const partitionKeyName = "user_id";
 const partitionKeyType = "S";
 const sortKeyName = "itinerary_id";
+const userSortKeyName = "data_type";
 const sortKeyType = "S";
 const hasSortKey = sortKeyName !== "";
 const path = "/itineraries";
@@ -139,20 +143,64 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 *************************************/
 
 app.put(path, function(req, res) {
+  console.log('req.apiGateway.event:');
+  console.log(req.apiGateway.event);
 
-  if (userIdPresent) {
-    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  }
+  let user_id = extractUserId(req.apiGateway.event);
+  console.log('got user id: ', user_id);
+  let itinerary_id = uuidv4();
+  console.log('new itinerary id: ', itinerary_id);
 
   let putItemParams = {
     TableName: tableName,
-    Item: req.body
-  }
+    Item: {
+      itinerary_id,
+      user_id,
+      created_timestamp: (new Date()).getTime(),
+      ...req.body,
+    },
+  };
+
+  let params = {
+    TableName: userTableName,
+    Key: {
+      [partitionKeyName]: user_id,
+      [userSortKeyName]: 'preferences',
+    },
+    UpdateExpression: "SET #c = list_append(if_not_exists(#c, :empty_list), :vals)",
+    ExpressionAttributeNames: {
+       "#c": "itineraries",
+    },
+    ExpressionAttributeValues: {
+      ":vals": [itinerary_id],
+      ":empty_list": [],
+    },
+    ReturnValues: "UPDATED_NEW"
+  };
+
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {
+      console.error(err);
       res.json({error: err, url: req.url, body: req.body});
-    } else{
-      res.json({success: 'put call succeed!', url: req.url, data: data})
+    } else {
+      dynamodb.update(params, (err, data) => {
+        if(err) {
+          console.error(err);
+          console.log('cleaning up itinerary in itineraries dynamodb');
+          dynamodb.delete(params, (error1, data) => {
+            if (error1) console.error(error1);
+            res.json({error: 'could not save itinerary in users: ' + err.message});
+          })
+        } else {
+          if (data.Item) {
+            console.log('success data.Item: ', data.Item);
+            res.json(data.Item);
+          } else {
+            console.log('success data: ', data);
+            res.json(data);
+          }
+        }
+      });
     }
   });
 });

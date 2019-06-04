@@ -4,7 +4,7 @@ import { H1, H3, Container, Content, Button, View, Text, Radio, Left, Right, Lis
 import { WebBrowser } from 'expo';
 import api from '../api';
 
-export const SURVEY_MONKEY_URL = 'https://www.surveymonkey.com/r/ZXG5TNN';
+export const SURVEY_MONKEY_URL = 'https://www.surveymonkey.com/r/ZXG5TNN?email=';
 
 export default class FeedbackScreen extends React.Component {
   static navigationOptions = {
@@ -40,7 +40,9 @@ export default class FeedbackScreen extends React.Component {
     let response = await api.submitItineraryFeedback(itineraryId, {willingToPayPerDay: this.state.selectedPrice});
     Alert.alert('Helpful Hint:', 'When you finish the survey close the window by pressing "Done" in the top left corner.');
     // if (!user.surveyComplete) await this._showWeb(user.surveyURL || SURVEY_MONKEY_URL);
-    await this._showWeb(SURVEY_MONKEY_URL);
+    const user = await api.getUser();
+    console.log(user);
+    await this._showWeb(SURVEY_MONKEY_URL+user.email);
     this.props.navigation.state.params.onGoBack(true, true);
     this.props.navigation.navigate('Concierge');
   }

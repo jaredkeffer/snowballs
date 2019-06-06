@@ -5,10 +5,10 @@ Licensed under the Apache License, Version 2.0 (the "License"). You may not use 
 or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and limitations under the License.
 */
-const AWS = require('aws-sdk')
-var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
-var bodyParser = require('body-parser')
-var express = require('express')
+const AWS = require('aws-sdk');
+var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware');
+var bodyParser = require('body-parser');
+var express = require('express');
 
 AWS.config.update({ region: process.env.TABLE_REGION });
 
@@ -21,6 +21,7 @@ if(process.env.ENV && process.env.ENV !== "NONE") {
 }
 
 const uuidv4 = require('uuid/v4');
+const LOGO_URL = 'https://odyssey-app-s3-logo-bucket.s3.amazonaws.com/black-logo-no-bg.png';
 
 const userIdPresent = false; // TODO: update in case is required to use that definition
 const partitionKeyName = "user_id";
@@ -151,13 +152,24 @@ app.put(path, function(req, res) {
   let itinerary_id = uuidv4();
   console.log('new itinerary id: ', itinerary_id);
 
+  let title = (req.body && req.body.qAndA && req.body.qAndA['2']) ? `New ${req.body.qAndA['2']} Trip` : undefined;
+  let dates = {};
+  dates.start = (req.body && req.body.qAndA && req.body.qAndA['4'])
+    ? (new Date(req.body.qAndA['4'].start)).toISOString() : undefined;
+  dates.end = (req.body && req.body.qAndA && req.body.qAndA['4'])
+    ? (new Date(req.body.qAndA['4'].end)).toISOString() : undefined;
+
   let putItemParams = {
     TableName: tableName,
     Item: {
       itinerary_id,
       user_id,
-      created_timestamp: (new Date()).getTime(),
+      created_timestamp: (new Date()).toISOString(),
       ...req.body,
+      title,
+      dates,
+      status: 'Processing Request',
+      img: LOGO_URL,
     },
   };
 

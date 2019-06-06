@@ -50,9 +50,9 @@ export default class ConciergeScreen extends React.Component {
 
     if (rawData && rawData.length) {
       rawData.sort((a, b) => {
-        let realA = (a.dates && a.dates.start) ? a.dates.start : (a.body && a.body['4']) ? a.body['4'].start : undefined;
-        let realB = (b.dates && b.dates.start) ? b.dates.start : (b.body && b.body['4']) ? b.body['4'].start : undefined;
-        return realA > realB;
+        let realA = (a.dates && a.dates.start) ? new Date(a.dates.start) : 0;
+        let realB = (b.dates && b.dates.start) ? new Date(b.dates.start) : 0;
+        return realA - realB;
       });
 
       let now = new Date();

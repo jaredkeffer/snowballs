@@ -110,7 +110,7 @@ export default class PreferencesScreen extends React.PureComponent {
         // setTimeout(() => goBack(), 1300);
         const { navigate } = this.props.navigation;
         let thankyouObj = {
-          subtitle: 'Hey you! Yeah you! You’ve successfully completed your profile.\nWhen you’re ready click next so we can begin to create a personalized itinerary for your next trip.',
+          subtitle: 'Hey you! Yeah you!\n\nYou’ve successfully completed your profile.\n\nWhen you’re ready click next so we can begin to create a personalized itinerary for you.',
           title: 'Thank You!',
           nextScreen: 'CreateItinerary',
           screenOptions: {allowSkip: true},

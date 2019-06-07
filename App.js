@@ -52,13 +52,17 @@ class App extends React.Component {
 
   // TODO: look into preloading images/user/dynamo items before page load.
   _loadResourcesAsync = async () => {
+    const images = [
+      require('./src/assets/images/icon.png'),
+      require('./src/assets/images/canal-venice-gondola.jpg'),
+    ];
+    const cacheImages = images.map((image) => {
+      return Asset.fromModule(image).downloadAsync();
+    });
+
     return Promise.all([
       // uncomment for production to add refresh on app load
       this.firstLogin(true),
-      // this.firstLogin(),
-      Asset.loadAsync([
-        require('./src/assets/images/icon.png'),
-      ]),
       // Font.loadAsync({
       //   ...Icon.Ionicons.font,
       //   'space-mono': require('./src/assets/fonts/SpaceMono-Regular.ttf'),

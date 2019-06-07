@@ -22,7 +22,7 @@ export default class ThankYouScreen extends React.PureComponent {
           <View style={{backgroundColor: 'transparent', alignItems:'center'}}>
             <Image style={{width: 180, height: 180,}} source={require('../assets/images/icon.png')}/>
             <Text style={{fontSize: 40, paddingHorizontal: 10}}>{title}</Text>
-            <H3 style={{padding: 10, paddingVertical: 20}}>
+            <H3 style={{padding: 16}}>
               {subtitle}
             </H3>
             <Button block style={{backgroundColor: '#383838', marginHorizontal: 10}}

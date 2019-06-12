@@ -1,7 +1,6 @@
 import React from 'react';
 import { Text } from 'native-base';
 import WhenAndWhere from '../components/WhenAndWhere';
-import api from '../api/index';
 
 export const formattedSteps = (questions) => {
   let formattedQuestions = [];

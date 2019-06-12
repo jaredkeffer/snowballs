@@ -56,7 +56,7 @@ export default class CreateItineraryScreen extends Component {
     return (
       <SafeAreaView style={styles.container}>
         {allowSkip &&
-          <Button transparent info block onPress={this.skip} style={{paddingTop: 14, justifyContent: "flex-end"}}>
+          <Button transparent info block onPress={this.skip} style={{paddingTop: 20, justifyContent: "flex-end"}}>
             <Text style={{fontSize: 22}}>Skip</Text>
           </Button>
         }

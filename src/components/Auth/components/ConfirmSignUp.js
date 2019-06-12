@@ -129,6 +129,9 @@ export default class ConfirmSignUp extends AuthPiece {
                     />
                   </Item>
                 </Form>
+                <View style={{paddingTop:10}}>
+                  <Text style={{textAlign: 'center', color: '#585858'}}>A verification code has been sent to your email. Enter it above.</Text>
+                </View>
                 <View style={{paddingTop:20}}>
                   <Button block success bordered
                     onPress={this.confirm}

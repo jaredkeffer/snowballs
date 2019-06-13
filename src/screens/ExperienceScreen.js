@@ -151,7 +151,7 @@ export default class ExperienceScreen extends React.Component {
                   <Text style={{flex: 1, fontWeight: '500'}}>Time Slot:</Text>
                   <Text style={{flex: 2}}>{experience.slot}</Text>
                 </CardItem>
-                {experience.min_age &&
+                {experience.min_age !== undefined &&
                   <CardItem>
                     <Text style={{flex: 1, fontWeight: '500'}}>Age Range:</Text>
                     <Text style={{flex: 2}}>{experience.min_age}+</Text>

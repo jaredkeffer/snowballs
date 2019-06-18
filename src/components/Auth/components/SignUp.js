@@ -26,7 +26,7 @@ export default class SignUp extends AuthPiece {
     {name: 'name', required: true, label: 'Full Name'},
     {name: 'email', required: true, label: 'Email', keyboardType: 'email-address'},
     {name: 'confirmEmail', required: true, label: 'Confirm Email', keyboardType: 'email-address'},
-    {name: 'password', required: true, label: 'Password', password: true},
+    {name: 'password', required: true, label: 'Password (reqs: number, upper & lowercase)', password: true},
     {name: 'confirmPassword', required: true, label: 'Confirm Password', password: true},
     {name: 'phoneNumber', required: true, label: 'Phone Number', keyboardType: 'phone-pad'},
   ];

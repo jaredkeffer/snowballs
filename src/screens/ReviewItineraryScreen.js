@@ -46,7 +46,7 @@ export default class CreateItineraryScreen extends Component {
       });
     } else {
       let thankyouObj = {
-        subtitle: 'We’re hard at work building your itinerary. We\'ll send you a notification in 48 hours or less once we\'re done. In the meantime, check out cool experiences on our home screen.',
+        subtitle: 'We’re hard at work building your itinerary. We\'ll send you a notification in 48 hours or less once we\'re done. In the meantime, check out cool experiences on the home screen.',
         title: 'Itinerary Processing',
         nextScreen: 'Concierge',
         buttonText: 'Back to Itineraries',

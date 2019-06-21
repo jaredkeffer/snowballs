@@ -69,6 +69,7 @@ class App extends React.Component {
     return Promise.all([
       // uncomment for production to add refresh on app load
       this.firstLogin(true),
+      cacheImages,
       // Font.loadAsync({
       //   ...Icon.Ionicons.font,
       //   'space-mono': require('./src/assets/fonts/SpaceMono-Regular.ttf'),

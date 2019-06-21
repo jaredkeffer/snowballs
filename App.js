@@ -1,7 +1,9 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { Root } from "native-base";
+import { Platform, StatusBar, StyleSheet } from 'react-native';
+import { Root, View, Text } from "native-base";
 import { AppLoading, Asset, Font, Icon } from 'expo';
+import { SkypeIndicator } from 'react-native-indicators';
+
 import AppNavigator, { FirstAppLogin } from './src/navigation/AppNavigator';
 import api from './src/api';
 
@@ -27,11 +29,15 @@ class App extends React.Component {
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
-        <AppLoading
-          startAsync={this._loadResourcesAsync}
-          onError={this._handleLoadingError}
-          onFinish={this._handleFinishLoading}
-        />
+        <View style={[styles.container, {justifyContent: 'center', alignItems: 'center'}]}>
+          <SkypeIndicator color='#383838' size={75}/>
+          <Text style={{color: '#787878', marginBottom: 50}}>Odyssey Technology Inc. All Rights Reserved.</Text>
+          <AppLoading
+            startAsync={this._loadResourcesAsync}
+            onError={this._handleLoadingError}
+            onFinish={this._handleFinishLoading}
+          />
+        </View>
       );
     } else {
       return (

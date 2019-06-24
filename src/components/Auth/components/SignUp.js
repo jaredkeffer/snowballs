@@ -26,9 +26,9 @@ export default class SignUp extends AuthPiece {
     {name: 'name', required: true, label: 'Full Name'},
     {name: 'email', required: true, label: 'Email', keyboardType: 'email-address'},
     {name: 'confirmEmail', required: true, label: 'Confirm Email', keyboardType: 'email-address'},
-    {name: 'password', required: true, label: 'Password (reqs: number, upper & lowercase)', password: true},
+    {name: 'password', required: true, label: 'Password', password: true},
     {name: 'confirmPassword', required: true, label: 'Confirm Password', password: true},
-    {name: 'phoneNumber', required: true, label: 'Phone Number', keyboardType: 'phone-pad'},
+    {name: 'phoneNumber', required: false, label: 'Phone Number (optional)', keyboardType: 'phone-pad'},
   ];
 
   inputs = [];
@@ -78,7 +78,7 @@ export default class SignUp extends AuthPiece {
         if (numErrors > 2) return false;
       }
 
-      if (phoneNumber.match(/\d/g).length !== 10){
+      if (phoneNumber && phoneNumber.match(/\d/g).length !== 10){
         this.error('Please enter a valid Phone Number');
         numErrors += 1;
         if (numErrors > 2) return false;
@@ -111,11 +111,15 @@ export default class SignUp extends AuthPiece {
       attributes: {
         given_name: name,
         email,
-        phone_number: `+1${phoneNumber}`,
       }
     };
 
+    if (phoneNumber) {
+      signupInfo.attributes.phone_number = `+1${phoneNumber}`
+    }
+
     Auth.signUp(signupInfo).then(data => {
+      this.setState({loading: false});
       this.changeState('confirmSignUp', {
         emailOrPhone: data.user.username,
          password:this.state.password
@@ -176,10 +180,12 @@ export default class SignUp extends AuthPiece {
                     )
                   })}
                 </Form>
+                <Text style={{padding: 12, color: '#585858', paddingTop: 16}}>Password Requirements:</Text>
+                <Text style={{paddingHorizontal: 12, color: '#585858'}}>At least 1: number, uppercase letter, lowercase letter</Text>
                 <View style={{paddingTop:10}}>
                   <Button block success bordered
                     onPress={this.signUp}
-                    disabled={!name || !email || !confirmEmail || !password || !confirmPassword || !phoneNumber || loading}
+                    disabled={!name || !email || !confirmEmail || !password || !confirmPassword || loading}
                   >
                     {loading && <Spinner color="black" />}
                     <Text>{I18n.get('Sign Up').toUpperCase()}</Text>

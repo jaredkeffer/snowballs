@@ -56,8 +56,8 @@ export default class CreateItineraryScreen extends Component {
     return (
       <SafeAreaView style={styles.container}>
         {allowSkip &&
-          <Button transparent info block onPress={this.skip} style={{paddingTop: 20, justifyContent: "flex-end"}}>
-            <Text style={{fontSize: 22}}>Skip</Text>
+          <Button transparent info block onPress={this.skip} style={{paddingTop: 24, height: 62, justifyContent: "flex-end"}}>
+            <Text style={{fontSize: 20}}>Skip</Text>
           </Button>
         }
         <ChatBot
@@ -71,7 +71,7 @@ export default class CreateItineraryScreen extends Component {
           userFontColor='#fff'
           botBubbleColor="#eee"
           botFontColor='#000'
-          scrollViewProps={{style: {backgroundColor: '#fff', paddingTop: 4,}}}
+          scrollViewProps={{style: {backgroundColor: '#fff', paddingTop: (allowSkip) ? 14 : 4,}}}
           handleEnd={this.handleEnd}
           submitButtonColor="#383838"
         />

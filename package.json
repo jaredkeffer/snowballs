@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@expo/samples": "2.1.1",
+    "@expo/vector-icons": "10.0",
     "algoliasearch": "^3.32.0",
     "aws-amplify": "^1.1.19",
     "aws-amplify-react-native": "^2.1.7",

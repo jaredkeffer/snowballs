@@ -17,7 +17,7 @@ import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableHighlight, TouchableOpacity, Picker } from 'react-native';
 import { I18n } from 'aws-amplify';
 import AmplifyTheme, { linkUnderlayColor, errorIconColor } from './AmplifyTheme';
-import { Icon } from 'react-native-elements';
+import { Icon } from 'native-base';
 import countryDialCodes from './CountryDialCodes';
 
 export const FormField = props => {
@@ -156,7 +156,7 @@ export const ErrorRow = props => {
     return React.createElement(
         View,
         { style: theme.errorRow },
-        React.createElement(Icon, { name: 'warning', color: errorIconColor }),
+        React.createElement(Icon, { name: 'md-medkit', color: errorIconColor }),
         React.createElement(
             Text,
             { style: theme.errorRowText },

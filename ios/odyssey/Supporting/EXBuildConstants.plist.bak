@@ -14,7 +14,7 @@
 	<key>STANDALONE_CONTEXT_TYPE</key>
 	<string>user</string>
 	<key>TEMPORARY_SDK_VERSION</key>
-	<string>32.0.0</string>
+	<string>33.0.0</string>
 	<key>developmentUrl</key>
 	<string>odyssey.technology.app://192.168.86.237:19000</string>
 </dict>

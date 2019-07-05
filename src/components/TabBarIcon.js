@@ -1,5 +1,5 @@
 import React from 'react';
-import * as Icon from '@expo/vector-icons';
+import * as Icon from 'expo-vector-icons';
 
 import Colors from '../constants/Colors';
 

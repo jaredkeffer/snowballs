@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, Picker, Image } from 'react-native';
 import { H1, H3, Container, Content, Button, View, Text, Radio, Left, Right, ListItem, Toast } from 'native-base';
-import { WebBrowser } from 'expo';
+import * as WebBrowser from 'expo-web-browser';
 import api from '../api';
 
 export const SURVEY_MONKEY_URL = 'https://www.surveymonkey.com/r/ZXG5TNN?email=';

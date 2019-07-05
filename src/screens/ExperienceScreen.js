@@ -2,7 +2,7 @@ import React from 'react';
 import { RefreshControl, TouchableOpacity, Linking } from 'react-native';
 import { Button, Container, Content, View, Text, Card, CardItem, Body, Icon, Right, Left, Spinner } from 'native-base';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
-import { WebBrowser } from 'expo';
+import * as WebBrowser from 'expo-web-browser';
 
 import * as Animatable from 'react-native-animatable';
 

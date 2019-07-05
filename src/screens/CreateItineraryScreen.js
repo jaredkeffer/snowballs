@@ -11,7 +11,7 @@ import api from '../api/index';
 import layout from '../constants/Layout';
 
 const XDate = require('xdate');
-const oneWeek =  (6.048 * 10**8) * (5/7);
+const oneWeek =  (6.048 * (10 ** 8)) * (5/7);
 
 export default class CreateItineraryScreen extends Component {
 

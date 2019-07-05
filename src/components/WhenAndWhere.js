@@ -5,7 +5,7 @@ import DateRangePicker from './DateRangePicker';
 import layout from '../constants/Layout';
 
 const XDate = require('xdate');
-const oneWeek =  (6.048 * 10**8) * (5/7);
+const oneWeek =  (6.048 * (10 ** 8)) * (5/7);
 
 export default class WhenAndWhere extends Component {
   constructor(props){

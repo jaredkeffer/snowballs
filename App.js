@@ -1,7 +1,9 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet } from 'react-native';
 import { Root, View, Text } from "native-base";
-import { AppLoading, Asset, Font, Icon } from 'expo';
+import { AppLoading } from 'expo';
+import * as Icon from '@expo/vector-icons';
+import { Asset } from 'expo-asset';
 import { SkypeIndicator } from 'react-native-indicators';
 
 import AppNavigator, { FirstAppLogin } from './src/navigation/AppNavigator';

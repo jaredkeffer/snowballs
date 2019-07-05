@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, RefreshControl, Image } from 'react-native';
 import { Button, Container, Content, View, Tab, Tabs, TabHeading, Text, Card, CardItem, Body, Icon, Right, Left, Spinner, ScrollableTab } from 'native-base';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
-import { WebBrowser } from 'expo';
+import * as WebBrowser from 'expo-web-browser';
 import CityOverview from '../components/CityOverview';
 
 import * as Animatable from 'react-native-animatable';

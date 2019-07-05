@@ -1,5 +1,4 @@
 import React from 'react';
-import { ExpoConfigView } from '@expo/samples';
 import { Body, Content, Container, Text, View, Button, Card, CardItem, Left, Icon } from 'native-base';
 import { Auth, Cache } from 'aws-amplify';
 

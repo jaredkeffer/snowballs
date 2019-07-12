@@ -3,15 +3,20 @@ import { Button, Container, Content, H1, H2, H3, View, Text, Card, CardItem, Tex
 import { Alert, SafeAreaView, StatusBar, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 import { I18n } from 'aws-amplify';
 import DateRangePicker from '../components/DateRangePicker';
+import {calculateTripLengthInDays, calculateDailyPrice, calculateTotalPrice, intToMoney, pricePerDay} from '../util/Payments';
+
+import stripe from 'tipsi-stripe'
 import api from '../api/index';
 
 import layout from '../constants/Layout';
+const payBtnText = 'Confirm Itinerary and Pay';
 
 export default class CreateItineraryScreen extends Component {
 
   constructor(props){
     super(props);
     const { steps, values } = this.props.navigation.state.params;
+    this.setupStripe();
     this.state = {};
     steps.forEach(val => { this.state[val.id] = val.value });
   }
@@ -21,10 +26,24 @@ export default class CreateItineraryScreen extends Component {
     headerLeft: null,
   };
 
+  setupStripe = async () => {
+    // setup stripe
+    return await stripe.setOptions({
+      publishableKey: 'pk_test_8Kp8WpwdyIDBttGYvaKxh2ul00KWNj1WJq',
+      merchantId: 'merchant.com.odysseytechnologyinc.odyssey.app.dev.id',
+    });
+  }
+
   submit = async () => {
     console.log('submitting new itinerary');
     this.setState({loading: true});
+
+    // pop up payment method selector
+    // then dismiss after selected
+
+
     const { navigation } = this.props;
+    const applePayEnabled = await stripe.canMakeApplePayPayments();
 
     const { steps } = navigation.state.params;
     let qAndA = {};
@@ -33,26 +52,75 @@ export default class CreateItineraryScreen extends Component {
       if (qAndA[val.id] === "") delete qAndA[val.id];
     });
 
-    const response = await api.createNewItinerary(qAndA).catch(error => {
-      console.log(error);
+    // TODO: make this an api call to see what to charge the person maybe?
+    // Or for now just let it be based off the number of days
+    const start = qAndA['4']['start'];
+    const end = qAndA['4']['end'];
+    const tripLengthDays = calculateTripLengthInDays(start, end);
+    const tripPrice = calculateDailyPrice(tripLengthDays);
+
+    const items = [{
+      label: `${tripLengthDays} Day Trip X $${pricePerDay}/day`,
+      amount: intToMoney(tripPrice),
+    }];
+    items.push({
+      label: 'Odyssey',
+      amount: intToMoney(calculateTotalPrice(tripPrice, 0)),
     });
-    if (response.error) {
+
+    let token, userCancelled;
+    if (applePayEnabled) {
+      console.log('requesting native pay with: ', items);
+      token = await stripe.paymentRequestWithNativePay({}, items).catch(error => {
+        userCancelled = error.message === 'Cancelled by user';
+        console.log('userCancelled 1: ', userCancelled);
+        if (!userCancelled) {
+          Toast.show({
+            text: 'There was an error paying for your itinerary. Please try again.',
+            buttonText: 'Close',
+            duration: 8000,
+            type: 'danger',
+          });
+        }
+      });
+    }
+    // TODO: ANDROID WORK -- add android pay here
+
+    if (token) {
+      const response = await api.createNewItinerary(qAndA, token).catch(error => {
+        console.log(error);
+      });
+      if (response.error) {
+
+        this.setState({loading: false});
+        await stripe.cancelNativePayRequest();
+
+        Toast.show({
+          text: 'There was an error creating your itinerary.',
+          buttonText: 'Close',
+          duration: 8000,
+          type: 'danger',
+        });
+      } else {
+        let thankyouObj = {
+          subtitle: 'We’re hard at work building your itinerary. We\'ll send you a notification in 48 hours or less once we\'re done. In the meantime, check out cool experiences on the home screen.',
+          title: 'Itinerary Processing',
+          nextScreen: 'Concierge',
+          buttonText: 'Back to Itineraries',
+          refreshCache: true,
+        }
+        await stripe.completeNativePayRequest();
+        navigation.navigate('ThankYou', thankyouObj);
+      }
+    } else {
       this.setState({loading: false});
-      Toast.show({
-        text: 'There was an error creating your itinerary.',
+      await stripe.cancelNativePayRequest();
+      if (!userCancelled) Toast.show({
+        text: 'There was an error paying for your itinerary. Please try again.',
         buttonText: 'Close',
         duration: 8000,
         type: 'danger',
       });
-    } else {
-      let thankyouObj = {
-        subtitle: 'We’re hard at work building your itinerary. We\'ll send you a notification in 48 hours or less once we\'re done. In the meantime, check out cool experiences on the home screen.',
-        title: 'Itinerary Processing',
-        nextScreen: 'Concierge',
-        buttonText: 'Back to Itineraries',
-        refreshCache: true,
-      }
-      navigation.navigate('ThankYou', thankyouObj);
     }
   }
 
@@ -60,8 +128,13 @@ export default class CreateItineraryScreen extends Component {
     this.setState({[stepId]: text});
   }
 
+  checkNativePay = async () => {
+    return await stripe.canMakeApplePayPayments();
+  }
+
   render() {
     const { steps } = this.props.navigation.state.params;
+
     return (
       <SafeAreaView style={styles.container}>
         <Container>
@@ -118,7 +191,7 @@ export default class CreateItineraryScreen extends Component {
             <View style={{flex: 0, padding: 4}}>
               <Button bordered success block onPress={this.submit}
                 disabled={this.state.loading}>
-                <Text>{I18n.get('Submit Itinerary')}</Text>
+                <Text>{payBtnText}</Text>
               </Button>
             </View>
           </View>

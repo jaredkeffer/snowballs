@@ -1,6 +1,8 @@
 const XDate = require('xdate');
-export const pricePerDay = 7;
+// TODO: getMetadata call here to get price
+export const pricePerDay = 5;
 
+// TODO: change to false when done developing
 export const beta = true;
 
 export function calculateTripLengthInDays(start, end) {

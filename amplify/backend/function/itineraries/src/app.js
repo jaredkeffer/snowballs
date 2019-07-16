@@ -10,6 +10,8 @@ var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware'
 var bodyParser = require('body-parser');
 var express = require('express');
 
+const secrets = require('./SECRET_KEY');
+
 AWS.config.update({ region: process.env.TABLE_REGION });
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
@@ -139,10 +141,61 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 });
 
 
+const findOrCreateStripeCustomer = (user, tokenId) => {
+  if(!!user.stripe_customer_id) {
+    console.log('stripe_customer_id exists for user');
+    return stripe.customers
+      .createSource(user.stripe_customer_id, { source: tokenId })
+      .then(newSource => {
+        console.log('returning newSource for user: ', user);
+        return stripe.customers
+          .update(user.stripe_customer_id, { default_source: newSource.id })
+      })
+  } else { // First payment
+    console.log('first payment for user: ', user.email);
+    return stripe.customers.create({
+      email: user.email,
+      source: tokenId
+    })
+  }
+}
+
+async function getUser(userId) {
+  let queryParams = {
+    TableName: userTableName,
+    Key: {
+      [partitionKeyName]: userId,
+      [userSortKeyName]: 'preferences',
+    },
+  }
+  const data = await dynamodb.query(queryParams).promise();
+  if (data && data.Items && data.Items.length === 1) return data.Items[0];
+  else return false;
+}
+
+async function userToStripeCustomer(userId, tokenId) {
+  const user = getUser(userId);
+  console.log('got user: ', user);
+
+  const customer = await findOrCreateStripeCustomer(user, tokenId);
+  console.log('got customer: ', customer);
+
+  // TODO: write customer to
+
+  return customer;
+}
+async function createCharge(amount, customer, source, description){
+  console.log('createing charge with params: ', amount, customer, source, description);
+  const token = stripe.charges.create({
+    amount, customer, source, description,
+  });
+  console.log('created charge result token: ', token);
+  return token;
+}
+
 /************************************
 * HTTP put method for insert object *
 *************************************/
-
 app.put(path, function(req, res) {
   console.log('req.apiGateway.event:');
   console.log(req.apiGateway.event);
@@ -151,6 +204,16 @@ app.put(path, function(req, res) {
   console.log('got user id: ', user_id);
   let itinerary_id = uuidv4();
   console.log('new itinerary id: ', itinerary_id);
+
+  let key = secrets.SECRET_KEY;
+  if (req.body.beta) {
+    key = secrets.TEST_SECRET_KEY;
+  }
+
+  const stripe = require('stripe')(key);
+
+  const customer = userToStripeCustomer(user_id, req.body.tokenId);
+  const token = createCharge(req.body.tripPrice, customer.id, customer.default_source.id, 'Request Itinerary -- Payment');
 
   let title = (req.body && req.body.qAndA && req.body.qAndA['2']) ? `New ${req.body.qAndA['2']} Trip` : undefined;
   let dates = {};

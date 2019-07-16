@@ -11,10 +11,13 @@ let buildPath = (sub, rangeKey) => {
 }
 
 async function createNewItinerary(questionsAndAnswers, token, tripPrice) {
+  const user = await UsersAPI.getUser();
   let myInit = {
     body: {
       qAndA: { ...questionsAndAnswers },
-      tripPrice, token, beta,
+      tripPrice, beta,
+      tokenId: token.tokenId,
+      email: user.email,
     }
   };
 

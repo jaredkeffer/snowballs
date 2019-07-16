@@ -24,7 +24,6 @@ export function calculateTotalPrice(tripPrice, discounts) {
 }
 
 export function intToMoney(n){
-  if (beta) return '.01';
   return String(n) + '.00';
 }
 

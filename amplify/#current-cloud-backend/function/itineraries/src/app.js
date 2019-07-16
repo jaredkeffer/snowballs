@@ -11,6 +11,7 @@ var bodyParser = require('body-parser');
 var express = require('express');
 
 const secrets = require('./SECRET_KEY');
+const stripe = require('stripe')('sk_test_Cih6xgB747TmEdPbcoWBH9h300v1xaS3IY');
 
 AWS.config.update({ region: process.env.TABLE_REGION });
 
@@ -141,8 +142,8 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 });
 
 
-const findOrCreateStripeCustomer = async (stripe, user, tokenId) => {
-  console.log('findOrCreateStripeCustomer with params: ', stripe, user, tokenId);
+const findOrCreateStripeCustomer = async (user, tokenId) => {
+  console.log('findOrCreateStripeCustomer with params: ', user, tokenId);
   if(!!user.stripe_customer_id) {
     console.log('stripe_customer_id exists for user');
     let newSource = await stripe.customers.createSource(user.stripe_customer_id, { source: tokenId });
@@ -171,21 +172,23 @@ async function getUser(userId) {
   else return false;
 }
 
-async function userToStripeCustomer(stripe, userId, tokenId) {
+async function userToStripeCustomer(userId, tokenId) {
   const user = await getUser(userId);
   console.log('got user: ', user);
 
-  const customer = await findOrCreateStripeCustomer(stripe, user, tokenId);
+  const customer = await findOrCreateStripeCustomer(user, tokenId);
   console.log('got customer: ', customer);
 
   // TODO: write customer to
 
   return customer;
 }
-async function createCharge(stripe, amount, customer, source, description){
+async function createCharge(amount, customer, source, description){
+  amount = amount * 100;
   console.log('createing charge with params: ', amount, customer, source, description);
   const token = await stripe.charges.create({
     amount, customer, source, description,
+    currency: 'usd',
   });
   console.log('created charge result token: ', token);
   return token;
@@ -207,10 +210,10 @@ app.put(path, async function(req, res) {
   if (req.body.beta) {
     key = secrets.TEST_SECRET_KEY;
 
-    const stripe = require('stripe')(key);
 
-    const customer = await userToStripeCustomer(stripe, user_id, req.body.tokenId);
-    const token = await createCharge(stripe, req.body.tripPrice, customer.id, customer.default_source.id, 'Request Itinerary -- Payment');
+    const customer = await userToStripeCustomer(user_id, req.body.tokenId);
+    const token = await createCharge(req.body.tripPrice, customer.id, customer.default_source, 'Request Itinerary -- Payment');
+    console.log('final token ', token);
   }
 
   let title = (req.body && req.body.qAndA && req.body.qAndA['2']) ? `New ${req.body.qAndA['2']} Trip` : undefined;

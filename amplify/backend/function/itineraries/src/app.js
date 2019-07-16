@@ -184,9 +184,11 @@ async function userToStripeCustomer(userId, tokenId) {
   return customer;
 }
 async function createCharge(amount, customer, source, description){
+  amount = amount * 100;
   console.log('createing charge with params: ', amount, customer, source, description);
   const token = await stripe.charges.create({
     amount, customer, source, description,
+    currency: 'usd',
   });
   console.log('created charge result token: ', token);
   return token;
@@ -210,7 +212,8 @@ app.put(path, async function(req, res) {
 
 
     const customer = await userToStripeCustomer(user_id, req.body.tokenId);
-    const token = await createCharge(req.body.tripPrice, customer.id, customer.default_source.id, 'Request Itinerary -- Payment');
+    const token = await createCharge(req.body.tripPrice, customer.id, customer.default_source, 'Request Itinerary -- Payment');
+    console.log('final token ', token);
   }
 
   let title = (req.body && req.body.qAndA && req.body.qAndA['2']) ? `New ${req.body.qAndA['2']} Trip` : undefined;

@@ -1,7 +1,7 @@
 const XDate = require('xdate');
 export const pricePerDay = 7;
 
-const beta = false;
+export const beta = true;
 
 export function calculateTripLengthInDays(start, end) {
   let s = new XDate(start);

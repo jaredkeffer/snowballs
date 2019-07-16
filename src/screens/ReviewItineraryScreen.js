@@ -73,7 +73,19 @@ export default class CreateItineraryScreen extends Component {
       console.log('requesting native pay with: ', items);
       token = await stripe.paymentRequestWithNativePay({}, items).catch(error => {
         userCancelled = error.message === 'Cancelled by user';
-        console.log('userCancelled 1: ', userCancelled);
+        if (!userCancelled) {
+          Toast.show({
+            text: 'There was an error paying for your itinerary. Please try again.',
+            buttonText: 'Close',
+            duration: 8000,
+            type: 'danger',
+          });
+        }
+      });
+    } else  {
+      console.log('apple pay NOT enabled');
+      token = await stripe.paymentRequestWithCardForm().catch(error => {
+        userCancelled = error.message === 'Cancelled by user';
         if (!userCancelled) {
           Toast.show({
             text: 'There was an error paying for your itinerary. Please try again.',

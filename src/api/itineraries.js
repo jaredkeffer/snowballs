@@ -1,6 +1,8 @@
 import { Auth, API, Analytics, Cache } from 'aws-amplify';
 import UsersAPI from './users';
 
+import { beta } from '../util/Payments';
+
 let apiName = 'itineraries';
 let path = '/itineraries';
 
@@ -12,7 +14,7 @@ async function createNewItinerary(questionsAndAnswers, token) {
   let myInit = {
     body: {
       qAndA: { ...questionsAndAnswers },
-      token,
+      token, beta,
     }
   };
 

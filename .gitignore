@@ -15,3 +15,5 @@ node_modules/
 Pods/
 android/.idea
 android/.gradle
+
+SECRET_KEY.js

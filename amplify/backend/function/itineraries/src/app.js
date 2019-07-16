@@ -11,6 +11,7 @@ var bodyParser = require('body-parser');
 var express = require('express');
 
 const secrets = require('./SECRET_KEY');
+const stripe = require('stripe')('sk_test_Cih6xgB747TmEdPbcoWBH9h300v1xaS3IY');
 
 AWS.config.update({ region: process.env.TABLE_REGION });
 
@@ -141,19 +142,17 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 });
 
 
-const findOrCreateStripeCustomer = (user, tokenId) => {
+const findOrCreateStripeCustomer = async (user, tokenId) => {
+  console.log('findOrCreateStripeCustomer with params: ', user, tokenId);
   if(!!user.stripe_customer_id) {
     console.log('stripe_customer_id exists for user');
-    return stripe.customers
-      .createSource(user.stripe_customer_id, { source: tokenId })
-      .then(newSource => {
-        console.log('returning newSource for user: ', user);
-        return stripe.customers
-          .update(user.stripe_customer_id, { default_source: newSource.id })
-      })
+    let newSource = await stripe.customers.createSource(user.stripe_customer_id, { source: tokenId });
+
+    console.log('returning newSource for user: ', user);
+    return await stripe.customers.update(user.stripe_customer_id, { default_source: newSource.id });
   } else { // First payment
     console.log('first payment for user: ', user.email);
-    return stripe.customers.create({
+    return await stripe.customers.create({
       email: user.email,
       source: tokenId
     })
@@ -161,20 +160,20 @@ const findOrCreateStripeCustomer = (user, tokenId) => {
 }
 
 async function getUser(userId) {
-  let queryParams = {
+  let params = {
     TableName: userTableName,
     Key: {
       [partitionKeyName]: userId,
       [userSortKeyName]: 'preferences',
     },
   }
-  const data = await dynamodb.query(queryParams).promise();
-  if (data && data.Items && data.Items.length === 1) return data.Items[0];
+  const data = await dynamodb.get(params).promise();
+  if (data) return data.Item;
   else return false;
 }
 
 async function userToStripeCustomer(userId, tokenId) {
-  const user = getUser(userId);
+  const user = await getUser(userId);
   console.log('got user: ', user);
 
   const customer = await findOrCreateStripeCustomer(user, tokenId);
@@ -186,7 +185,7 @@ async function userToStripeCustomer(userId, tokenId) {
 }
 async function createCharge(amount, customer, source, description){
   console.log('createing charge with params: ', amount, customer, source, description);
-  const token = stripe.charges.create({
+  const token = await stripe.charges.create({
     amount, customer, source, description,
   });
   console.log('created charge result token: ', token);
@@ -196,8 +195,8 @@ async function createCharge(amount, customer, source, description){
 /************************************
 * HTTP put method for insert object *
 *************************************/
-app.put(path, function(req, res) {
-  console.log('req.apiGateway.event:');
+app.put(path, async function(req, res) {
+  console.log('req.apiGateway.event: ');
   console.log(req.apiGateway.event);
 
   let user_id = extractUserId(req.apiGateway.event);
@@ -208,12 +207,11 @@ app.put(path, function(req, res) {
   let key = secrets.SECRET_KEY;
   if (req.body.beta) {
     key = secrets.TEST_SECRET_KEY;
+
+
+    const customer = await userToStripeCustomer(user_id, req.body.tokenId);
+    const token = await createCharge(req.body.tripPrice, customer.id, customer.default_source.id, 'Request Itinerary -- Payment');
   }
-
-  const stripe = require('stripe')(key);
-
-  const customer = userToStripeCustomer(user_id, req.body.tokenId);
-  const token = createCharge(req.body.tripPrice, customer.id, customer.default_source.id, 'Request Itinerary -- Payment');
 
   let title = (req.body && req.body.qAndA && req.body.qAndA['2']) ? `New ${req.body.qAndA['2']} Trip` : undefined;
   let dates = {};

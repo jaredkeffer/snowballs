@@ -10,6 +10,8 @@ var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware'
 var bodyParser = require('body-parser');
 var express = require('express');
 
+const secrets = require('./SECRET_KEY');
+
 AWS.config.update({ region: process.env.TABLE_REGION });
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
@@ -139,18 +141,77 @@ app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
 });
 
 
+const findOrCreateStripeCustomer = async (stripe, user, tokenId) => {
+  console.log('findOrCreateStripeCustomer with params: ', stripe, user, tokenId);
+  if(!!user.stripe_customer_id) {
+    console.log('stripe_customer_id exists for user');
+    let newSource = await stripe.customers.createSource(user.stripe_customer_id, { source: tokenId });
+
+    console.log('returning newSource for user: ', user);
+    return await stripe.customers.update(user.stripe_customer_id, { default_source: newSource.id });
+  } else { // First payment
+    console.log('first payment for user: ', user.email);
+    return await stripe.customers.create({
+      email: user.email,
+      source: tokenId
+    })
+  }
+}
+
+async function getUser(userId) {
+  let params = {
+    TableName: userTableName,
+    Key: {
+      [partitionKeyName]: userId,
+      [userSortKeyName]: 'preferences',
+    },
+  }
+  const data = await dynamodb.get(params).promise();
+  if (data) return data.Item;
+  else return false;
+}
+
+async function userToStripeCustomer(stripe, userId, tokenId) {
+  const user = await getUser(userId);
+  console.log('got user: ', user);
+
+  const customer = await findOrCreateStripeCustomer(stripe, user, tokenId);
+  console.log('got customer: ', customer);
+
+  // TODO: write customer to
+
+  return customer;
+}
+async function createCharge(stripe, amount, customer, source, description){
+  console.log('createing charge with params: ', amount, customer, source, description);
+  const token = await stripe.charges.create({
+    amount, customer, source, description,
+  });
+  console.log('created charge result token: ', token);
+  return token;
+}
+
 /************************************
 * HTTP put method for insert object *
 *************************************/
-
-app.put(path, function(req, res) {
-  console.log('req.apiGateway.event:');
+app.put(path, async function(req, res) {
+  console.log('req.apiGateway.event: ');
   console.log(req.apiGateway.event);
 
   let user_id = extractUserId(req.apiGateway.event);
   console.log('got user id: ', user_id);
   let itinerary_id = uuidv4();
   console.log('new itinerary id: ', itinerary_id);
+
+  let key = secrets.SECRET_KEY;
+  if (req.body.beta) {
+    key = secrets.TEST_SECRET_KEY;
+
+    const stripe = require('stripe')(key);
+
+    const customer = await userToStripeCustomer(stripe, user_id, req.body.tokenId);
+    const token = await createCharge(stripe, req.body.tripPrice, customer.id, customer.default_source.id, 'Request Itinerary -- Payment');
+  }
 
   let title = (req.body && req.body.qAndA && req.body.qAndA['2']) ? `New ${req.body.qAndA['2']} Trip` : undefined;
   let dates = {};

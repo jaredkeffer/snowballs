@@ -152,11 +152,32 @@ const findOrCreateStripeCustomer = async (user, tokenId) => {
     return await stripe.customers.update(user.stripe_customer_id, { default_source: newSource.id });
   } else { // First payment
     console.log('first payment for user: ', user.email);
-    return await stripe.customers.create({
+    const customer = await stripe.customers.create({
       email: user.email,
       source: tokenId
-    })
+    });
+    await writeUserStripeId(user.user_id, customer.id)
+      .catch(err => console.error(err));
+
+    return customer;
   }
+}
+
+async function writeUserStripeId(userId, customerId) {
+  console.log(`writing user ${userId}; with stripe customer id: ${customerId};`);
+  const params = {
+    TableName: userTableName,
+    Key: {
+      [partitionKeyName]: userId,
+      [userSortKeyName]: 'preferences',
+    },
+    UpdateExpression: 'set #a = :x',
+    ExpressionAttributeNames: {'#a' : 'stripe_customer_id'},
+    ExpressionAttributeValues: {':x' : customerId},
+  };
+  const result = await dynamodb.update(params).promise();
+  console.log('updated user result: ', result);
+  return result;
 }
 
 async function getUser(userId) {
@@ -178,8 +199,6 @@ async function userToStripeCustomer(userId, tokenId) {
 
   const customer = await findOrCreateStripeCustomer(user, tokenId);
   console.log('got customer: ', customer);
-
-  // TODO: write customer to
 
   return customer;
 }

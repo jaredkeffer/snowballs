@@ -4,6 +4,8 @@ import { Alert, SafeAreaView, StatusBar, StyleSheet, TouchableOpacity, Keyboard 
 import { I18n } from 'aws-amplify';
 import DateRangePicker from '../components/DateRangePicker';
 import {calculateTripLengthInDays, calculateDailyPrice, calculateTotalPrice, intToMoney, pricePerDay} from '../util/Payments';
+import { DATA_TYPE } from '../constants/DataTypes';
+
 
 import stripe from 'tipsi-stripe'
 import api from '../api/index';
@@ -99,11 +101,11 @@ export default class CreateItineraryScreen extends Component {
     // TODO: ANDROID WORK -- add android pay here
 
     if (token) {
-      const response = await api.createNewItinerary(qAndA, token).catch(error => {
-        console.log(error);
-      });
+      const response = await api.createNewItinerary(qAndA, token, tripPrice)
+        .catch(error => {
+          console.log(error);
+        });
       if (response.error) {
-
         this.setState({loading: false});
         await stripe.cancelNativePayRequest();
 
@@ -122,6 +124,7 @@ export default class CreateItineraryScreen extends Component {
           refreshCache: true,
         }
         await stripe.completeNativePayRequest();
+        this.setState({loading: false});
         navigation.navigate('ThankYou', thankyouObj);
       }
     } else {

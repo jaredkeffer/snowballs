@@ -205,7 +205,17 @@ app.post(path + '/itineraries', function(req, res) {
 *************************************/
 
 app.put(path, function(req, res) {
+  console.log('req.apiGateway.event:');
+  console.log(req.apiGateway.event);
 
+  let userId = extractUserId(req.apiGateway.event);
+  console.log('got user id', userId);
+
+  if (userId !== req.body.user_id) {
+    console.error(`User Ids do not match - APIGW userId: ${userId}; req.bodyuser_id: ${req.body.user_id}`);
+    res.json({error: 'User Ids do not match', url: req.url, body: req.body});
+    return;
+  }
   if (userIdPresent) {
     req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   }

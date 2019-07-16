@@ -10,11 +10,11 @@ let buildPath = (sub, rangeKey) => {
   return path + ['/object', sub, rangeKey].join('/');
 }
 
-async function createNewItinerary(questionsAndAnswers, token) {
+async function createNewItinerary(questionsAndAnswers, token, tripPrice) {
   let myInit = {
     body: {
       qAndA: { ...questionsAndAnswers },
-      token, beta,
+      tripPrice, token, beta,
     }
   };
 

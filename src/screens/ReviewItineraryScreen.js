@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Container, Content, H1, H2, H3, View, Text, Card, CardItem, Textarea, Toast } from 'native-base';
-import { Alert, SafeAreaView, StatusBar, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
+import { Button, Container, Content, Thumbnail, Body, Icon, H1, H2, H3, View, Text, Card, CardItem, Textarea, Toast, Left, Right } from 'native-base';
+import { Alert, SafeAreaView, StatusBar, StyleSheet, Image, TouchableOpacity, Keyboard, Modal } from 'react-native';
+import { SkypeIndicator } from 'react-native-indicators';
 import { I18n } from 'aws-amplify';
 import DateRangePicker from '../components/DateRangePicker';
 import {calculateTripLengthInDays, calculateDailyPrice, calculateTotalPrice, intToMoney, pricePerDay} from '../util/Payments';
@@ -11,15 +12,17 @@ import stripe from 'tipsi-stripe'
 import api from '../api/index';
 
 import layout from '../constants/Layout';
-const payBtnText = 'Confirm Itinerary and Pay';
+const payBtnText = 'Confirm and Pay for Itinerary';
 
 export default class CreateItineraryScreen extends Component {
-
   constructor(props){
     super(props);
     const { steps, values } = this.props.navigation.state.params;
     this.setupStripe();
-    this.state = {};
+    this.state = {
+      loading: false,
+      paymentModalVisible: false,
+    };
     steps.forEach(val => { this.state[val.id] = val.value });
   }
 
@@ -36,17 +39,100 @@ export default class CreateItineraryScreen extends Component {
     });
   }
 
-  submit = async () => {
-    console.log('submitting new itinerary');
-    this.setState({loading: true});
-
-    // pop up payment method selector
-    // then dismiss after selected
+  setPaymentModalVisible = (paymentModalVisible) => {
+    this.setState({paymentModalVisible});
+  }
 
 
+  modal = () => {
+    const { qAndA, start, end, tripLengthDays, tripPrice, discounts } = this.extractData();
+    let nativePayEnabled = this.checkNativePay();
+
+    let disabledBtnStyle = nativePayEnabled ? {} : {backgroundColor: '#ccc'};
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={this.state.paymentModalVisible}
+      >
+        <SafeAreaView style={{flex:1, padding: 12,}}>
+        <Container style={{backgroundColor: 'rgba(0,0,0,0.4)'}}>
+          <Content contentContainerStyle={{ justifyContent: 'center', flex: 1 }}>
+            <Card>
+              <CardItem header>
+                <Left>
+                  <Thumbnail source={require('../assets/images/icon.png')} />
+                  <Body>
+                    <Text style={{fontSize: 30}}>Review Payment</Text>
+                    <Text note style={{fontSize: 24}}>{qAndA['2']} Trip</Text>
+                  </Body>
+                  <Icon
+                    style={{fontSize: 30, color: '#bbb', padding: 4}}
+                    name="md-close"
+                    onPress={() => this.setPaymentModalVisible(false)}
+                  />
+                </Left>
+              </CardItem>
+              <CardItem>
+                <Left>
+                  <Text style={{fontSize: 24}}>Trip Length</Text>
+                </Left>
+                <Body>
+                  <Text style={{fontSize: 24}}>{tripLengthDays} days</Text>
+                </Body>
+              </CardItem>
+              <CardItem bordered>
+                <Left>
+                  <Text style={{fontSize: 24}}>Price/Day</Text>
+                </Left>
+                <Body>
+                  <Text style={{fontSize: 24}}>${pricePerDay}</Text>
+                </Body>
+              </CardItem>
+              { /*  // TODO: add discounts
+                discounts &&
+                <CardItem>
+                  <Left>
+                    <Text style={{fontSize: 24}}>Discounts</Text>
+                  </Left>
+                  <Body>
+                    <Text style={{fontSize: 24}}>- ${discounts}</Text>
+                  </Body>
+                </CardItem>
+              */}
+              <CardItem bordered>
+                <Left>
+                  <Text style={{fontSize: 24}}>Total Price</Text>
+                </Left>
+                <Body>
+                  <Text style={{fontSize: 24}}>${tripPrice}</Text>
+                </Body>
+              </CardItem>
+              <CardItem header style={{justifyContent: 'center',}}>
+                <Text note style={{fontSize: 24}}>Select Payment Method</Text>
+              </CardItem>
+              <CardItem style={{justifyContent: 'space-between',}} bordered>
+                <Button dark bordered style={{flex:1, justifyContent: 'center', marginHorizontal: 4}}
+                  onPress={() => this.submit(false)}>
+                  <Text style={{fontSize: 20}}>Credit Card</Text>
+                </Button>
+                <Button dark style={[{flex:1, justifyContent: 'center', marginHorizontal: 4}, disabledBtnStyle]}
+                  onPress={() => this.submit(true)} disabled={!nativePayEnabled}>
+                  <Text style={{fontSize: 20}}> Pay</Text>
+                </Button>
+              </CardItem>
+              <Text note style={{padding: 10}}>*All payments are securely processed using Stripe</Text>
+            </Card>
+          </Content>
+        </Container>
+        </SafeAreaView>
+      </Modal>
+    );
+  }
+
+  extractData = () => {
     const { navigation } = this.props;
-    const applePayEnabled = await stripe.canMakeApplePayPayments();
-
     const { steps } = navigation.state.params;
     let qAndA = {};
     steps.forEach(val => {
@@ -61,6 +147,19 @@ export default class CreateItineraryScreen extends Component {
     const tripLengthDays = calculateTripLengthInDays(start, end);
     const tripPrice = calculateDailyPrice(tripLengthDays);
 
+    return { qAndA, start, end, tripLengthDays, tripPrice };
+  }
+
+  submit = async (useNativePay) => {
+    console.log('submitting new itinerary');
+    this.setState({loading: true, submitting: true});
+    if (!useNativePay) this.setPaymentModalVisible(false);
+
+    const { navigation } = this.props;
+    const applePayEnabled = this.checkNativePay();
+
+    const { qAndA, start, end, tripLengthDays, tripPrice } = this.extractData();
+
     const items = [{
       label: `${tripLengthDays} Day Trip X $${pricePerDay}/day`,
       amount: intToMoney(tripPrice),
@@ -70,8 +169,10 @@ export default class CreateItineraryScreen extends Component {
       amount: intToMoney(calculateTotalPrice(tripPrice, 0)),
     });
 
+    // show review payment modal here
+
     let token, userCancelled;
-    if (applePayEnabled) {
+    if (applePayEnabled && useNativePay) {
       console.log('requesting native pay with: ', items);
       token = await stripe.paymentRequestWithNativePay({}, items).catch(error => {
         userCancelled = error.message === 'Cancelled by user';
@@ -87,6 +188,7 @@ export default class CreateItineraryScreen extends Component {
     } else  {
       console.log('apple pay NOT enabled');
       token = await stripe.paymentRequestWithCardForm().catch(error => {
+        if (!useNativePay) this.setPaymentModalVisible(true);
         userCancelled = error.message === 'Cancelled by user';
         if (!userCancelled) {
           Toast.show({
@@ -106,7 +208,7 @@ export default class CreateItineraryScreen extends Component {
           console.log(error);
         });
       if (response.error) {
-        this.setState({loading: false});
+        this.setState({loading: false, submitting: false});
         await stripe.cancelNativePayRequest();
 
         Toast.show({
@@ -124,11 +226,11 @@ export default class CreateItineraryScreen extends Component {
           refreshCache: true,
         }
         await stripe.completeNativePayRequest();
-        this.setState({loading: false});
+        this.setState({loading: false, submitting: false, paymentModalVisible: false});
         navigation.navigate('ThankYou', thankyouObj);
       }
     } else {
-      this.setState({loading: false});
+      this.setState({loading: false, submitting: false});
       await stripe.cancelNativePayRequest();
       if (!userCancelled) Toast.show({
         text: 'There was an error paying for your itinerary. Please try again.',
@@ -144,14 +246,23 @@ export default class CreateItineraryScreen extends Component {
   }
 
   checkNativePay = async () => {
-    return await stripe.canMakeApplePayPayments();
+    return await stripe.canMakeNativePayPayments();
   }
 
   render() {
     const { steps } = this.props.navigation.state.params;
+    const { loading, submitting } = this.state;
 
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={{flex: 1}}>
+      {this.modal()}
+      {submitting &&
+        <SafeAreaView style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <SkypeIndicator color='#383838' size={75}/>
+          <Text style={{color: '#787878', marginBottom: 100}}>Processing Payment and Creating Itinerary</Text>
+        </SafeAreaView>
+      }
+      {!submitting && <SafeAreaView style={styles.container}>
         <Container>
           <View style={{flex:1}}>
             <View style={{flex:10}}>
@@ -204,14 +315,16 @@ export default class CreateItineraryScreen extends Component {
               </Content>
             </View>
             <View style={{flex: 0, padding: 4}}>
-              <Button bordered success block onPress={this.submit}
-                disabled={this.state.loading}>
-                <Text>{payBtnText}</Text>
+              {/* <Button bordered success block onPress={this.submit} */}
+              <Button success block onPress={() => this.setPaymentModalVisible(true)}
+                disabled={loading}>
+                <Text style={{fontWeight: 'bold'}}>{payBtnText}</Text>
               </Button>
             </View>
           </View>
         </Container>
-      </SafeAreaView>
+      </SafeAreaView>}
+      </View>
     );
   }
 }

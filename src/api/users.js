@@ -119,8 +119,20 @@ async function putUserPreferences(preferences) {
 
   let user = await getUser();
 
+  // Create API path to call API GW
+  let userPath = buildPath(user.sub, DATA_TYPE.PREFERENCES);
+
+  // get user from dynamo
+  console.debug('fetching user info from dynamo');
+  let userPrefsFromDynamo = await API.get(apiName, userPath)
+    .catch((error) => {
+      console.warn('Error getting user preferences from dynamo', error);
+    });
+  const { given_name, email, phone_number } = user;
   let myInit = {
     body: {
+      ...userPrefsFromDynamo,
+      given_name, email, phone_number,
       user_id: user.sub,
       data_type: DATA_TYPE.PREFERENCES,
       [DATA_TYPE.PREFERENCES]: {...preferences},

@@ -152,7 +152,7 @@ export default class CreateItineraryScreen extends Component {
 
   submit = async (useNativePay) => {
     console.log('submitting new itinerary');
-    this.setState({loading: true, submitting: true});
+    this.setState({loading: true, submitting: !useNativePay});
     if (!useNativePay) this.setPaymentModalVisible(false);
 
     const { navigation } = this.props;
@@ -226,7 +226,7 @@ export default class CreateItineraryScreen extends Component {
           refreshCache: true,
         }
         await stripe.completeNativePayRequest();
-        this.setState({loading: false, submitting: false, paymentModalVisible: false});
+        this.setState({loading: false, paymentModalVisible: false});
         navigation.navigate('ThankYou', thankyouObj);
       }
     } else {

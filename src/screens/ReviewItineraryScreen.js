@@ -4,12 +4,14 @@ import { Alert, SafeAreaView, StatusBar, StyleSheet, Image, TouchableOpacity, Ke
 import { SkypeIndicator } from 'react-native-indicators';
 import { I18n } from 'aws-amplify';
 import DateRangePicker from '../components/DateRangePicker';
-import {calculateTripLengthInDays, calculateDailyPrice, calculateTotalPrice, intToMoney, pricePerDay} from '../util/Payments';
+import {calculateTripLengthInDays, calculateDailyPrice, calculateTotalPrice,
+  intToMoney, pricePerDay, getPublishableKey, getMerchantId} from '../util/Payments';
 import { DATA_TYPE } from '../constants/DataTypes';
-
 
 import stripe from 'tipsi-stripe'
 import api from '../api/index';
+
+const XDate = require('xdate');
 
 import layout from '../constants/Layout';
 const payBtnText = 'Confirm and Pay for Itinerary';
@@ -33,16 +35,14 @@ export default class CreateItineraryScreen extends Component {
 
   setupStripe = async () => {
     // setup stripe
-    return await stripe.setOptions({
-      publishableKey: 'pk_test_8Kp8WpwdyIDBttGYvaKxh2ul00KWNj1WJq',
-      merchantId: 'merchant.com.odysseytechnologyinc.odyssey.app.dev.id',
-    });
+    const publishableKey = getPublishableKey();
+    const merchantId = getMerchantId();
+    return await stripe.setOptions({ publishableKey, merchantId });
   }
 
   setPaymentModalVisible = (paymentModalVisible) => {
     this.setState({paymentModalVisible});
   }
-
 
   modal = () => {
     const { qAndA, start, end, tripLengthDays, tripPrice, discounts } = this.extractData();
@@ -138,6 +138,7 @@ export default class CreateItineraryScreen extends Component {
     steps.forEach(val => {
       qAndA[val.id] = this.state[val.id] || val.message;
       if (qAndA[val.id] === "") delete qAndA[val.id];
+      if (qAndA[val.id] && !qAndA[val.id].start) qAndA[val.id] = qAndA[val.id].trim();
     });
 
     // TODO: make this an api call to see what to charge the person maybe?
@@ -245,6 +246,11 @@ export default class CreateItineraryScreen extends Component {
     this.setState({[stepId]: text});
   }
 
+  dateChange = (id, start, end) => {
+    console.log(id, start, end);
+    this.setState({[id]: {end, start}});
+  }
+
   checkNativePay = async () => {
     return await stripe.canMakeNativePayPayments();
   }
@@ -267,36 +273,49 @@ export default class CreateItineraryScreen extends Component {
           <View style={{flex:1}}>
             <View style={{flex:10}}>
               <Content style={[styles.container]}>
-                <Text style={styles.title}>Itinerary Summary</Text>
                 {steps.map((step, index) => {
-
                   const stepValueId = String(index);
 
-                  if (index <= 1 && step.message.includes('Hi! Thanks for using Odyssey!')){
+                  if (index <= 1 && step.message.includes('thanks for using Odyssey!')){
                     const splitUpMessage = step.message.split('\n');
                     step.message = splitUpMessage[splitUpMessage.length - 1];
+                  }
+                  if (step.id === '3') {
+                    return <CardItem key={'itin'+index}>
+                      <Text style={{fontSize: 22}}>When are you going?</Text>
+                    </CardItem>;
                   }
                   if (index % 2 == 0) {
                     if (step.id === '4') {
                       // TODO: make this the date picker
                        return (
-                         <Card key={'itin'+index}>
-                           <CardItem>
-                             <Text>{(new Date(step.value.start)).toLocaleDateString()} - {(new Date(step.value.end)).toLocaleDateString()}</Text>
+                         <Card key={'itin'+index} transparent>
+                           {console.log('yup: ', this.state[stepValueId].start.toString('yyyy-MM-dd'), this.state[stepValueId].end.toString('yyyy-MM-dd'))}
+                           <DateRangePicker
+                             initialRange={[(new XDate(step.value.start)).toString('yyyy-MM-dd'), (new XDate(step.value.end)).toString('yyyy-MM-dd')]}
+                             onSuccess={(s, e) => this.dateChange(stepValueId,s,e)}
+                             style={styles.calendar}
+                             height={layout.window.height / 1.5}
+                             width={layout.window.width}
+                           />
+                           <CardItem note bordered style={{justifyContent: 'center', flexDirection: 'column'}}>
+                             <Text>{new XDate(this.state[stepValueId].start).toString('MMM dd, yyyy')} - {new XDate(this.state[stepValueId].end).toString('MMM dd, yyyy')}</Text>
+                             <Text note>*Single day trips are not supported*</Text>
                            </CardItem>
                          </Card>
                        );
                     }
                     return (
-                      <Card key={'itin'+index}>
-                        <CardItem>
+                      <Card key={'itin'+index} transparent>
+                        <CardItem bordered>
                           <Textarea
                             style={{flex:1}}
                             bordered
+                            placeholder="Type Here..."
                             keyboardAppearance="dark"
                             returnKeyType="done"
                             onSubmitEditing={() => Keyboard.dismiss()}
-                            rowSpan={3}
+                            rowSpan={2}
                             value={this.state[stepValueId] || ''}
                             onChangeText={(text) => this.textChange(text, stepValueId)}
                           />
@@ -305,11 +324,9 @@ export default class CreateItineraryScreen extends Component {
                     );
                   }
                   return (
-                    <Card key={'itin'+index} transparent>
-                      <CardItem header>
-                        <Text>{step.message}</Text>
+                      <CardItem key={'itin'+index}>
+                        <Text style={{fontSize: 22}}>{step.message}</Text>
                       </CardItem>
-                    </Card>
                   );
                 })}
               </Content>
@@ -317,7 +334,7 @@ export default class CreateItineraryScreen extends Component {
             <View style={{flex: 0, padding: 4}}>
               {/* <Button bordered success block onPress={this.submit} */}
               <Button success block onPress={() => this.setPaymentModalVisible(true)}
-                disabled={loading}>
+                disabled={loading || this.state['2'].trim() === ''}>
                 <Text style={{fontWeight: 'bold'}}>{payBtnText}</Text>
               </Button>
             </View>

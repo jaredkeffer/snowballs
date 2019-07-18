@@ -131,13 +131,9 @@ export default class TestIAP extends React.Component {
   render() {
     return (
       <View>
-        <Text>Testing In App Purchases</Text>
-        <Button onPress={this.connect}>
-          <Text>Connect</Text>
-        </Button>
         <Text>Testing Apple Pay</Text>
-        <Button onPress={this.go}>
-          <Text>{'go to confirm itin'}</Text>
+        <Button block onPress={this.go}>
+          <Text>Generate Itinerary</Text>
         </Button>
       </View>
     );

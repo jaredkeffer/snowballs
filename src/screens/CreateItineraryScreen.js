@@ -3,7 +3,6 @@ import { Alert, Platform, SafeAreaView, StatusBar, StyleSheet, TextInput, Toucha
 import { Button, Text, View} from 'native-base';
 import { Cache } from 'aws-amplify';
 import ChatBot from 'react-native-chatbot';
-import DateRangePicker from '../components/DateRangePicker';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { formattedSteps } from '../constants/Questions';
 import api from '../api/index';

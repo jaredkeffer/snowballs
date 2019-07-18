@@ -3,13 +3,21 @@ const XDate = require('xdate');
 export const pricePerDay = 5;
 
 // TODO: change to false when done developing
-export const beta = true;
+export const beta = false;
+
+export function getPublishableKey() {
+  return beta ? 'pk_test_8Kp8WpwdyIDBttGYvaKxh2ul00KWNj1WJq' : 'pk_live_3p8QZ0kwqNapU9p4JYFKZaol007dz5hpuu';
+}
+
+export function getMerchantId() {
+  return beta ? 'merchant.com.odysseytechnologyinc.odyssey.app.dev.id' : 'merchant.com.odysseytechnologyinc.odyssey.app';
+}
 
 export function calculateTripLengthInDays(start, end) {
   let s = new XDate(start);
   let e = new XDate(end);
 
-  return s.diffDays(e);
+  return s.diffDays(e) + 1; // inclusive
 }
 
 export function calculateDailyPrice(tripLengthDays) {

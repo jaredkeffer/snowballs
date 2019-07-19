@@ -42,6 +42,8 @@ export default class CreateItineraryScreen extends Component {
 
   setPaymentModalVisible = (paymentModalVisible) => {
     if (paymentModalVisible) {
+      this.setState({loadingPrice: true});
+      this.setState({paymentModalVisible});
       api.getItineraryPricePerDay(true).then(pricePerDay => {
         this.setState({pricePerDay});
 
@@ -52,10 +54,10 @@ export default class CreateItineraryScreen extends Component {
 
         const tripPrice = calculateTripPrice(tripLengthDays, pricePerDay);
         this.setState({tripPrice});
-        this.setState({paymentModalVisible});
+        this.setState({loadingPrice: false});
       }).catch(err => {
         // if there is no internet or something goes wrong default to defaultPricePerDay
-        this.setState({pricePerDay: defaultPricePerDay});
+        this.setState({pricePerDay: defaultPricePerDay, loadingPrice: false});
 
         const start = this.state['4']['start'];
         const end = this.state['4']['end'];
@@ -73,7 +75,7 @@ export default class CreateItineraryScreen extends Component {
 
   modal = () => {
     const { qAndA } = this.extractData();
-    const { tripLengthDays, tripPrice, paymentModalVisible, pricePerDay } = this.state;
+    const { tripLengthDays, tripPrice, paymentModalVisible, pricePerDay, loadingPrice } = this.state;
     let nativePayEnabled = this.checkNativePay();
     console.log('tripPrice from model', tripPrice);
 
@@ -88,7 +90,11 @@ export default class CreateItineraryScreen extends Component {
         <SafeAreaView style={{flex:1, padding: 12,}}>
         <Container style={{backgroundColor: 'rgba(0,0,0,0.4)'}}>
           <Content contentContainerStyle={{ justifyContent: 'center', flex: 1 }}>
-            <Card>
+            {loadingPrice && <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <SkypeIndicator color='#fff' size={75}/>
+              <Text style={{color: '#fff', marginBottom: 200}}>Loading...</Text>
+            </View>}
+            {!loadingPrice && <Card>
               <CardItem header>
                 <Left>
                   <Thumbnail source={require('../assets/images/icon.png')} />
@@ -152,7 +158,7 @@ export default class CreateItineraryScreen extends Component {
                 </Button>
               </CardItem>
               <Text note style={{padding: 10}}>*All payments are securely processed using Stripe</Text>
-            </Card>
+            </Card>}
           </Content>
         </Container>
         </SafeAreaView>

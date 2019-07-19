@@ -1,0 +1,44 @@
+{
+    "paths": [
+        {
+            "name": "/v1/system",
+            "lambdaFunction": "system",
+            "privacy": {
+                "protected": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ],
+                "unauth": [
+                    "/GET"
+                ]
+            }
+        }
+    ],
+    "resourceName": "system",
+    "apiName": "system",
+    "functionArns": [
+        {
+            "lambdaFunction": "system"
+        }
+    ],
+    "privacy": {
+        "auth": 1,
+        "unauth": 1,
+        "authRoleName": "dyssey-20190202111147-authRole",
+        "unAuthRoleName": "dyssey-20190202111147-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "system",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}

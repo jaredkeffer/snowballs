@@ -76,5 +76,5 @@ export default class DateRangePicker extends Component<Props> {
 }
 
 DateRangePicker.defaultProps = {
-  theme: { markColor: '#00adf5', markTextColor: '#fff' }
+  theme: { markColor: '#383838', markTextColor: '#fff' }
 };

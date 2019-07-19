@@ -1,9 +1,8 @@
+import SystemAPI from '../api/system';
 const XDate = require('xdate');
-// TODO: getMetadata call here to get price
-export const pricePerDay = 5;
 
-// TODO: change to false when done developing
-export const beta = false;
+export const beta = true;
+export const defaultPricePerDay = 12;
 
 export function getPublishableKey() {
   return beta ? 'pk_test_8Kp8WpwdyIDBttGYvaKxh2ul00KWNj1WJq' : 'pk_live_3p8QZ0kwqNapU9p4JYFKZaol007dz5hpuu';
@@ -20,7 +19,7 @@ export function calculateTripLengthInDays(start, end) {
   return s.diffDays(e) + 1; // inclusive
 }
 
-export function calculateDailyPrice(tripLengthDays) {
+export function calculateTripPrice(tripLengthDays, pricePerDay) {
   return tripLengthDays * pricePerDay;
 }
 
@@ -31,7 +30,7 @@ export function calculateTotalPrice(tripPrice, discounts) {
   return tripPrice - discounts;
 }
 
-export function intToMoney(n){
+export function intToMoney(n) {
   return String(n) + '.00';
 }
 

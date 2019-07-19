@@ -185,6 +185,18 @@
 				}
 			}
 		},
+		"storagesystem": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/storage/system-cloudformation-template.json",
+				"Parameters": {
+					"tableName": "system",
+					"partitionKeyName": "type",
+					"partitionKeyType": "S",
+					"env": "NONE"
+				}
+			}
+		},
 		"functionusers": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -250,6 +262,27 @@
 					"storageitinerariesArn": {
 						"Fn::GetAtt": [
 							"storageitineraries",
+							"Outputs.Arn"
+						]
+					},
+					"env": "NONE"
+				}
+			}
+		},
+		"functionsystem": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/system-cloudformation-template.json",
+				"Parameters": {
+					"storagesystemName": {
+						"Fn::GetAtt": [
+							"storagesystem",
+							"Outputs.Name"
+						]
+					},
+					"storagesystemArn": {
+						"Fn::GetAtt": [
+							"storagesystem",
 							"Outputs.Arn"
 						]
 					},
@@ -358,6 +391,33 @@
 					"functionitinerariesArn": {
 						"Fn::GetAtt": [
 							"functionitineraries",
+							"Outputs.Arn"
+						]
+					},
+					"env": "NONE"
+				}
+			}
+		},
+		"apisystem": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/system-cloudformation-template.json",
+				"Parameters": {
+					"authRoleName": {
+						"Ref": "AuthRoleName"
+					},
+					"unauthRoleName": {
+						"Ref": "UnauthRoleName"
+					},
+					"functionsystemName": {
+						"Fn::GetAtt": [
+							"functionsystem",
+							"Outputs.Name"
+						]
+					},
+					"functionsystemArn": {
+						"Fn::GetAtt": [
+							"functionsystem",
 							"Outputs.Arn"
 						]
 					},

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Body, Content, Container, Text, View, Button, Card, CardItem, Left, Icon } from 'native-base';
 import { Auth, Cache } from 'aws-amplify';
-// import TestIAP from '../components/TestIAP';
+import TestIAP from '../components/TestIAP';
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
@@ -49,7 +49,7 @@ export default class SettingsScreen extends React.Component {
              </Body>
            </Card>
            <Card>
-             {/* <TestIAP navigation={this.props.navigation}/> */}
+             <TestIAP navigation={this.props.navigation}/>
            </Card>
         </Content>
       </Container>

@@ -4,8 +4,8 @@ import { Alert, SafeAreaView, StatusBar, StyleSheet, Image, TouchableOpacity, Ke
 import { SkypeIndicator } from 'react-native-indicators';
 import { I18n } from 'aws-amplify';
 import DateRangePicker from '../components/DateRangePicker';
-import {calculateTripLengthInDays, calculateDailyPrice, calculateTotalPrice,
-  intToMoney, pricePerDay, getPublishableKey, getMerchantId} from '../util/Payments';
+import {calculateTripLengthInDays, calculateTripPrice, calculateTotalPrice,
+  intToMoney, defaultPricePerDay, getPublishableKey, getMerchantId } from '../util/Payments';
 import { DATA_TYPE } from '../constants/DataTypes';
 
 import stripe from 'tipsi-stripe'
@@ -41,12 +41,41 @@ export default class CreateItineraryScreen extends Component {
   }
 
   setPaymentModalVisible = (paymentModalVisible) => {
-    this.setState({paymentModalVisible});
+    if (paymentModalVisible) {
+      api.getItineraryPricePerDay(true).then(pricePerDay => {
+        this.setState({pricePerDay});
+
+        const start = this.state['4']['start'];
+        const end = this.state['4']['end'];
+        const tripLengthDays = calculateTripLengthInDays(start, end);
+        this.setState({tripLengthDays});
+
+        const tripPrice = calculateTripPrice(tripLengthDays, pricePerDay);
+        this.setState({tripPrice});
+        this.setState({paymentModalVisible});
+      }).catch(err => {
+        // if there is no internet or something goes wrong default to defaultPricePerDay
+        this.setState({pricePerDay: defaultPricePerDay});
+
+        const start = this.state['4']['start'];
+        const end = this.state['4']['end'];
+        const tripLengthDays = calculateTripLengthInDays(start, end);
+        this.setState({tripLengthDays});
+
+        const tripPrice = calculateTripPrice(tripLengthDays, defaultPricePerDay);
+        this.setState({tripPrice});
+        this.setState({paymentModalVisible});
+      });
+    } else {
+      this.setState({paymentModalVisible});
+    }
   }
 
   modal = () => {
-    const { qAndA, start, end, tripLengthDays, tripPrice, discounts } = this.extractData();
+    const { qAndA } = this.extractData();
+    const { tripLengthDays, tripPrice, paymentModalVisible, pricePerDay } = this.state;
     let nativePayEnabled = this.checkNativePay();
+    console.log('tripPrice from model', tripPrice);
 
     let disabledBtnStyle = nativePayEnabled ? {} : {backgroundColor: '#ccc'};
 
@@ -54,7 +83,7 @@ export default class CreateItineraryScreen extends Component {
       <Modal
         animationType="slide"
         transparent={true}
-        visible={this.state.paymentModalVisible}
+        visible={paymentModalVisible}
       >
         <SafeAreaView style={{flex:1, padding: 12,}}>
         <Container style={{backgroundColor: 'rgba(0,0,0,0.4)'}}>
@@ -65,7 +94,7 @@ export default class CreateItineraryScreen extends Component {
                   <Thumbnail source={require('../assets/images/icon.png')} />
                   <Body>
                     <Text style={{fontSize: 30}}>Review Payment</Text>
-                    <Text note style={{fontSize: 24}}>{qAndA['2']} Trip</Text>
+                    {qAndA && <Text note style={{fontSize: 24}}>{qAndA['2']} Trip</Text>}
                   </Body>
                   <Icon
                     style={{fontSize: 30, color: '#bbb', padding: 4}}
@@ -131,7 +160,7 @@ export default class CreateItineraryScreen extends Component {
     );
   }
 
-  extractData = () => {
+  extractData = async () => {
     const { navigation } = this.props;
     const { steps } = navigation.state.params;
     let qAndA = {};
@@ -143,12 +172,7 @@ export default class CreateItineraryScreen extends Component {
 
     // TODO: make this an api call to see what to charge the person maybe?
     // Or for now just let it be based off the number of days
-    const start = qAndA['4']['start'];
-    const end = qAndA['4']['end'];
-    const tripLengthDays = calculateTripLengthInDays(start, end);
-    const tripPrice = calculateDailyPrice(tripLengthDays);
-
-    return { qAndA, start, end, tripLengthDays, tripPrice };
+    return { qAndA };
   }
 
   submit = async (useNativePay) => {
@@ -159,7 +183,8 @@ export default class CreateItineraryScreen extends Component {
     const { navigation } = this.props;
     const applePayEnabled = this.checkNativePay();
 
-    const { qAndA, start, end, tripLengthDays, tripPrice } = this.extractData();
+    const { qAndA } = this.extractData();
+    const { tripLengthDays, tripPrice, pricePerDay } = this.state;
 
     const items = [{
       label: `${tripLengthDays} Day Trip X $${pricePerDay}/day`,
@@ -167,7 +192,7 @@ export default class CreateItineraryScreen extends Component {
     }];
     items.push({
       label: 'Odyssey',
-      amount: intToMoney(calculateTotalPrice(tripPrice, 0)),
+      amount: intToMoney(tripPrice),
     });
 
     // show review payment modal here
@@ -300,7 +325,7 @@ export default class CreateItineraryScreen extends Component {
                            />
                            <CardItem note bordered style={{justifyContent: 'center', flexDirection: 'column'}}>
                              <Text>{new XDate(this.state[stepValueId].start).toString('MMM dd, yyyy')} - {new XDate(this.state[stepValueId].end).toString('MMM dd, yyyy')}</Text>
-                             <Text note>*Single day trips are not supported*</Text>
+                             <Text note>*Single day trips are not currenlty supported*</Text>
                            </CardItem>
                          </Card>
                        );

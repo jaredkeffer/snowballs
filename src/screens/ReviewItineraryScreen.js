@@ -75,7 +75,7 @@ export default class CreateItineraryScreen extends Component {
 
   modal = () => {
     const { qAndA } = this.extractData();
-    const { tripLengthDays, tripPrice, paymentModalVisible, pricePerDay, loadingPrice } = this.state;
+    const { tripLengthDays, tripPrice, paymentModalVisible, pricePerDay, loadingPrice, disabledPayBtns } = this.state;
     let nativePayEnabled = this.checkNativePay();
     console.log('tripPrice from model', tripPrice);
 
@@ -149,11 +149,11 @@ export default class CreateItineraryScreen extends Component {
               </CardItem>
               <CardItem style={{justifyContent: 'space-between',}} bordered>
                 <Button dark bordered style={{flex:1, justifyContent: 'center', marginHorizontal: 4}}
-                  onPress={() => this.submit(false)}>
+                  onPress={() => this.submit(false)} disabled={disabledPayBtns}>
                   <Text style={{fontSize: 20}}>Credit Card</Text>
                 </Button>
                 <Button dark style={[{flex:1, justifyContent: 'center', marginHorizontal: 4}, disabledBtnStyle]}
-                  onPress={() => this.submit(true)} disabled={!nativePayEnabled}>
+                  onPress={() => this.submit(true)} disabled={!nativePayEnabled || disabledPayBtns}>
                   <Text style={{fontSize: 20}}> Pay</Text>
                 </Button>
               </CardItem>
@@ -166,7 +166,7 @@ export default class CreateItineraryScreen extends Component {
     );
   }
 
-  extractData = async () => {
+  extractData = () => {
     const { navigation } = this.props;
     const { steps } = navigation.state.params;
     let qAndA = {};
@@ -176,14 +176,12 @@ export default class CreateItineraryScreen extends Component {
       if (qAndA[val.id] && !qAndA[val.id].start) qAndA[val.id] = qAndA[val.id].trim();
     });
 
-    // TODO: make this an api call to see what to charge the person maybe?
-    // Or for now just let it be based off the number of days
     return { qAndA };
   }
 
   submit = async (useNativePay) => {
     console.log('submitting new itinerary');
-    this.setState({loading: true, submitting: !useNativePay});
+    this.setState({loading: true, submitting: !useNativePay, disabledPayBtns: true});
     if (!useNativePay) this.setPaymentModalVisible(false);
 
     const { navigation } = this.props;
@@ -240,7 +238,7 @@ export default class CreateItineraryScreen extends Component {
           console.log(error);
         });
       if (response.error) {
-        this.setState({loading: false, submitting: false});
+        this.setState({loading: false, submitting: false, disabledPayBtns: false});
         await stripe.cancelNativePayRequest();
 
         Toast.show({
@@ -258,11 +256,11 @@ export default class CreateItineraryScreen extends Component {
           refreshCache: true,
         }
         await stripe.completeNativePayRequest();
-        this.setState({loading: false, paymentModalVisible: false});
+        this.setState({loading: false, paymentModalVisible: false, disabledPayBtns: false});
         navigation.navigate('ThankYou', thankyouObj);
       }
     } else {
-      this.setState({loading: false, submitting: false});
+      this.setState({loading: false, submitting: false, disabledPayBtns: false});
       await stripe.cancelNativePayRequest();
       if (!userCancelled) Toast.show({
         text: 'There was an error paying for your itinerary. Please try again.',
@@ -288,7 +286,7 @@ export default class CreateItineraryScreen extends Component {
 
   render() {
     const { steps } = this.props.navigation.state.params;
-    const { loading, submitting } = this.state;
+    const { loading, submitting, disabledPayBtns } = this.state;
 
     return (
       <View style={{flex: 1}}>

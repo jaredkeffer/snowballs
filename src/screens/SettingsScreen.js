@@ -1,6 +1,7 @@
 import React from 'react';
 import { Body, Content, Container, Text, View, Button, Card, CardItem, Left, Icon } from 'native-base';
 import { Auth, Cache } from 'aws-amplify';
+import { beta } from '../util/Payments';
 import TestIAP from '../components/TestIAP';
 
 export default class SettingsScreen extends React.Component {
@@ -48,9 +49,11 @@ export default class SettingsScreen extends React.Component {
                </Text>
              </Body>
            </Card>
-           <Card>
-             <TestIAP navigation={this.props.navigation}/>
-           </Card>
+           {beta &&
+               <Card>
+               <TestIAP navigation={this.props.navigation}/>
+             </Card>
+           }
         </Content>
       </Container>
     );

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Container, Content, Thumbnail, Body, Icon, H1, H2, H3, View, Text, Card, CardItem, Textarea, Toast, Left, Right } from 'native-base';
-import { Alert, SafeAreaView, StatusBar, StyleSheet, Image, TouchableOpacity, Keyboard, Modal } from 'react-native';
+import { Alert, SafeAreaView, StatusBar, StyleSheet, Image, TouchableOpacity, Keyboard, Modal, Button as Btn } from 'react-native';
 import { SkypeIndicator } from 'react-native-indicators';
 import { I18n } from 'aws-amplify';
 import DateRangePicker from '../components/DateRangePicker';
@@ -16,6 +16,31 @@ const XDate = require('xdate');
 import layout from '../constants/Layout';
 const payBtnText = 'Confirm and Pay for Itinerary';
 
+const AlertBtn = ({nav}) => (
+  <Btn
+    title="Discard"
+    onPress={() => {
+      Alert.alert(
+        'Discard Itinerary',
+        'Are you sure you want to cancel this itinerary?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'Discard',
+            onPress: () => nav.navigation.navigate('Concierge'),
+            style: 'destructive',
+          },
+        ],
+        {cancelable: true},
+      );
+    }}
+  />
+);
+
 export default class CreateItineraryScreen extends Component {
   constructor(props){
     super(props);
@@ -28,10 +53,11 @@ export default class CreateItineraryScreen extends Component {
     steps.forEach(val => { this.state[val.id] = val.value });
   }
 
-  static navigationOptions = {
+  static navigationOptions = (props) => ({
     title: "Review Itinerary",
     headerLeft: null,
-  };
+    headerRight: <AlertBtn nav={props}/>,
+  });
 
   setupStripe = async () => {
     // setup stripe
@@ -44,7 +70,7 @@ export default class CreateItineraryScreen extends Component {
     if (paymentModalVisible) {
       this.setState({loadingPrice: true});
       this.setState({paymentModalVisible});
-      api.getItineraryPricePerDay(true).then(pricePerDay => {
+      api.getItineraryPricePerDay().then(pricePerDay => {
         this.setState({pricePerDay});
 
         const start = this.state['4']['start'];

@@ -26,7 +26,7 @@ async function getItineraryPricePerDay(refreshCache) {
   let price = await API.get(apiName, pricePath);
   if (!!price) {
     price = price[0];
-    const expiration = (new Date()).addHours(1);
+    const expiration = (new Date()).addHours(.05);
     await Cache.setItem(cacheId, price, { expires: expiration.getTime() });
   }
   console.log('got pricePerDay: ', price);

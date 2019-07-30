@@ -1,7 +1,7 @@
 import SystemAPI from '../api/system';
 const XDate = require('xdate');
 
-export const beta = true;
+export const beta = false;
 export const defaultPricePerDay = 12;
 
 export function getPublishableKey() {

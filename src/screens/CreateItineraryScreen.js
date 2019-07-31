@@ -66,7 +66,7 @@ export default class CreateItineraryScreen extends Component {
           userDelay={20}
           hideUserAvatar={true}
           keyboardVerticalOffset={(Platform.OS === 'ios') ? 62 : 0}
-          userBubbleColor="#0099ff"
+          userBubbleColor="#383838"
           userFontColor='#fff'
           botBubbleColor="#eee"
           botFontColor='#000'

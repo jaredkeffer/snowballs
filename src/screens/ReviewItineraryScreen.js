@@ -350,7 +350,6 @@ export default class CreateItineraryScreen extends Component {
                       // TODO: make this the date picker
                        return (
                          <Card key={'itin'+index} transparent>
-                           {console.log('yup: ', this.state[stepValueId].start.toString('yyyy-MM-dd'), this.state[stepValueId].end.toString('yyyy-MM-dd'))}
                            <DateRangePicker
                              initialRange={[(new XDate(step.value.start)).toString('yyyy-MM-dd'), (new XDate(step.value.end)).toString('yyyy-MM-dd')]}
                              onSuccess={(s, e) => this.dateChange(stepValueId,s,e)}

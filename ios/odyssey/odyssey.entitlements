@@ -6,7 +6,6 @@
 	<string>development</string>
 	<key>com.apple.developer.in-app-payments</key>
 	<array>
-		<string>merchant.com.odysseytechnologyinc.odyssey.app.dev.id</string>
 		<string>merchant.com.odysseytechnologyinc.odyssey.app</string>
 	</array>
 </dict>

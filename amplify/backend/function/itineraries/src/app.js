@@ -196,6 +196,7 @@ async function getUser(userId) {
 async function userToStripeCustomer(userId, tokenId) {
   const user = await getUser(userId);
   console.log('got user: ', user);
+  if (!user.email) console.warn(`${userId} does not have an email address in dynamo`);
 
   const customer = await findOrCreateStripeCustomer(user, tokenId);
   console.log('got customer: ', customer);
@@ -225,12 +226,22 @@ app.put(path, async function(req, res) {
   let itinerary_id = uuidv4();
   console.log('new itinerary id: ', itinerary_id);
 
-  if (req.body.beta) {
+  if (req.body.tokenId) {
+    console.log('start userToStripeCustomer');
     const customer = await userToStripeCustomer(user_id, req.body.tokenId);
     const token = await createCharge(req.body.tripPrice, customer.id, customer.default_source, 'Request Itinerary -- Payment');
     console.log('final token ', token);
   }
+  else {
+    const user = await getUser(user_id);
+    console.log(`user: ${user_id} did not have a stripe token. Full user object:`, user);
+    if (user.email) {
+      console.warn(`user ${user_id} has email in dynamo but no token. This is bad.`);
+      res.json({error: 'There was an error processing your request'});
+    }
+  }
 
+  console.log('starting itinerary object creation');
   let title = (req.body && req.body.qAndA && req.body.qAndA['2']) ? `New ${req.body.qAndA['2']} Trip` : undefined;
   let dates = {};
   dates.start = (req.body && req.body.qAndA && req.body.qAndA['4'])
@@ -268,7 +279,7 @@ app.put(path, async function(req, res) {
     },
     ReturnValues: "UPDATED_NEW"
   };
-
+  console.log('putting itinerary in Dynamo');
   dynamodb.put(putItemParams, (err, data) => {
     if(err) {
       console.error(err);

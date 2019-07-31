@@ -226,39 +226,44 @@ export default class CreateItineraryScreen extends Component {
     });
 
     // show review payment modal here
-
+    let error = false;
     let token, userCancelled;
-    if (applePayEnabled && useNativePay) {
-      console.log('requesting native pay with: ', items);
-      token = await stripe.paymentRequestWithNativePay({}, items).catch(error => {
-        userCancelled = error.message === 'Cancelled by user';
-        if (!userCancelled) {
-          Toast.show({
-            text: 'There was an error paying for your itinerary. Please try again.',
-            buttonText: 'Close',
-            duration: 8000,
-            type: 'danger',
-          });
-        }
-      });
-    } else  {
-      console.log('apple pay NOT enabled');
-      token = await stripe.paymentRequestWithCardForm().catch(error => {
-        if (!useNativePay) this.setPaymentModalVisible(true);
-        userCancelled = error.message === 'Cancelled by user';
-        if (!userCancelled) {
-          Toast.show({
-            text: 'There was an error paying for your itinerary. Please try again.',
-            buttonText: 'Close',
-            duration: 8000,
-            type: 'danger',
-          });
-        }
-      });
+    try {
+      if (applePayEnabled && useNativePay) {
+        console.log('requesting native pay with: ', items);
+        token = await stripe.paymentRequestWithNativePay({}, items).catch(error => {
+          userCancelled = error.message === 'Cancelled by user';
+          if (!userCancelled) {
+            Toast.show({
+              text: 'There was an error paying for your itinerary. Please try again.',
+              buttonText: 'Close',
+              duration: 8000,
+              type: 'danger',
+            });
+          }
+        });
+      } else  {
+        console.log('apple pay NOT enabled');
+        token = await stripe.paymentRequestWithCardForm().catch(error => {
+          if (!useNativePay) this.setPaymentModalVisible(true);
+          userCancelled = error.message === 'Cancelled by user';
+          if (!userCancelled) {
+            Toast.show({
+              text: 'There was an error paying for your itinerary. Please try again.',
+              buttonText: 'Close',
+              duration: 8000,
+              type: 'danger',
+            });
+          }
+        });
+      }
+      // TODO: ANDROID WORK -- add android pay here
+    } catch (e) {
+      error = true;
+      console.log(e);
     }
-    // TODO: ANDROID WORK -- add android pay here
 
-    if (token) {
+    if (token && !error) {
       const response = await api.createNewItinerary(qAndA, token, tripPrice)
         .catch(error => {
           console.log(error);

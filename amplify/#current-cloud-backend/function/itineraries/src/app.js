@@ -10,8 +10,8 @@ var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware'
 var bodyParser = require('body-parser');
 var express = require('express');
 
-const secrets = require('./SECRET_KEY');
-const stripe = require('stripe')('sk_test_Cih6xgB747TmEdPbcoWBH9h300v1xaS3IY');
+const { secrets } = require('./SECRET_KEY');
+let stripe = require('stripe')(secrets.SECRET_KEY);
 
 AWS.config.update({ region: process.env.TABLE_REGION });
 
@@ -225,11 +225,7 @@ app.put(path, async function(req, res) {
   let itinerary_id = uuidv4();
   console.log('new itinerary id: ', itinerary_id);
 
-  let key = secrets.SECRET_KEY;
   if (req.body.beta) {
-    key = secrets.TEST_SECRET_KEY;
-
-
     const customer = await userToStripeCustomer(user_id, req.body.tokenId);
     const token = await createCharge(req.body.tripPrice, customer.id, customer.default_source, 'Request Itinerary -- Payment');
     console.log('final token ', token);

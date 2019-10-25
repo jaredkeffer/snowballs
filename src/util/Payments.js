@@ -1,4 +1,3 @@
-import SystemAPI from '../api/system';
 const XDate = require('xdate');
 
 export const beta = false;
@@ -24,10 +23,13 @@ export function calculateTripPrice(tripLengthDays, pricePerDay) {
 }
 
 export function calculateTotalPrice(tripPrice, discounts) {
-  if (Array.isArray(discounts)) {
-    return tripPrice - discounts.reduce((a, b) => a + b, 0);
-  }
-  return tripPrice - discounts;
+  let newPrice = tripPrice;
+  if (discounts.percentage) newPrice = newPrice * discounts.percentage;
+  if (discounts.amount) newPrice = newPrice - discounts.amount;
+  return {
+    price: newPrice < 0 ? 0 : newPrice,
+    discounts: newPrice < 0 ? tripPrice : tripPrice - newPrice,
+  };
 }
 
 export function intToMoney(n) {

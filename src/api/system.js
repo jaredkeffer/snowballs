@@ -33,8 +33,28 @@ async function getItineraryPricePerDay(refreshCache) {
   return price.price;
 }
 
+/**
+ * 
+ * @param {String} promoCode a promo code to check against the backend
+ * @param {Number} tripPrice the current trip price, can be used to see if a user qualifies for a discoutn etc.
+ * @returns {*} {
+ *   percentage: .9, // some % off 
+ *   amount: 5, // something like a free day
+ * }
+ */
+async function verifyPromoCode(promoCode, tripPrice) {
+  console.log('verifying discount');
+  let myInit = {
+    body: { promoCode, tripPrice },
+  };
+  const response = await API.post(apiName, path, myInit); 
+  console.log('discount response: ', JSON.stringify(response, undefined, 2));
+  return response && !response.error ? response : false;
+}
+
 const SystemAPI = {
-  getItineraryPricePerDay
+  getItineraryPricePerDay,
+  verifyPromoCode,
 }
 
 export default SystemAPI;

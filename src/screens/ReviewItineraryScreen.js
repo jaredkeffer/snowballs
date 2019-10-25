@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Container, Content, Thumbnail, Body, Icon, H1, H2, H3, View, Text, Card, CardItem, Textarea, Toast, Left, Right } from 'native-base';
-import { Alert, SafeAreaView, StatusBar, StyleSheet, Image, TouchableOpacity, Keyboard, Modal, Button as Btn } from 'react-native';
+import { Root, Button, Container, Content, Thumbnail, Body, Item, Label, Icon, View, Text, Card, CardItem, Textarea, Toast, Left, Right, Input, Spinner } from 'native-base';
+import { Alert, SafeAreaView, StatusBar, StyleSheet, Keyboard, Modal, Button as Btn } from 'react-native';
 import { SkypeIndicator } from 'react-native-indicators';
-import { I18n } from 'aws-amplify';
 import DateRangePicker from '../components/DateRangePicker';
 import {calculateTripLengthInDays, calculateTripPrice, calculateTotalPrice,
   intToMoney, defaultPricePerDay, getPublishableKey, getMerchantId } from '../util/Payments';
@@ -91,17 +90,61 @@ export default class CreateItineraryScreen extends Component {
         this.setState({tripLengthDays});
 
         const tripPrice = calculateTripPrice(tripLengthDays, defaultPricePerDay);
-        this.setState({tripPrice});
+        this.setState({tripPrice, originalPrice: tripPrice});
         this.setState({paymentModalVisible});
       });
     } else {
-      this.setState({paymentModalVisible});
+      this.setState({
+        paymentModalVisible,
+        promoCode: '',
+        tripPrice: this.state.originalPrice,
+        discount: false,
+      });
     }
+  }
+
+  applyPromoCode = async () => {
+    Keyboard.dismiss();
+    const { promoCode, tripPrice, originalPrice } = this.state;
+    // clear any discount and disable btns
+    this.setState({
+      loadingDiscount: true,
+      discount: false,
+      disabledPayBtns: true,
+    });
+    
+    // returns {percentage: Number (decimal), ammount: Number}
+    const discounts = await api.verifyPromoCode(promoCode, tripPrice);
+    console.log('discounts: ', discounts);
+    if (!discounts || discounts.error) {
+      Toast.show({
+        text: 'There was an error verifying your Promo Code. Please try again.',
+        buttonText: 'Close',
+        duration: 8000,
+        type: 'danger',
+        textStyle: { fontSize: 22 },
+      });
+      return this.setState({
+        disabledPayBtns: false,
+        loadingDiscount: false,
+      });
+    }
+    const newPrice = calculateTotalPrice(tripPrice, discounts);
+    console.log('newPrice: ', newPrice);
+
+    this.setState({
+      disabledPayBtns: false,
+      discount: newPrice.discounts,
+      promoCode: undefined,
+      tripPrice: newPrice.price,
+      loadingDiscount: false,
+    });
   }
 
   modal = () => {
     const { qAndA } = this.extractData();
-    const { tripLengthDays, tripPrice, paymentModalVisible, pricePerDay, loadingPrice, disabledPayBtns } = this.state;
+    const { tripLengthDays, tripPrice, paymentModalVisible, pricePerDay, loadingPrice, loadingDiscount,
+      disabledPayBtns, promoCode, discount } = this.state;
     let nativePayEnabled = this.checkNativePay();
     console.log('tripPrice from model', tripPrice);
 
@@ -113,6 +156,7 @@ export default class CreateItineraryScreen extends Component {
         transparent={true}
         visible={paymentModalVisible}
       >
+        <Root>
         <SafeAreaView style={{flex:1, padding: 12,}}>
         <Container style={{backgroundColor: 'rgba(0,0,0,0.4)'}}>
           <Content contentContainerStyle={{ justifyContent: 'center', flex: 1 }}>
@@ -151,17 +195,16 @@ export default class CreateItineraryScreen extends Component {
                   <Text style={{fontSize: 24}}>${pricePerDay}</Text>
                 </Body>
               </CardItem>
-              { /*  // TODO: add discounts
-                discounts &&
+              { discount &&
                 <CardItem>
                   <Left>
-                    <Text style={{fontSize: 24}}>Discounts</Text>
+                    <Text style={{fontSize: 24}}>Promo Discount</Text>
                   </Left>
                   <Body>
-                    <Text style={{fontSize: 24}}>- ${discounts}</Text>
+                    <Text style={{fontSize: 24}}>-${discount}</Text>                
                   </Body>
                 </CardItem>
-              */}
+              }
               <CardItem bordered>
                 <Left>
                   <Text style={{fontSize: 24}}>Total Price</Text>
@@ -170,6 +213,42 @@ export default class CreateItineraryScreen extends Component {
                   <Text style={{fontSize: 24}}>${tripPrice}</Text>
                 </Body>
               </CardItem>
+              { !discount &&
+                <CardItem>
+                  <Left style={{flex: 3}}>
+                    <Item floatingLabel last style={{paddingTop: 4}}>
+                      <Label>Promo Code</Label>
+                      <Input
+                        value={promoCode || ''}
+                        keyboardAppearance="dark"
+                        autoCorrect={false}
+                        autoCapitalize="characters"
+                        onChangeText={text => {
+                          this.setState({promoCode: text.toUpperCase().trim()})
+                        }}
+                        required={true}
+                        returnKeyType="done"
+                        blurOnSubmit={false}
+                        onSubmitEditing={() => {
+                          Keyboard.dismiss();
+                          this.applyPromoCode()
+                        }}
+                      />
+                    </Item>
+                  </Left>
+                  <Right style={{flex: 1}}>
+                    <Button block success
+                      onPress={this.applyPromoCode}
+                      disabled={!promoCode || disabledPayBtns}
+                    >
+                      <Text>Apply</Text>
+                    </Button>
+                  </Right>
+                </CardItem>
+              } 
+              { loadingDiscount &&
+                <Spinner />
+              }
               <CardItem header style={{justifyContent: 'center',}}>
                 <Text note style={{fontSize: 24}}>Select Payment Method</Text>
               </CardItem>
@@ -188,6 +267,7 @@ export default class CreateItineraryScreen extends Component {
           </Content>
         </Container>
         </SafeAreaView>
+        </Root>
       </Modal>
     );
   }

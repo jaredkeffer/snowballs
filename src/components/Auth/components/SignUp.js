@@ -181,7 +181,7 @@ export default class SignUp extends AuthPiece {
                   })}
                 </Form>
                 <Text style={{padding: 12, color: '#585858', paddingTop: 16}}>Password Requirements:</Text>
-                <Text style={{paddingHorizontal: 12, color: '#585858'}}>At least 1: number, uppercase letter, lowercase letter</Text>
+                <Text style={{paddingHorizontal: 12, color: '#585858'}}>At least 1: number, uppercase letter, lowercase letter, length > 7</Text>
                 <View style={{paddingTop:10}}>
                   <Button block success bordered
                     onPress={this.signUp}

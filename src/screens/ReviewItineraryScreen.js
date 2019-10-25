@@ -359,7 +359,7 @@ export default class CreateItineraryScreen extends Component {
                            />
                            <CardItem note bordered style={{justifyContent: 'center', flexDirection: 'column'}}>
                              <Text>{new XDate(this.state[stepValueId].start).toString('MMM dd, yyyy')} - {new XDate(this.state[stepValueId].end).toString('MMM dd, yyyy')}</Text>
-                             <Text note>*Single day trips are not currenlty supported*</Text>
+                             <Text note>*To book a single day trip tap the date twice*</Text>
                            </CardItem>
                          </Card>
                        );

@@ -44,12 +44,13 @@ async function getItineraryPricePerDay(refreshCache) {
  */
 async function verifyPromoCode(promoCode, tripPrice) {
   console.log('verifying discount');
+  const promoPath = `${path}/promo`
   let myInit = {
-    body: { promoCode, tripPrice },
+    body: { type: promoCode, tripPrice },
   };
-  const response = await API.post(apiName, path, myInit); 
+  const response = await API.post(apiName, promoPath, myInit); 
   console.log('discount response: ', JSON.stringify(response, undefined, 2));
-  return response && !response.error ? response : false;
+  return response;
 }
 
 const SystemAPI = {

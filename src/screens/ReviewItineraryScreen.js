@@ -105,7 +105,7 @@ export default class CreateItineraryScreen extends Component {
 
   applyPromoCode = async () => {
     Keyboard.dismiss();
-    const { promoCode, tripPrice, originalPrice } = this.state;
+    const { promoCode, tripPrice } = this.state;
     // clear any discount and disable btns
     this.setState({
       loadingDiscount: true,
@@ -114,11 +114,11 @@ export default class CreateItineraryScreen extends Component {
     });
     
     // returns {percentage: Number (decimal), ammount: Number}
-    const discounts = await api.verifyPromoCode(promoCode, tripPrice);
+    const discounts = await api.verifyPromoCode(promoCode.trim(), tripPrice);
     console.log('discounts: ', discounts);
     if (!discounts || discounts.error) {
       Toast.show({
-        text: 'There was an error verifying your Promo Code. Please try again.',
+        text: `There was an error verifying your Promo Code. ${discounts.error}`,
         buttonText: 'Close',
         duration: 8000,
         type: 'danger',

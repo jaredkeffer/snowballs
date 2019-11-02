@@ -1,6 +1,6 @@
 const XDate = require('xdate');
 
-export const beta = false;
+export const beta = true;
 export const defaultPricePerDay = 12;
 
 export function getPublishableKey() {
@@ -24,7 +24,7 @@ export function calculateTripPrice(tripLengthDays, pricePerDay) {
 
 export function calculateTotalPrice(tripPrice, discounts) {
   let newPrice = tripPrice;
-  if (discounts.percentage) newPrice = newPrice * discounts.percentage;
+  if (discounts.percentage) newPrice = newPrice * (1 - discounts.percentage);
   if (discounts.amount) newPrice = newPrice - discounts.amount;
   return {
     price: newPrice < 0 ? 0 : newPrice,

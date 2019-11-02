@@ -242,6 +242,32 @@
 				"Name": "system"
 			},
 			"lastPushDirHash": "QPiuXD26oUybPUzvTeGr+kO6oHc="
+		},
+		"promo": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "system",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				},
+				{
+					"category": "storage",
+					"resourceName": "users",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			],
+			"lastBuildTimeStamp": "2019-11-01T13:50:16.218Z",
+			"lastPackageTimeStamp": "2019-11-01T15:28:47.223Z",
+			"distZipFilename": "promo-354c314a47443948574e-build.zip"
 		}
 	},
 	"api": {
@@ -352,13 +378,21 @@
 						"Name",
 						"Arn"
 					]
+				},
+				{
+					"category": "function",
+					"resourceName": "promo",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
 				}
 			],
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/api/system-cloudformation-template.json",
 				"logicalId": "apisystem"
 			},
-			"lastPushTimeStamp": "2019-07-31T03:52:03.823Z",
+			"lastPushTimeStamp": "2019-11-01T03:54:34.198Z",
 			"output": {
 				"ApiName": "system",
 				"RootUrl": "https://z8aa3ghk11.execute-api.us-east-1.amazonaws.com/Prod"

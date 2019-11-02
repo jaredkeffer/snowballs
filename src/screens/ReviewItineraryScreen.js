@@ -146,7 +146,6 @@ export default class CreateItineraryScreen extends Component {
     const { tripLengthDays, tripPrice, paymentModalVisible, pricePerDay, loadingPrice, loadingDiscount,
       disabledPayBtns, promoCode, discount } = this.state;
     let nativePayEnabled = this.checkNativePay();
-    console.log('tripPrice from model', tripPrice);
 
     let disabledBtnStyle = nativePayEnabled ? {} : {backgroundColor: '#ccc'};
 
@@ -291,7 +290,7 @@ export default class CreateItineraryScreen extends Component {
     if (!useNativePay) this.setPaymentModalVisible(false);
 
     const { navigation } = this.props;
-    const applePayEnabled = this.checkNativePay();
+    const applePayEnabled = await this.checkNativePay();
 
     const { qAndA } = this.extractData();
     const { tripLengthDays, tripPrice, pricePerDay } = this.state;
@@ -340,7 +339,13 @@ export default class CreateItineraryScreen extends Component {
       // TODO: ANDROID WORK -- add android pay here
     } catch (e) {
       error = true;
-      console.log(e);
+      Toast.show({
+        text: 'There was an error paying for your itinerary. Please try again.',
+        buttonText: 'Close',
+        duration: 8000,
+        type: 'danger',
+      });
+      console.error(e);
     }
 
     if (token && !error) {
@@ -374,7 +379,7 @@ export default class CreateItineraryScreen extends Component {
       this.setState({loading: false, submitting: false, disabledPayBtns: false});
       await stripe.cancelNativePayRequest();
       if (!userCancelled) Toast.show({
-        text: 'There was an error paying for your itinerary. Please try again.',
+        text: 'There was an error paying for your itinerary. Please try again. If this problem persists please contact info@odysseytechnologyinc.com.',
         buttonText: 'Close',
         duration: 8000,
         type: 'danger',

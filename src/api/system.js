@@ -23,11 +23,11 @@ async function getItineraryPricePerDay(refreshCache) {
 
   console.log('fetching pricePerDay from dynamo');
   let pricePath = `${path}/price_per_day`;
-  let price = await API.get(apiName, pricePath);
+  let price = await API.get(apiName, pricePath).catch(err => console.error(err));
   if (!!price) {
     price = price[0];
-    const expiration = (new Date()).addHours(.05);
-    await Cache.setItem(cacheId, price, { expires: expiration.getTime() });
+    const expiration = (new Date()).addHours(1);
+    await Cache.setItem(cacheId, price.price, { expires: expiration.getTime() });
   }
   console.log('got pricePerDay: ', price);
   return price.price;

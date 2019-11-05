@@ -16,6 +16,18 @@
                     "/GET"
                 ]
             }
+        },
+        {
+            "name": "/v1/system/promo",
+            "lambdaFunction": "promo",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/PUT",
+                    "/PATCH"
+                ]
+            }
         }
     ],
     "resourceName": "system",
@@ -23,10 +35,13 @@
     "functionArns": [
         {
             "lambdaFunction": "system"
+        },
+        {
+            "lambdaFunction": "promo"
         }
     ],
     "privacy": {
-        "auth": 1,
+        "auth": 2,
         "unauth": 1,
         "authRoleName": "dyssey-20190202111147-authRole",
         "unAuthRoleName": "dyssey-20190202111147-unauthRole"
@@ -39,6 +54,15 @@
                 "Name",
                 "Arn"
             ]
+        },
+        {
+            "category": "function",
+            "resourceName": "promo",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
         }
-    ]
+    ],
+    "uuid": "c00b17cc"
 }

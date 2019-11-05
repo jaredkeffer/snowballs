@@ -290,6 +290,39 @@
 				}
 			}
 		},
+		"functionpromo": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/dyssey-20190202111147-deployment/amplify-cfn-templates/function/promo-cloudformation-template.json",
+				"Parameters": {
+					"storagesystemName": {
+						"Fn::GetAtt": [
+							"storagesystem",
+							"Outputs.Name"
+						]
+					},
+					"storagesystemArn": {
+						"Fn::GetAtt": [
+							"storagesystem",
+							"Outputs.Arn"
+						]
+					},
+					"storageusersName": {
+						"Fn::GetAtt": [
+							"storageusers",
+							"Outputs.Name"
+						]
+					},
+					"storageusersArn": {
+						"Fn::GetAtt": [
+							"storageusers",
+							"Outputs.Arn"
+						]
+					},
+					"env": "NONE"
+				}
+			}
+		},
 		"apiusers": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -418,6 +451,18 @@
 					"functionsystemArn": {
 						"Fn::GetAtt": [
 							"functionsystem",
+							"Outputs.Arn"
+						]
+					},
+					"functionpromoName": {
+						"Fn::GetAtt": [
+							"functionpromo",
+							"Outputs.Name"
+						]
+					},
+					"functionpromoArn": {
+						"Fn::GetAtt": [
+							"functionpromo",
 							"Outputs.Arn"
 						]
 					},

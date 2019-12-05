@@ -16,6 +16,6 @@
 	<key>TEMPORARY_SDK_VERSION</key>
 	<string>33.0.0</string>
 	<key>developmentUrl</key>
-	<string>odyssey.technology.app://127.0.0.1:19000</string>
+	<string>odyssey.technology.app://10.0.0.136:8000</string>
 </dict>
 </plist>

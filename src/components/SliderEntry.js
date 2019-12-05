@@ -27,20 +27,38 @@ export default class SliderEntry extends Component {
       : (<Image source={{ uri: img }} style={styles.image}/>);
   }
 
-  goToExperienceView = () => {
+  goToView = () => {
     const { data: {title, subtitle, experience_id} } = this.props;
     console.log(`You selected ${title}: ${experience_id}`);
-    this.props.navigate('Experience', {experienceId: experience_id});
+    this.props.navigate('Detail', {experienceId: experience_id});
   }
 
   goToArticleView = () => {
+    // set const title to props
     const { data: {title, subtitle, experience_id} } = this.props;
     console.log(`You selected ${title}: ${experience_id}`);
     this.props.navigate('Article', {content: this.props.data});
   }
+  evaluateType = () => {
+    // const { data: {type} } = this.props;
+    // this.props.navigate(type, {content: this.props.data});
+
+    console.log(this.props.data.type);
+    switch(this.props.data.type) {
+      case 'article':
+        console.log('banana');
+        this.goToArticleView();
+        break;
+      case 'experience':
+        console.log('apple');
+        this.goToView();
+        break;
+    }
+  }
 
   render() {
-    const { data: {title, subtitle, city}, even } = this.props;
+    const { data: {title, subtitle, city, type}, even } = this.props;
+    // add what to pass here
 
     const uppercaseTitle = title
       ? (<Text style={styles.title} numberOfLines={3}>
@@ -49,7 +67,7 @@ export default class SliderEntry extends Component {
       : false;
 
     return (
-      <TouchableOpacity activeOpacity={1} style={styles.slideInnerContainer} onPress={this.goToArticleView}>
+      <TouchableOpacity activeOpacity={1} style={styles.slideInnerContainer} onPress={this.evaluateType}>
       <View style={styles.shadow}/>
       <View style={styles.imageContainer}>
         {this.image}

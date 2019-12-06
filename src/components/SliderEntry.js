@@ -30,7 +30,7 @@ export default class SliderEntry extends Component {
   goToView = () => {
     const { data: {title, subtitle, experience_id} } = this.props;
     console.log(`You selected ${title}: ${experience_id}`);
-    this.props.navigate('Detail', {experienceId: experience_id});
+    this.props.navigate('MarketplaceExperience', {experienceId: experience_id});
   }
 
   goToArticleView = () => {
@@ -46,11 +46,11 @@ export default class SliderEntry extends Component {
     console.log(this.props.data.type);
     switch(this.props.data.type) {
       case 'article':
-        console.log('banana');
+        // console.log('banana');
         this.goToArticleView();
         break;
       case 'experience':
-        console.log('apple');
+        // console.log('apple');
         this.goToView();
         break;
     }

@@ -56,7 +56,7 @@ export default class MarketplaceScreen extends React.Component {
   
   render() {
     let {cities, experiences, refreshingExperiences} = this.state;
-    // if (refreshingExperiences) return <LoadingSpinner />
+    if (refreshingExperiences) return <LoadingSpinner />
     return (
       <View style={styles.container}>
         {/* Search Bar */}

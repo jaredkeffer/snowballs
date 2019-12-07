@@ -8,6 +8,7 @@ import HomeScreen from '../screens/HomeScreen';
 import ConciergeScreen from '../screens/ConciergeScreen';
 import MarketplaceScreen from '../screens/MarketplaceScreen';
 import MarketplaceExperienceScreen from '../screens/MarketplaceExperienceScreen';
+import MarketplaceBookingScreen from '../screens/MarketplaceBookingScreen';
 import ExploreLocalScreen from '../screens/ExploreLocalScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import PreferencesScreen from '../screens/PreferencesScreen';
@@ -62,7 +63,7 @@ ConciergeStack.navigationOptions = {
 const MarketplaceStack = createStackNavigator({
   Marketplace: MarketplaceScreen,
   MarketplaceExperience: MarketplaceExperienceScreen,
-  // Booking: MarketplaceBookingScreen,
+  Booking: MarketplaceBookingScreen,
 });
 
 MarketplaceStack.navigationOptions = {

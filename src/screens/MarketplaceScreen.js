@@ -15,10 +15,10 @@ export default class MarketplaceScreen extends React.Component {
     super(props);
     this.state = {
       showSearchBar: true,
-      refreshingExperiences: true,
+      refreshingMarketplace: true,
     };
     this.toggleSearch = this.toggleSearch.bind(this);
-    this._onRefreshExperiences = this._onRefreshExperiences.bind(this);
+    this._onRefresh = this._onRefresh.bind(this);
     this.loadContent = this.loadContent.bind(this);
   }
   componentDidMount() {
@@ -42,21 +42,21 @@ export default class MarketplaceScreen extends React.Component {
   };
 
   loadContent = () => {
-    this._onRefreshExperiences();
+    this._onRefresh();
   }
 
-  _onRefreshExperiences = async () => {
-    this.setState({refreshingExperiences: true});
+  _onRefresh = async () => {
+    this.setState({refreshingMarketplace: true});
 
     const experiences = await api.getFeaturedExperiences(true);
     this.setState({experiences});
 
-    this.setState({refreshingExperiences: false});
+    this.setState({refreshingMarketplace: false});
   }
   
   render() {
-    let {cities, experiences, refreshingExperiences} = this.state;
-    if (refreshingExperiences) return <LoadingSpinner />
+    let {cities, experiences, refreshingMarketplace} = this.state;
+    if (refreshingMarketplace) return <LoadingSpinner />
     return (
       <View style={styles.container}>
         {/* Search Bar */}
@@ -74,8 +74,8 @@ export default class MarketplaceScreen extends React.Component {
             />
         <Content style={styles.refresh} refreshControl={
           <RefreshControl
-            refreshing={refreshingExperiences}
-            onRefresh={this._onRefreshExperiences}
+            refreshing={refreshingMarketplace}
+            onRefresh={this._onRefresh}
           />
         }>
         {/* Marketplace Experiences */}

@@ -46,11 +46,9 @@ export default class SliderEntry extends Component {
     console.log(this.props.data.type);
     switch(this.props.data.type) {
       case 'article':
-        // console.log('banana');
         this.goToArticleView();
         break;
       case 'experience':
-        // console.log('apple');
         this.goToView();
         break;
     }

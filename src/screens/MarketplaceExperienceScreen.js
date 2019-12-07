@@ -14,26 +14,29 @@ import * as Animatable from 'react-native-animatable';
 
 export default class MarketplaceDetailScreen extends React.Component {
     constructor(props) {
-        super(props);
-        const { navigation } = this.props;
-    
-        this.refreshCache = (navigation.state.params)
-          ? navigation.state.params.refreshCache
-          : false;
-    
-          this.id = (navigation.state.params)
-          ? navigation.state.params.experienceId
-          : false;
-    
-        this.state = {
-          loading: true,
-        }
-      }
-    
-      componentDidMount() {
-        console.log('this.id: ', this.id);
-        this._loadData(this.id);
-      }
+      super(props);
+      const { navigation, data } = this.props;
+      
+      this.refreshCache = (navigation.state.params)
+        ? navigation.state.params.refreshCache
+        : false;
+  
+        this.id = (navigation.state.params)
+        ? navigation.state.params.experienceId
+        : false;
+  
+      this.state = {
+        loading: true,
+      };
+      this._onRefresh = this._onRefresh.bind(this);
+      this._loadData = this._loadData.bind(this);
+      this._goToBooking = this._goToBooking.bind(this);
+    }
+  
+    componentDidMount() {
+      console.log('this.id: ', this.id);
+      this._loadData(this.id);
+    }
     
     static navigationOptions = ({ navigation }) => {
         return {
@@ -58,95 +61,131 @@ export default class MarketplaceDetailScreen extends React.Component {
 
         return experience;
     }
+
     showCost = (cost) => {
-        if (cost <= 3) return <Text style={{color: '#bbb'}}><Text style={{color: '#383838'}}>$</Text>$$</Text>;
-        if (cost <= 6) return <Text style={{color: '#bbb'}}><Text style={{color: '#383838'}}>$$</Text>$</Text>;
+        if (cost <= 3) return <Text style={{color: '#bbb', fontSize: 20}}><Text style={{color: '#383838', fontSize: 20}}>$</Text>$$</Text>;
+        if (cost <= 6) return <Text style={{color: '#bbb', fontSize: 20}}><Text style={{color: '#383838', fontSize: 20}}>$$</Text>$</Text>;
         return <Text style={{color: '#383838'}}>$$$</Text>;
     }
 
-    _showWeb = async (url) => {
-    let result = await WebBrowser.openBrowserAsync(url);
+    _goToBooking = () => {
+      let { experience } = this.state;
+      // const { data: {title, subtitle, experience_id} } = this.props;
+      // console.log(`You selected ${title}: ${experience_id}`);
+      this.props.navigation.navigate('Booking', {experienceId: experience.id});
     }
 
     render() {
-        let { loading, experience, showWeb } = this.state;
+        let { loading, experience } = this.state;
         if (!experience) return <LoadingSpinner />;
 
         return (
-          <View style={styles.screen}>
-            <View style={styles.container}>
-              <Image style={styles.container} source={{uri: experience.img}}></Image>
-              <View style={styles.container}>
-                <View header bordered style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                  <Text style={{color: 'black'}}>${experience.cost}</Text>
-                  <Text>{experience.duration} hrs<Text style={{color: '#aaa'}}></Text></Text>
-                </View>
-              </View>
+          <View style={styles.container}>  
+          <ScrollView 
+            refreshControl={
+              <RefreshControl
+                refreshing={loading}
+                onRefresh={this._onRefresh}
+              />
+            }>
+            <View> 
+              <Image style={styles.headerImage} source={{uri: experience.img}}></Image>
+              
             </View>
-            <View style={styles.container}>
+            <View style={styles.overviewSection}>
+                <Text style={styles.overviewBox}>{this.showCost(experience.cost)}</Text>
+                <Text style={styles.overviewBox}>{experience.duration} hrs</Text>
+              </View>
+            <View style={styles.container, styles.detailSection}>
               <View>
-                <View>
-                  <Text style={styles.centerText}>What You'll Do</Text>
-                  {experience.toDo && experience.toDo > 0  && experience.toDo.map((content) => {
-                    return 
-                      <Text style={styles.rightText}>{content.toDo}</Text>
-                    })}  
-                </View>
-                <View>
-                  <Text style={styles.centerText}>What's Included</Text>
-                  {experience.included && experience > 0  && experience.included.map((content) => {
-                    return 
-                      <Text style={styles.rightText}>{content.included}</Text>
-                    })}  
-                </View>
-                <View>
-                  <Text style={styles.centerText}>What's Included</Text>
-                  {experience.toBring && experience > 0  && experience.toBring.map((content) => {
-                    return 
-                      <Text style={styles.rightText}>{content.toBring}</Text>
-                    })}  
-                </View>
+                <Text style={styles.centerText}>What You'll Do</Text>
+                <View style={styles.hr}></View>
+                {experience.toDo && experience.toDo > 0  && experience.toDo.map((content) => {
+                  return 
+                    <Text style={styles.rightText}>{content.toDo}</Text>
+                  })}  
               </View>
-            </View>
-            <View>
-              <Button style={styles.bookButton}>
+              <View>
+                <Text style={styles.centerText}>What's Included</Text>
+                <View style={styles.hr}></View>
+                {experience.included && experience > 0  && experience.included.map((content) => {
+                  return 
+                    <Text style={styles.rightText}>{content.included}</Text>
+                  })}  
+              </View>
+              <View>
+                <Text style={styles.centerText}>What's Included</Text>
+                <View style={styles.hr}></View>
+                {experience.toBring && experience > 0  && experience.toBring.map((content) => {
+                  return 
+                    <Text style={styles.rightText}>{content.toBring}</Text>
+                  })}  
+              </View>
+            </View>    
+          </ScrollView>
+          <View>
+              <Button 
+                style={styles.bookButton}
+                onPress={this._goToBooking}
+              >
                 <Text>Book Now</Text>
               </Button>
             </View>
-          </View>
+          </View> 
         );
     }
 }
 
 const styles = StyleSheet.create({
-    screen: {
+  container: {
       flex: 1,
-    },
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-    contentContainer: {
-        // alignItems: 'center',
-        // paddingTop: 30,
-    },
-    carouselContainer: {
-        alignItems: 'center',
-    }, 
-    centerText: {
-      fontSize: 30,
-      textAlign: 'left',
-      alignSelf: 'center',
-      justifyContent: 'center',
-    },
-    rightText: {
-      textAlign: 'right',
-    },
-    bookButton: {
-      justifyContent: 'center',
-      alignSelf: 'center',
-      position: 'absolute',
-      bottom: 5,
-    },
-    });
+      backgroundColor: '#fff',
+  }, 
+  centerText: {
+    fontSize: 30,
+    textAlign: 'left',
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  rightText: {
+    textAlign: 'right',
+  },
+  headerImage: {
+    height: '100%',
+    width: '90%',
+    alignSelf: 'center',
+  },
+  overviewSection: {
+    justifyContent: 'space-between',
+    width: '80%',
+    flexDirection: 'row',
+    alignSelf: 'center',
+    marginTop: '5%', 
+  },
+  overviewBox: {
+    fontSize: 20,
+    backgroundColor: "#e0e0e0",
+    borderWidth: 2,
+    borderColor: '#000000',
+    borderRadius: 10,
+    textAlign: 'center',
+    width: '20%', 
+    overflow: 'hidden'
+  },
+  detailSection: {
+    marginTop: '5%'
+  },
+  hr: {
+    borderBottomColor: '#7a7a7a',
+    borderBottomWidth: 1,
+    width: '90%',
+    alignSelf: 'center',
+  },
+  bookButton: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: 5,
+  },
+});
       
